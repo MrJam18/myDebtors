@@ -51,4 +51,15 @@ class Address extends BaseModel
     {
         return $this->belongsTo(Country::class);
     }
+    function getFull(): string
+    {
+        $fullAddress = $this->postal_code . ', ';
+        if($this->country->id !== 1) $fullAddress .= $this->country->name . ', ';
+        $fullAddress .= $this->region->name . ', ';
+        if($this->area) $fullAddress .= $this->area->name . ', ';
+        $fullAddress .= $this->settlement->name . ', ' . $this->street->name . ', ' . $this->house;
+        if($this->block) $fullAddress .= ', ' . $this->block;
+        if($this->flat) $fullAddress .= ', ' . $this->flat;
+        return $fullAddress;
+    }
 }

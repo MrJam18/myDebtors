@@ -1,7 +1,5 @@
 import React, {useRef, useState} from 'react';
 import styles from "../../css/orgs.module.css";
-import EasySelect from "../dummyComponents/EasySelect";
-import {creditorTypes} from "../../constants/creditorTypes";
 import {TextField} from "@mui/material";
 import Address from "../dummyComponents/Address/Address";
 import {makeStyles} from "@mui/styles";
@@ -69,20 +67,20 @@ const Creditor = ({defaultValues = {}, defaultRequisites = {}, setAddress, isOrg
  return (
      <>
         <div className={styles.typeHolder}>
-            <ServerSelect label={'Тип кредитора'} name={'creditorTypeId'} serverAddress={'creditors/type-list'} setId={onChangeType} customClassName={styles.type} />
+            <ServerSelect defaultId={defaultValues.type_id} label={'Тип кредитора'} name={'creditorTypeId'} serverAddress={'creditors/type-list'} setId={onChangeType} customClassName={styles.type} />
         </div>
         <TextField onBlur={onBlurName} className='inputs-box' defaultValue={defaultValues.name} required name='name' label={ creditorProperties.nameLabel} variant='standard' fullWidth />
          <div className='margin-bottom_10'>
              <div className={styles.smallInputsHolder}>
                  <TextField  className={classes.smallInput} InputLabelProps={shortInputLabelProps} inputRef={shortInputRef} defaultValue={defaultValues.short} name='short' label={creditorProperties.shortLabel} fullWidth variant='standard' />
-                 <CustomInput className={classes.smallInput} defaultValue={defaultValues.courtIdentifier} required name='courtIdentifier' label={creditorProperties.courtId.label} pattern={creditorProperties.courtId.pattern} customValidity={creditorProperties.courtId.validity} />
+                 <CustomInput className={classes.smallInput} defaultValue={defaultValues.court_identifier} required name='courtIdentifier' label={creditorProperties.courtId.label} pattern={creditorProperties.courtId.pattern} customValidity={creditorProperties.courtId.validity} />
              </div>
          </div>
         <Address setAddressForDB={setAddress} defaultValue={defaultValues.fullAddress} />
          <div className={styles.blockHeader}>Банковские реквизиты</div>
          <div className={styles.smallInputsHolder}>
-             <CustomInput customValidity='Счет должен состоять из 20 цифр!' pattern='^\d{20}$' className={classes.smallInput} defaultValue={defaultRequisites.checkingAccount} required size='small' name='checkingAccount' label='Расчетный счет' variant='standard' />
-             <CustomInput customValidity='Счет должен состоять из 20 цифр!' pattern='^\d{20}$' className={classes.smallInput} defaultValue={defaultRequisites.correspondentAccount} required size='small' name='correspondentAccount' label={'Корресп. счет'} variant='standard' />
+             <CustomInput customValidity='Счет должен состоять из 20 цифр!' pattern='^\d{20}$' className={classes.smallInput} defaultValue={defaultRequisites.checking_account} required size='small' name='checkingAccount' label='Расчетный счет' variant='standard' />
+             <CustomInput customValidity='Счет должен состоять из 20 цифр!' pattern='^\d{20}$' className={classes.smallInput} defaultValue={defaultRequisites.correspondent_account} required size='small' name='correspondentAccount' label={'Корресп. счет'} variant='standard' />
          </div>
             <div className="margin-bottom_10">
                 <SearchAndAddButton label='Банк получателя' serverAddress='creditors/search-bank-requisites' onClickAddButton={()=> setShowAddBanksRequisites(true)} required value={bankRequisites} setValue={setBankRequisites} />

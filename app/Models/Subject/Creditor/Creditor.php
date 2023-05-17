@@ -38,7 +38,7 @@ class Creditor extends BaseModel
     protected $fillable = [
         'short',
         'name',
-        'court_identifier'
+        'court_identifier',
     ];
     public $timestamps = true;
 

@@ -17,6 +17,6 @@ class CreditorsProvider extends AbstractProvider
     }
     function getList(int $groupId, ListRequestData $data): CustomPaginator
     {
-        return $this->byGroupId($groupId)->with(['type'])->paginate($data->perPage, page: $data->page);
+        return $this->byGroupId($groupId, $data->orderBy)->with(['type'])->paginate($data->perPage, page: $data->page);
     }
 }

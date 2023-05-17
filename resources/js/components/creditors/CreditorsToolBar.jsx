@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 })
 
 
-const CreditorsToolBar = () => {
+const CreditorsToolBar = ({setUpdate}) => {
     const classes = useStyles();
     const [showAddOrg, setShowAddOrg] = useState(false);
     const addOrgClickHandler = () => {
@@ -21,7 +21,7 @@ const CreditorsToolBar = () => {
     }
     return (
         <div className={styles.toolbar}>
-            <AddCreditor show={showAddOrg} setShow={setShowAddOrg} />
+            <AddCreditor setUpdate={setUpdate} show={showAddOrg} setShow={setShowAddOrg} />
             <Button variant="text" onClick={addOrgClickHandler} className={classes.payments__toolBarButton}><FontAwesomeIcon icon={solid('plus')} className={styles.addIcon}/> Добавить</Button>
         </div>
     );

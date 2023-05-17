@@ -22,11 +22,13 @@ function useList(serverUrl, options = defaultOptions) {
     const update = () => {
         setLoading(true);
         api.get(`${serverUrl}?perPage=${perPage}&page=${page}&order[]=${order[0]}&order[]=${order[1]}`)
-            .then(({ data }) => {
-            if (data === null || data === void 0 ? void 0 : data.list) {
-                setList(data.list);
-                setTotalPages(data.totalPages);
-                setTotalItems(data.totalItems);
+            .then((response) => {
+            var _a;
+            if ((_a = response.data) === null || _a === void 0 ? void 0 : _a.list) {
+                console.log(response);
+                setList(response.data.list);
+                setTotalPages(response.data.totalPages);
+                setTotalItems(response.data.totalItems);
             }
             else
                 Alert.set('Не могу получить список', "Сервер отправил пустой ответ");
@@ -37,17 +39,6 @@ function useList(serverUrl, options = defaultOptions) {
             .finally(() => setLoading(false));
     };
     useEffect(update, [order, perPage, page, serverUrl]);
-    // const nextPage = useCallback(function (): void {
-    //     if (page < totalPages) {
-    //         setPage(page + 1);
-    //     }
-    // }, []);
-    //
-    // const prevPage = useCallback(function (): void {
-    //     if (page > 1) {
-    //         setPage(page - 1);
-    //     }
-    // }, []);
     const goToPage = useCallback(function (pageNumber) {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
             setPage(pageNumber);

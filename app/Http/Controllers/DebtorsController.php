@@ -29,6 +29,7 @@ class DebtorsController extends AbstractController
                 'patronymic' => $formData['patronymic']
             ]);
             $name->save();
+
             $debtor->name()->associate($name);
             $debtor->birth_place = $formData['birthPlace'];
             $debtor->birth_date = $formData['birthDate'];

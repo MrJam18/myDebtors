@@ -3,17 +3,15 @@ import React, {useEffect, useRef, useState} from 'react';
 import CustomModal from '../dummyComponents/CustomModal';
 import { makeStyles } from '@mui/styles';
 import ButtonInForm from '../dummyComponents/ButtonInForm';
-import { useDispatch, useSelector } from 'react-redux';
-import {getOrgsLoading} from '../../store/creditors/selectors'
-import {deleteOrganization, receiveCreditor} from '../../store/creditors/actions';
+import { useDispatch } from 'react-redux';
+import {deleteOrganization} from '../../store/creditors/actions';
 import Creditor from "./Creditor";
 import {useError} from "../../hooks/useError";
-// import {ChangeCreditorController} from "../../controllers/ChangeCreditorController";
-import {setloading} from "../../store/global";
 import styles from '../../css/orgs.module.css';
 import DefaultCessionChanger from "./DefaultCessionChanger";
 import Loading from "../dummyComponents/Loading";
-import {getCreditor} from "../../store/creditors/selectors";
+import api from "../../http/index";
+import {Alert} from "../../classes/Alert";
 
 const useStyles = makeStyles({
     button: {
@@ -28,18 +26,18 @@ const useStyles = makeStyles({
 
 
 
-const ChangeCreditor = ({creditorId, setShow}) => {
+const ChangeCreditor = ({creditorId, setShow, setUpdate}) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const creditor = useSelector(getCreditor);
-    const [address, setAddress] = useState('default');
+    const [address, setAddress] = useState('initial');
     const error = useError(false);
-    const [loading, setLoading] = useState(false);
+    const [creditor, setCreditor] = useState({});
+    const [loading, setLoading] = useState(true);
     const [isOrg, setIsOrg] = useState(creditor?.typeId !== 3);
     const [fixedStyles, setFixedStyles] = useState();
     const [bankRequisites, setBankRequisites] = useState();
     const [showDefaultCessionChanger, setShowDefaultCessionChanger]= useState(false);
-    const buttonLoading = useSelector(getOrgsLoading);
+    const [buttonLoading, setButtonLoading] = useState(false);
     const form = useRef();
 
     const formHandler = async (ev) => {
@@ -67,17 +65,23 @@ const ChangeCreditor = ({creditorId, setShow}) => {
     const onClose = () => {
         error.noError();
     }
-    const onStart = async () => {
+    const onStart = () => {
         if(!creditor || creditorId !== creditor.id)
         {
             setLoading(true);
-            await dispatch(receiveCreditor(creditorId));
-            setLoading(false);
+            api.get('creditors/get-one?id=' + creditorId)
+                .then((response) => {
+                    if (response.data) setCreditor(response.data);
+                })
+                .catch((reason) => {
+                    Alert.setError('Не могу получить кредитора', reason);
+                })
+                .finally(() => setLoading(false));
         }
     }
     useEffect(onStart, []);
     useEffect(()=> {
-        if(creditor) {
+        if(creditor && creditor.id) {
             setBankRequisites(creditor.requisite.bankRequisite);
             setIsOrg(creditor.typeId !== 3)
         }
@@ -94,11 +98,11 @@ const ChangeCreditor = ({creditorId, setShow}) => {
                     <Button color='error' onClick={deleteHandler} className={classes.button} variant='contained' > Удалить </Button>
                     <Button color='success' onClick={()=>setShowDefaultCessionChanger(true)} className={classes.cessionButton} variant='contained' >Цессия по умолчанию</Button>
                     </div>
-                    <Creditor setAddress={setAddress} defaultRequisites={creditor?.requisite} setBankRequisites={setBankRequisites} setFixedStyles={setFixedStyles} defaultValues={creditor} setIsOrg={setIsOrg} isOrg={isOrg} bankRequisites={bankRequisites} />
+                    <Creditor setAddress={setAddress} defaultRequisites={creditor?.requisites} setBankRequisites={setBankRequisites} setFixedStyles={setFixedStyles} defaultValues={creditor} setIsOrg={setIsOrg} isOrg={isOrg} bankRequisites={creditor?.requisites?.bankRequisites} />
                     <div className="margin-bottom_10">
                         <ButtonInForm loading={buttonLoading} />
                     </div>
-                    {error.comp()}
+                    {error.Comp()}
                 </>}
                 {showDefaultCessionChanger && <DefaultCessionChanger cession={creditor.cession} creditorId={creditor.id} setShow={setShowDefaultCessionChanger} />}
             </CustomModal>

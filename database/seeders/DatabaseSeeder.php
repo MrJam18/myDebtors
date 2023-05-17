@@ -80,7 +80,7 @@ class DatabaseSeeder extends Seeder
         $model = new ActionObject();
         $model = $this->setNameAndSave($model, "судебный приказ");
         $model = $this->setNameAndSave($model, 'Платеж');
-        $model = $this->setNameAndSave($model, 'Название договора');
+//        $model = $this->setNameAndSave($model, 'Название договора');
         $model = $this->setNameAndSave($model, "дата выдачи");
         $model = $this->setNameAndSave($model, "дата исполнения");
         $model = $this->setNameAndSave($model, 'сумма выдачи');

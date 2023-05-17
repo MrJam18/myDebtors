@@ -1,4 +1,5 @@
 import { StrictMode } from 'react';
+import {ErrorsCatcher} from "./components/ErrorsCatcher";
 import { setupStore } from './store';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
@@ -13,7 +14,9 @@ root.render(
     <StrictMode>
         <Provider store ={store}>
             <StyledEngineProvider injectFirst>
-                <Router />
+                <ErrorsCatcher>
+                    <Router />
+                </ErrorsCatcher>
             </StyledEngineProvider>
         </Provider>
     </StrictMode>,

@@ -1,17 +1,14 @@
 import React, { useRef, useState } from 'react';
 import CustomModal from '../dummyComponents/CustomModal';
 import ButtonInForm from '../dummyComponents/ButtonInForm';
-import { useSelector } from 'react-redux';
-import {getOrgsLoading} from '../../store/creditors/selectors'
 import Creditor from "./Creditor";
-// import {AddCreditorController} from "../../controllers/AddCreditorController";
-import {setloading} from "../../store/global";
 import {useError} from "../../hooks/useError";
+import {AddCreditorDispatcher} from "../../store/Dispatchers/Creditor/AddCreditorDispatcher";
 
 
 
-const AddCreditor = ({show, setShow}) => {
-    const [address, setAddress ] = useState(false);
+const AddCreditor = ({show, setShow, setUpdate}) => {
+    const [address, setAddress] = useState(false);
     const error = useError();
     // const loading = useSelector(getOrgsLoading);
     const [loading, setLoading] = useState(false);
@@ -19,14 +16,13 @@ const AddCreditor = ({show, setShow}) => {
     const [isOrg, setIsOrg] = useState(true);
     const [fixedStyles, setFixedStyles] = useState();
     const [bankRequisites, setBankRequisites] = useState();
-    const formHandler = async (ev) => {
+    const formHandler = (ev) => {
         ev.preventDefault();
-        const data = {
-            address,
-            bankRequisites
-        }
-        // const controller = new AddCreditorController(error.setError, setloading, setShow, data, form );
-        // await controller.handle();
+        const dispatcher = new AddCreditorDispatcher(error.setError, setLoading, form, setShow);
+        dispatcher.addData('address', address);
+        dispatcher.addData('bankRequisitesId', bankRequisites.id);
+        dispatcher.addData('setUpdate', setUpdate);
+        dispatcher.handle();
 
     }
 

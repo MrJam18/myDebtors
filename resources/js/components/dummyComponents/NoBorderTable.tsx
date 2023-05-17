@@ -30,17 +30,13 @@ const NoBorderTable = ({rows = [], headers = [], sortHandler = null, focus = nul
         if (!loading && rows.length !== 0) {
             Rows = rows.map((row, index) => {
                 let array = []
-                // const copyRow = {...row};
                 const cellId = row.id;
                 delete row.id;
-                // delete copyRow.ref;
                 headers.forEach((el) => {
                     let find = false;
                 for (const key in row) {
                     if(key === el.key) {
                         find = true;
-                        // let cellValue = row[key];
-                    // if (el.type === 'date') cellValue = chandeDateFormatOnRus(cellValue) + ' г.';
                     array.push(<td className={styles.row}>
                         <span className={styles.rowContainer}>
                         {row[key]}</span>

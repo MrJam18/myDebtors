@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('creditors', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->name();
+            $table->string('name');
             $table->string('short');
             $table->string('court_identifier');
             $table->foreignId('user_id')->constrained();

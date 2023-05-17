@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cession_enclosures', function (Blueprint $table) {
             $table->id();
-            $table->name(100);
+            $table->string('name', 1000);
             $table->foreignId('cession_id')->constrained();
         });
     }

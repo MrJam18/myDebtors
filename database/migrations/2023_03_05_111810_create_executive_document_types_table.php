@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('executive_document_types', function (Blueprint $table) {
             $table->id();
-            $table->name();
+            $table->string('name');
         });
     }
 

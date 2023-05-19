@@ -1,30 +1,22 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import { AddressSuggestions } from 'react-dadata';
 import 'react-dadata/dist/react-dadata.css';
 import styles from '../../../css/adress.module.css'
 import { useState } from 'react';
 import {useShow} from "../../../hooks/useShow";
+import {AddressFields} from "../../../Types/AddressFields";
 import AddressManually from "./AddressManually";
 import {daDataToken} from "../../../constants/daDataToken";
 import addressManuallyIMG from '../../../img/address-manually.svg';
 
 type Props = {
-    setAddressForDB: React.Dispatch<React.SetStateAction<{
-        country: string,
-        region: string,
-        settlement: string,
-        street: string,
-        house: string,
-        postal_code: string,
-        flat?: string,
-        block?: string,
-        area?: string
-    }>> | Function,
+    setAddressForDB: React.Dispatch<React.SetStateAction<AddressFields>>,
     defaultValue?: string,
     showHeader?: boolean
 }
 
 const Address = ({setAddressForDB, defaultValue = '', showHeader = true}: Props) => {
+    const suggestionsRef = useRef<AddressSuggestions>(null);
     const [error, setError] = useState(false);
     const showAddressManually = useShow();
     const  onSelectAddress = (val) => {
@@ -55,7 +47,7 @@ const Address = ({setAddressForDB, defaultValue = '', showHeader = true}: Props)
            Введите адрес и выберите из списка.
             <div className={styles.inputBlock}>
                 <div className={styles.inputContainer}>
-            <AddressSuggestions selectOnBlur defaultQuery={defaultValue} token={daDataToken} delay={350} onChange= { onSelectAddress} inputProps = {{
+            <AddressSuggestions ref={suggestionsRef} selectOnBlur defaultQuery={defaultValue} token={daDataToken} delay={350} onChange= { onSelectAddress} inputProps = {{
                 placeholder: 'Введите адрес',
             }}/>
                 </div>
@@ -64,7 +56,7 @@ const Address = ({setAddressForDB, defaultValue = '', showHeader = true}: Props)
                 </button>
             </div>
             {error && <div className={styles.error}>{error}</div> }
-            {showAddressManually.state && <AddressManually setShowFalse={showAddressManually.setFalse} />}
+            {showAddressManually.state && <AddressManually setValue={suggestionsRef.current?.setInputValue} setShow={showAddressManually.setShow} setAddress={setAddressForDB} />}
         </div>
     );
 };

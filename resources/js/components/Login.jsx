@@ -21,12 +21,11 @@ const useStyles = makeStyles({
 });
 const Login = () => {
     const classes = useStyles();
-    const [error, setError] = useState();
+    const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const onSubmit = async (ev) => {
         setLoading(true);
-        // @ts-expect-error TS(2345): Argument of type 'boolean' is not assignable to pa... Remove this comment to see the full error message
         setError(false);
         ev.preventDefault();
         const formData = ev.currentTarget.elements;

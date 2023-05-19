@@ -1,5 +1,3 @@
-// @ts-expect-error TS(2724): '"./changeDateFormat"' has no exported member name... Remove this comment to see the full error message
-import {changeDateFormatOnRus} from "./changeDateFormat";
 
 export const prepareDataForColWrapper = (column, data) => {
     let element;
@@ -18,7 +16,6 @@ export const prepareDataForColWrapper = (column, data) => {
             value: data
         }
     }
-    if(column.type === 'date') element.show = changeDateFormatOnRus(element.value) + column.showEnd;
-    else  element.show = element.value + column.showEnd;
+    element.show = element.value + column.showEnd;
     return element;
 }

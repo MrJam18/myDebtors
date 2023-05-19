@@ -79,8 +79,8 @@ const Creditor = ({defaultValues = {}, defaultRequisites = {}, setAddress, isOrg
         <Address setAddressForDB={setAddress} defaultValue={defaultValues.fullAddress} />
          <div className={styles.blockHeader}>Банковские реквизиты</div>
          <div className={styles.smallInputsHolder}>
-             <CustomInput customValidity='Счет должен состоять из 20 цифр!' pattern='^\d{20}$' className={classes.smallInput} defaultValue={defaultRequisites.checking_account} required size='small' name='checkingAccount' label='Расчетный счет' variant='standard' />
-             <CustomInput customValidity='Счет должен состоять из 20 цифр!' pattern='^\d{20}$' className={classes.smallInput} defaultValue={defaultRequisites.correspondent_account} required size='small' name='correspondentAccount' label={'Корресп. счет'} variant='standard' />
+             <CustomInput customValidity='Счет должен состоять из 20 цифр!' pattern='^\d{20}$' className={classes.smallInput} defaultValue={defaultRequisites.checking_account} required size='small' name='checking_account' label='Расчетный счет' variant='standard' />
+             <CustomInput customValidity='Счет должен состоять из 20 цифр!' pattern='^\d{20}$' className={classes.smallInput} defaultValue={defaultRequisites.correspondent_account} required size='small' name='correspondent_account' label={'Корресп. счет'} variant='standard' />
          </div>
             <div className="margin-bottom_10">
                 <SearchAndAddButton label='Банк получателя' serverAddress='creditors/search-bank-requisites' onClickAddButton={()=> setShowAddBanksRequisites(true)} required value={bankRequisites} setValue={setBankRequisites} />

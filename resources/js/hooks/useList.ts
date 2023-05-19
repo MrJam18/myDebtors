@@ -31,7 +31,6 @@ function useList(serverUrl: string, options: Options = defaultOptions) {
         api.get(`${serverUrl}?perPage=${perPage}&page=${page}&order[]=${order[0]}&order[]=${order[1]}`)
             .then((response) => {
                 if (response.data?.list) {
-                    console.log(response)
                     setList(response.data.list);
                     setTotalPages(response.data.totalPages);
                     setTotalItems(response.data.totalItems);

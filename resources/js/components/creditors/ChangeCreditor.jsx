@@ -12,6 +12,9 @@ import DefaultCessionChanger from "./DefaultCessionChanger";
 import Loading from "../dummyComponents/Loading";
 import api from "../../http/index";
 import {Alert} from "../../classes/Alert";
+import {ChangeCreditorDispatcher} from "../../store/Dispatchers/Creditor/ChangeCreditorDispatcher";
+import Warning from "../dummyComponents/Warning";
+import {DeleteCreditorDispatcher} from "../../store/Dispatchers/Creditor/DeleteCreditorDispatcher";
 
 const useStyles = makeStyles({
     button: {
@@ -38,29 +41,26 @@ const ChangeCreditor = ({creditorId, setShow, setUpdate}) => {
     const [bankRequisites, setBankRequisites] = useState();
     const [showDefaultCessionChanger, setShowDefaultCessionChanger]= useState(false);
     const [buttonLoading, setButtonLoading] = useState(false);
+    const [showDeleteWarning, setShowDeleteWarning] = useState(false);
     const form = useRef();
 
     const formHandler = async (ev) => {
         ev.preventDefault();
-        const data = {
-            bankRequisitesId: bankRequisites.id,
-            address,
-            id: creditor.id,
-            requisitesId: creditor.requisite.id
-        }
+        const dispatcher = new ChangeCreditorDispatcher(error.setError, setButtonLoading, form, setShow);
+        dispatcher.addData('bankRequisitesId', bankRequisites.id);
+        dispatcher.addData('address', address);
+        dispatcher.addData('id', creditorId);
+        await dispatcher.handle();
+        setUpdate();
         // const controller = new ChangeCreditorController(error.setError, setloading, setShow, data, form);
         // await controller.handle();
     }
 
     const deleteHandler = async () => {
-        error.noError();
-        try{
-        await dispatch(deleteOrganization(creditor.id));
-        setShow(false);
-        }
-        catch(e){
-            error.setError(e);
-        }
+        const dispatcher = new DeleteCreditorDispatcher(error.setError, setLoading, null, setShow);
+        dispatcher.addData('id', creditorId);
+        dispatcher.addData('setUpdate', setUpdate);
+        await dispatcher.handle();
     }
     const onClose = () => {
         error.noError();
@@ -71,7 +71,11 @@ const ChangeCreditor = ({creditorId, setShow, setUpdate}) => {
             setLoading(true);
             api.get('creditors/get-one?id=' + creditorId)
                 .then((response) => {
-                    if (response.data) setCreditor(response.data);
+                    if (response.data) {
+                        setCreditor(response.data);
+                        setBankRequisites(response.data.requisites.bankRequisites);
+                    }
+
                 })
                 .catch((reason) => {
                     Alert.setError('Не могу получить кредитора', reason);
@@ -95,16 +99,17 @@ const ChangeCreditor = ({creditorId, setShow, setUpdate}) => {
                 {loading && <Loading size='90' bold='9' addStyles={{padding: '120px'}} />}
                 {!loading && <>
                     <div className={styles.buttons}>
-                    <Button color='error' onClick={deleteHandler} className={classes.button} variant='contained' > Удалить </Button>
+                    <Button color='error' onClick={()=> setShowDeleteWarning(true)} className={classes.button} variant='contained' > Удалить </Button>
                     <Button color='success' onClick={()=>setShowDefaultCessionChanger(true)} className={classes.cessionButton} variant='contained' >Цессия по умолчанию</Button>
                     </div>
-                    <Creditor setAddress={setAddress} defaultRequisites={creditor?.requisites} setBankRequisites={setBankRequisites} setFixedStyles={setFixedStyles} defaultValues={creditor} setIsOrg={setIsOrg} isOrg={isOrg} bankRequisites={creditor?.requisites?.bankRequisites} />
+                    <Creditor setAddress={setAddress} defaultRequisites={creditor?.requisites} setBankRequisites={setBankRequisites} setFixedStyles={setFixedStyles} defaultValues={creditor} setIsOrg={setIsOrg} isOrg={isOrg} bankRequisites={bankRequisites} />
                     <div className="margin-bottom_10">
                         <ButtonInForm loading={buttonLoading} />
                     </div>
                     {error.Comp()}
                 </>}
                 {showDefaultCessionChanger && <DefaultCessionChanger cession={creditor.cession} creditorId={creditor.id} setShow={setShowDefaultCessionChanger} />}
+                {showDeleteWarning && <Warning setShow={setShowDeleteWarning} onSubmit={deleteHandler} text={'Вы уверены что хотите удалить кредитора? Это действие необратимо'} />}
             </CustomModal>
 
             </form>

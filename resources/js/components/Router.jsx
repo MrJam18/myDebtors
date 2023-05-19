@@ -20,6 +20,7 @@ import { setAlert } from '../store/alert/actions';
 import usersSlice from '../store/users/reducer';
 import LeftMenu from './LeftMenu';
 import Agents from './agents/Agents';
+import Debtor from "./debtor/Debtor";
 
 function Router() {
     const dispatch = useDispatch();
@@ -52,6 +53,7 @@ function Router() {
             <Route path='creditors' exact element={<PrivateAccess Wrapped={<Creditors />}/>}/>
             <Route path='agents' exact element={<PrivateAccess Wrapped={<Agents />}/>}/>
             <Route path='contracts/:contractId' element={<PrivateAccess Wrapped={<Contract />}/>}/>
+            <Route path='debtors/:debtorId' element={<PrivateAccess Wrapped={<Debtor />}/>}/>
             <Route path='/' element={<PrivateAccess Wrapped={<Start />}/>}/>
             </Routes>
       </BrowserRouter>);

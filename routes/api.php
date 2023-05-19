@@ -3,7 +3,7 @@
 use App\Helpers\RoutersHandler;
 use Illuminate\Support\Facades\Route;
 
-$files = glob(__DIR__ .  DIRECTORY_SEPARATOR . 'routers' . DIRECTORY_SEPARATOR . '*.php');
+//$files = glob(__DIR__ .  DIRECTORY_SEPARATOR . 'routers' . DIRECTORY_SEPARATOR . '*.php');
 $router = new RoutersHandler();
 
 /*

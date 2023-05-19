@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '*/toolbar.module.css';
+import styles from '../../css/toolbar.module.css';
 const Toolbar = ({ elements }) => {
     return (<div className={styles.toolbar}>
             {elements.map((el) => <ToolbarElement Icon={el.icon} ToolWindow={el.toolWindow}/>)}

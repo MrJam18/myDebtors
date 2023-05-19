@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import styles from '*/toolbar.module.css';
+import styles from '../../css/toolbar.module.css';
 
 const Toolbar = ({elements}) => {
     return (

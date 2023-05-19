@@ -1,37 +1,49 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useDispatch} from "react-redux";
+import React, {useRef} from 'react';
 import styles from '../../../css/adress.module.css';
+import {AddressFields} from "../../../Types/AddressFields";
+import {formDataConverter} from "../../../utils/formDataConverter";
+import CustomButton from "../CustomButton";
+import CustomInput from "../CustomInput";
 import CustomModal from "../CustomModal";
-import {AddressSuggestions} from "react-dadata";
-import {daDataToken} from "../../../constants/daDataToken";
-import AddressInputManually from "./AddressInputManually";
-import {daDataApi} from "../../../http/daDataApi";
 
+type Props = {
+    setShow: (state: boolean) => void,
+    setAddress: React.Dispatch<React.SetStateAction<AddressFields>>,
+    setValue: React.Dispatch<React.SetStateAction<string>>
+}
 
-const AddressManually = ({setShowFalse}) => {
-    const dispatch = useDispatch();
-    const mainRef = useRef();
-    const [test, setTest] = useState();
-    // @ts-expect-error TS(2345): Argument of type '() => Promise<void>' is not assi... Remove this comment to see the full error message
-    useEffect(async()=> {
-        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
-        const daDataInputs = mainRef.current.querySelectorAll('.react-dadata__input');
-        daDataInputs.forEach((el)=> {
-            el.style.border = 'none';
-            el.style.width = 'auto';
-        });
-        const data = await daDataApi.post('fio', {query: 'иванов'});
-        console.log(data)
-    }, [])
+const AddressManually = ({setShow, setAddress, setValue}: Props) => {
+    const formRef: React.Ref<HTMLFormElement> = useRef();
+    const onSubmit = () => {
+        if(formRef.current.reportValidity()) {
+            const data = formDataConverter(formRef.current) as AddressFields;
+            setAddress(data);
+            const value = `${data.country}, ${data.region}, ${data.area ? data.area + ', ' : ''}${data.settlement}, ${data.street}, ${data.house}, ${data.block ? data.block + ', ' : ''}${data.flat ?? ''}`;
+            setValue(value);
+            setShow(false);
+        }
+    }
  return (
-  <CustomModal setShow={setShowFalse} header={'Ввод адреса вручную'} >
-      <div className={styles.addressManually__main} ref={mainRef}>
-    <div className={styles.header_small}>
-        Регион
-    </div>
-          <input id={'address'}/>
-          {/*@ts-ignore*/}
-      <AddressSuggestions value={test} setValue={setTest} renderOption={(el)=> console.log(el)} customInput={AddressInputManually} token={daDataToken} selectOnBlur />
+  <CustomModal setShow={setShow} header={'Ввод адреса вручную'} >
+    <div className={styles.addressManually__main}>
+        <form ref={formRef}>
+        <div className={styles.addressManually__mergedInputs}>
+            <CustomInput placeholder={'426000'} label={'Почтовый Индекс'} className={styles.addressManually__smallInput} name={'postal_code'} />
+            <CustomInput label={'Страна'} className={styles.addressManually__smallInput} name={'country'} placeholder={'Россия'} />
+        </div>
+        <CustomInput label={'Регион'} className={styles.addressManually__input} name={'region'} placeholder={'Удмуртская респ'} />
+        <CustomInput required={false} label={'Район'} className={styles.addressManually__input} name={'area'} placeholder={'Завьяловский р-н'} />
+        <CustomInput label={'Населенный пункт'} className={styles.addressManually__input} name={'settlement'} placeholder={'г Ижевск'} />
+        <div className={styles.addressManually__mergedInputs}>
+            <CustomInput label={'Улица'} size={'small'} className={styles.addressManually__smallInput} name={'street'} placeholder={'ул Петрова'} />
+            <CustomInput label={'Дом'} onEnter={onSubmit} size={'small'} className={styles.addressManually__smallInput} name={'house'} placeholder={'д 11'} />
+        </div>
+        <div className={styles.addressManually__mergedInputs}>
+            <CustomInput label={'Корпус'} required={false} onEnter={onSubmit} size={'small'} className={styles.addressManually__smallInput} name={'block'} placeholder={'корп 1'} />
+            <CustomInput label={'Квартира'} required={false} size={'small'} className={styles.addressManually__smallInput} onEnter={onSubmit} name={'flat'} placeholder={'кв 456'} />
+        </div>
+        </form>
+        <CustomButton onClick={onSubmit} type={"button"} text={'Сохранить'} />
       </div>
   </CustomModal>
  );

@@ -3,10 +3,12 @@ import usersSlice from "./reducer";
 import api from "../../http";
 const actions = usersSlice.actions;
 export const tryLogin = (data) => async (dispatch) => {
-    const result = await AuthService.login(data.email, data.password);
+    var _a;
+    const result = await api.post('users/login', data);
+    console.log(result);
     if (result.status === 302)
         throw new Error('Введены неверные учетные данные');
-    if (result.data && result.data.token)
+    if ((_a = result.data) === null || _a === void 0 ? void 0 : _a.token)
         localStorage.setItem('token', result.data.token);
     else
         throw new Error('cant take token from server response');

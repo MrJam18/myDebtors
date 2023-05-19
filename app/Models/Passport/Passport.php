@@ -29,6 +29,10 @@ class Passport extends BaseModel
     ];
     public $timestamps = true;
 
+    protected $casts = [
+        'issued_date' => RUS_DATE_CAST
+    ];
+
     function type(): BelongsTo
     {
         return $this->belongsTo(PassportType::class);

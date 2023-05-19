@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import {changeDateFormatOnISO} from "../../../utils/changeDateFormat";
 import {prepareDataForColWrapper} from "../../../utils/prepareForColumnWrapper";
 import styles from "../../../css/columnsWrapper.module.css";
 import Changer from "./Changer";
@@ -18,24 +19,25 @@ const ColumnsWrapper = ({column, data, reqFunction}) => {
         if(changedData.type === 'setter') return changedData.setter();
         setShowChanger(true);
     }
-    // @ts-expect-error TS(2345): Argument of type '() => Promise<void>' is not assi... Remove this comment to see the full error message
-    useEffect(async ()=> {
-        let elements = [];
-        if(column.type === 'composed') {
-            column.elements.forEach((el)=> {
-                const element = prepareDataForColWrapper(el, data[el.colName]);
+    useEffect(()=> {
+        const building = async () => {
+            let elements = [];
+            if (column.type === 'composed') {
+                column.elements.forEach((el) => {
+                    const element = prepareDataForColWrapper(el, data[el.colName]);
+                    elements.push(element);
+                })
+            } else {
+                const element = prepareDataForColWrapper(column, data);
                 elements.push(element);
-            })
+            }
+            if (column.type === 'selected') {
+                elements[0].select = await elements[0].func();
+                delete elements[0].func;
+            }
+            setElements(elements);
         }
-        else {
-            const element = prepareDataForColWrapper(column, data);
-            elements.push(element);
-        }
-        if(column.type === 'selected'){
-            elements[0].select = await elements[0].func();
-            delete elements[0].func;
-        }
-        setElements(elements);
+        building();
     }, [column, data]);
     if(column.style === 'fullWidth') return(
         <div key={column.colName} className={ styles.fullBlock }>

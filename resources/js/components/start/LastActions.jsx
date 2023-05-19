@@ -23,8 +23,8 @@ const LastActions = () => {
     return (<div className={styles.element}>
             <div className="header">Мои последние действия</div>
             <div className={styles.flexWrapper}>
-           <NoBorderTable loading={list.loading} headers={headers} rows={list.get} focus={focus} sortHandler={sortHandler}/>
-           <MinPagination pageUpdater={list.setPage} total={list.totalItems}/>
+               <NoBorderTable loading={list.loading} headers={headers} rows={list.get} focus={focus} sortHandler={sortHandler}/>
+               <MinPagination pageUpdater={list.setPage} total={list.totalItems}/>
            </div>
         </div>);
 };

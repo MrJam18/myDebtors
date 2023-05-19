@@ -27,4 +27,8 @@ class Name extends BaseModel
     {
         return $this->surname . ' ' . $this->name . ' ' . $this->patronymic;
     }
+    function initials(): string
+    {
+        return $this->surname . ' ' . strtoupper(mb_substr($this->surname, 0, 1)) . '. ' . strtoupper(mb_substr($this->patronymic, 0, 1)) . '.';
+    }
 }

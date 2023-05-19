@@ -31,7 +31,7 @@ class RoutersHandler
         if ($files) foreach ($files as $file)
         {
             $prefix = basename($file, '.php');
-            $route->prefix($prefix)->group($files);
+            $route->prefix($prefix)->group($file);
         }
         return $route;
     }

@@ -14,15 +14,11 @@ const Limits = () => {
         navigate(`/contracts/${list.get[index].id}`);
     };
     return (<div className={styles.element}>
-            <div className="header">Сроки исковой давности</div>
-            <div className={styles.relativeContainer}>
-                <div className={styles.content}>
+                <div className="header">Сроки исковой давности</div>
+                <div className={styles.flexWrapper}>
                     <NoBorderTable loading={list.loading} headers={headers} rows={list.get} rowsButtons onClickRow={onClickRow} focus={focus} sortHandler={list.setOrder}/>
-                </div>
-                <div className={styles.paginationContainer}>
                     <MinPagination pageUpdater={list.setPage} total={list.totalItems}/>
                 </div>
-            </div>
-        </div>);
+            </div>);
 };
 export default Limits;

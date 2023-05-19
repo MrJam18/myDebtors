@@ -66,3 +66,16 @@
 .addressManually__main {
 
 }
+.addressManually__mergedInputs {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.addressManually__smallInput {
+    width: 48%;
+}
+.addressManually__input {
+    width: 100%;
+    margin-top: 10px;
+}

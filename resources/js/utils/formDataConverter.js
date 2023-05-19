@@ -10,22 +10,15 @@ export const formDataConverter = (formRef, exceptions = null) => {
     const keys = Object.keys(data);
     if (exceptions) {
         keys.forEach(el => {
-            // if(/^\d+$/.test(el) || /^mui/.test(el)) return;
             for (const value of exceptions) {
                 if (value === el)
                     return;
             }
             setData(el);
-            // object[data[el].name] = data[el].value;
-            // returned = getValue(el, data);
-            // returned = keys.map(el => getValue(el, data));
         });
     }
     else
         keys.forEach(el => setData(el));
-    //     if(!el || /^\d+$/.test(el) || /^mui/.test(el)) return;
-    //     object[data[el].name] = data[el].value;
-    // returned = keys.map(el => getValue(el, data));
     function setData(el) {
         const name = data[el].name;
         if (name)

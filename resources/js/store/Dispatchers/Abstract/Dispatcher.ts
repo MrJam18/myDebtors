@@ -20,7 +20,7 @@ export abstract class Dispatcher
     protected readonly _getState: typeof store.getState = getState;
     protected readonly _api = api;
     protected _actions:  CaseReducerActions<SliceCaseReducers<unknown>, string> | null = null;
-    abstract _handler(dispatcherData: DispatcherData): Promise<any>;
+    protected abstract _handler(dispatcherData: DispatcherData): Promise<any>;
     /**
      *
      * @param {function} setError function which change error state

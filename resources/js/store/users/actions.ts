@@ -7,9 +7,10 @@ const actions = usersSlice.actions
 
 
 export const tryLogin = (data) => async dispatch => {
-    const result = await AuthService.login(data.email, data.password);
+    const result = await api.post('users/login', data);
+    console.log(result);
     if(result.status === 302) throw new Error('Введены неверные учетные данные');
-    if(result.data && result.data.token) localStorage.setItem('token', result.data.token);
+    if(result.data?.token) localStorage.setItem('token', result.data.token);
     else throw new Error('cant take token from server response');
     if(result.data.user) dispatch(actions.login(result.data.user))
     else throw new Error('cant take user from server response');

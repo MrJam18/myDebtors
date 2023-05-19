@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import CustomModal from "../dummyComponents/CustomModal";
-import styles from '*/debtorInfo.module.css';
+import styles from '../../css/debtorInfo.module.css';
 import TextField from "@mui/material/TextField";
 import PassportTypeSelect from "./PassportTypeSelect";
 import {makeStyles} from "@mui/styles";

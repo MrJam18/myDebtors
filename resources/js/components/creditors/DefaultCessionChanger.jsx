@@ -40,7 +40,7 @@ const DefaultCessionChanger = ({setShow, cession, creditorId}) => {
       </div>
       <CustomCheckBox checked={noDefault} setChecked={setNoDefault} label={'Нет цессии по умолчанию'} />
       <ButtonInForm loading={loading} onClick={onSubmit}  type='button' />
-      {error.comp()}
+      {error.Comp()}
   </CustomModal>
  );
 };

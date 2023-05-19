@@ -5,11 +5,10 @@
 const chandeDateFormatOnRus = (date) => {
     if (date) {
     const dateArray = date.split('-');
-    const rightDate = dateArray.reduce((acc, date)=> {
-        acc = date + '.' + acc;
-        return acc;
-    })
-return rightDate;
+    return dateArray.reduce((acc, date) => {
+    acc = date + '.' + acc;
+    return acc;
+});
     }
     return null;
 }
@@ -21,4 +20,4 @@ const changeDateFormatOnISO = (date) => {
     })
     return rightDate;
 }  
-export {chandeDateFormatOnRus, changeDateFormatOnISO}
+export {chandeDateFormatOnRus as changeDateFormatOnRus, changeDateFormatOnISO, chandeDateFormatOnRus}

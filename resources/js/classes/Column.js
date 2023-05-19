@@ -1,6 +1,6 @@
 import { capitalizeFirstLetter } from "../utils/text/capitalize";
 export class Column {
-    constructor(name, colName, type, options) {
+    constructor(name, colName = null, type = null, options = null) {
         this.type = 'string';
         this.style = 'default';
         this.noChange = false;

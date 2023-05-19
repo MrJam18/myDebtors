@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import styles from '../../../css/changer.module.css';
+import {changeDateFormatOnISO} from "../../../utils/changeDateFormat";
 import CustomModal from "../CustomModal";
 import ButtonInForm from "../ButtonInForm";
 import EasySelect from "../EasySelect";
@@ -58,7 +59,7 @@ const Changer = ({data, setModal, setReqData}) => {
             Input = () => <Address defaultValue={data.value} setAddressForDB={setAddress} showHeader={false}/>;
             break;
         case 'date':
-            Input = () => <EasyInput  defaultValue={data.value} ref={input}
+            Input = () => <EasyInput  defaultValue={changeDateFormatOnISO(data.value)} ref={input}
                        type='date' pattern='lessThenNow' required />;
             break;
         case 'float':

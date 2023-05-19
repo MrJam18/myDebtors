@@ -4,18 +4,19 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AbstractControllers\AbstractController;
+use App\Models\Contract\Contract;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
 use App\Models\Subject\Debtor;
 use App\Models\Subject\Name;
 use App\Services\AddressService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DebtorsController extends AbstractController
 {
-
     function createOne(Request $request): void
     {
         $formData = $this->getFormData();
@@ -49,5 +50,42 @@ class DebtorsController extends AbstractController
             $debtor->user()->associate(Auth::user());
             $debtor->save();
         });
+    }
+
+    function getOne(Debtor $debtor): array
+    {
+        $nameColums = $debtor->name;
+        $passport = $debtor->passport;
+        $data = [
+            'surname' => $nameColums->surname,
+            'name' => $nameColums->name,
+            'patronymic' => $nameColums->patronymic,
+            'birth_date' => $debtor->birth_date->format(RUS_DATE_FORMAT),
+            'birth_place' => $debtor->birth_place,
+            'countContracts' => Contract::query()->where('debtor_id', '=', $debtor->id)->count(),
+            'fullAddress' => $debtor->address->getFull(),
+            'created_at' => $debtor->created_at->format(RUS_DATE_FORMAT),
+            'updated_at' => $debtor->updated_at->format(RUS_DATE_FORMAT),
+            'initials' => $debtor->name->initials()
+        ];
+        if($passport) $data['passport'] = [
+          'type' => [
+              'value' => $passport->type->name,
+              'id' => $passport->type->id
+          ],
+          'seriesAndNumber' => [
+              'series' => $passport->series,
+              'number' => $passport->number
+          ],
+            'issued_date' => $passport->issued_date->format(RUS_DATE_FORMAT),
+            'issued_by' => $passport->issued_by,
+            'gov_unit_code' => $passport->gov_unit_code,
+            'updated_at' => $passport->updated_at->format(RUS_DATE_FORMAT)
+        ];
+        return $data;
+    }
+    function getPassportTypes(): array | Collection
+    {
+        return PassportType::all();
     }
 }

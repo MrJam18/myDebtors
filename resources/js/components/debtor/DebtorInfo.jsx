@@ -10,8 +10,8 @@ import AddPassport from "./AddPassport";
 import BaseColumner from "../dummyComponents/Columns/BaseColumner";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router";
-import {changeDebtor, changePassport} from "../../store/debtors/actions";
-import { getPassport } from "../../store/debtors/selectors";
+// import {changeDebtor, changePassport} from "../../store/debtors/actions";
+// import { getPassport } from "../../store/debtors/selectors";
 
 
 const useStyles = makeStyles({
@@ -25,16 +25,15 @@ const useStyles = makeStyles({
 const DebtorInfo = ({debtor}) => {
     const classes = useStyles();
     const {debtorId} = useParams();
-    const passport = useSelector(getPassport);
+    // const passport = useSelector(getPassport);
     const dispatch = useDispatch();
     const addPassport = useModal();
     const debtorReqFunction = async (data) => {
-       await dispatch(changeDebtor(data, debtorId));
+       // await dispatch(changeDebtor(data, debtorId));
     }
     const passportReqFunction = async (data) => {
-        await dispatch(changePassport(data, passport.id, debtorId));
+        // await dispatch(changePassport(data, passport.id, debtorId));
     }
-    console.log(passportColumns, passport)
     return (
         <div className={styles.content}>
             <div className={styles.header_small}>Информация о должнике</div>
@@ -45,7 +44,7 @@ const DebtorInfo = ({debtor}) => {
             <div className={styles.header_small}>Паспортные данные</div>
             <div className={styles.info}>
                 {
-                    passport !== 'noPassport' ? <BaseColumner columns={passportColumns} data={passport} reqFunction={passportReqFunction} /> :
+                    debtor?.passport !== 'noPassport' ? <BaseColumner columns={passportColumns} data={debtor?.passport} reqFunction={passportReqFunction} /> :
                     <>
                         <div className={styles.content__fullWidthWrapper + ' margin-bottom_20'}>
                             <div className={styles.content__link + ' ' + 'antibutton'}>У должника отсутствуют паспортные
@@ -53,7 +52,7 @@ const DebtorInfo = ({debtor}) => {
                             </div>
                         </div>
                         <div className={styles.content__fullWidthWrapper}>
-                            <Button variant={'contained'} className={classes.noPassportButton} onClick={addPassport.setShowTrue}> Заполнить паспортые
+                            <Button variant={'contained'} className={classes.noPassportButton} onClick={addPassport.setShowTrue}> Заполнить паспортные
                                 данные </Button>
                         </div>
                         { addPassport.show && <AddPassport setShow={addPassport.setShow} /> }

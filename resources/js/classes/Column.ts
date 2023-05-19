@@ -10,7 +10,7 @@ export class Column
     noChange = false;
     showEnd = '';
     ref;
-    constructor(name, colName, type, options) {
+    constructor(name, colName = null, type = null, options = null) {
         this.name = capitalizeFirstLetter(name);
         this.colName = colName;
         if(type) this.type = type;

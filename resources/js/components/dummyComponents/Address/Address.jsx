@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { AddressSuggestions } from 'react-dadata';
 import 'react-dadata/dist/react-dadata.css';
 import styles from '../../../css/adress.module.css';
@@ -8,6 +8,8 @@ import AddressManually from "./AddressManually";
 import { daDataToken } from "../../../constants/daDataToken";
 import addressManuallyIMG from '../../../img/address-manually.svg';
 const Address = ({ setAddressForDB, defaultValue = '', showHeader = true }) => {
+    var _a;
+    const suggestionsRef = useRef(null);
     const [error, setError] = useState(false);
     const showAddressManually = useShow();
     const onSelectAddress = (val) => {
@@ -38,7 +40,7 @@ const Address = ({ setAddressForDB, defaultValue = '', showHeader = true }) => {
            Введите адрес и выберите из списка.
             <div className={styles.inputBlock}>
                 <div className={styles.inputContainer}>
-            <AddressSuggestions selectOnBlur defaultQuery={defaultValue} token={daDataToken} delay={350} onChange={onSelectAddress} inputProps={{
+            <AddressSuggestions ref={suggestionsRef} selectOnBlur defaultQuery={defaultValue} token={daDataToken} delay={350} onChange={onSelectAddress} inputProps={{
             placeholder: 'Введите адрес',
         }}/>
                 </div>
@@ -47,7 +49,7 @@ const Address = ({ setAddressForDB, defaultValue = '', showHeader = true }) => {
                 </button>
             </div>
             {error && <div className={styles.error}>{error}</div>}
-            {showAddressManually.state && <AddressManually setShowFalse={showAddressManually.setFalse}/>}
+            {showAddressManually.state && <AddressManually setValue={(_a = suggestionsRef.current) === null || _a === void 0 ? void 0 : _a.setInputValue} setShow={showAddressManually.setShow} setAddress={setAddressForDB}/>}
         </div>);
 };
 export default Address;

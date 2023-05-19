@@ -26,7 +26,7 @@ const Creditors = () => {
                 <CreditorsToolBar setUpdate={setUpdate} />
                 <CustomList update={update} onClickRow={onClickRow} setUpdate={setUpdate} headers={headers} serverAddress={'creditors/list'} />
             </div>
-            {showChangeCreditor.state && <ChangeCreditor creditorId={creditorId} setShow={showChangeCreditor.setShow} />}
+            {showChangeCreditor.state && <ChangeCreditor setUpdate={()=> setUpdate(true)} creditorId={creditorId} setShow={showChangeCreditor.setShow} />}
         </div>
     );
 }

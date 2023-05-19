@@ -69,7 +69,6 @@ const NoBorderTable = ({rows = [], headers = [], sortHandler = null, focus = nul
         }
         else setEmpty(false);
     }, [rows, loading])
-    
     let Headers;
     const doHeaders = () => {
         Headers = headers.map((header, index) => <th style={header.styles ? header.styles : null} key={index} className={styles.header}>{header.name} <SortButton  sortHandler={sortHandler} header={header} focus={focus}/></th>)

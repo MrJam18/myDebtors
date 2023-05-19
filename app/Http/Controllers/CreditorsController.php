@@ -90,8 +90,8 @@ class CreditorsController
             $address = $addressService->addAddress($data['address']);
             $bankRequisites = BankRequisites::find($data['bankRequisitesId']);
             $requisites = new Requisites();
-            $requisites->checking_account = $formData['checkingAccount'];
-            $requisites->correspondent_account = $formData['correspondentAccount'];
+            $requisites->checking_account = $formData['checking_account'];
+            $requisites->correspondent_account = $formData['correspondent_account'];
             $requisites->bank()->associate($bankRequisites);
             $requisites->user()->associate($user);
             $requisites->save();
@@ -125,7 +125,74 @@ class CreditorsController
                 'bankRequisites' => $creditor->requisites->bank
             ]
         ];
+    }
+    function changeOne(Request $request): void
+    {
+        $data = $request->all();
+        DB::transaction(function () use (&$data) {
+            $formData = $data['formData'];
+            $creditor = Creditor::find($data['id']);
+            $requisites = $creditor->requisites;
+            $requisites->checking_account = $formData['checking_account'];
+            $requisites->correspondent_account = $formData['correspondent_account'];
+            if($requisites->bank->id !== $data['bankRequisitesId']) {
+                $bank = BankRequisites::find($data['bankRequisitesId']);
+                if($bank) $requisites->bank()->associate($bank);
+            }
+            $requisites->save();
+            $oldAddress = null;
+            if($data['address'] !== 'initial') {
+                $addressService = new AddressService();
+                $address = $addressService->addAddress($data['address']);
+                $oldAddress = $creditor->address;
+                $creditor->address()->associate($address);
+            }
+            if((int)$formData['creditorTypeId'] !== $creditor->type->id) {
+                $type = CreditorType::find((int)$formData['creditorTypeId']);
+                $creditor->type()->associate($type);
+            }
+            $creditor->name = $formData['name'];
+            $creditor->short = $formData['short'];
+            $creditor->court_identifier = $formData['courtIdentifier'];
+            $creditor->save();
+            $oldAddress?->delete();
+        });
+    }
+    function deleteOne(Request $request): void
+    {
+        /**
+         * @var $creditor Creditor
+         */
+        $creditor = Creditor::query()->byGroupId(getGroupId())->find($request->input('id'));
+        if ($creditor) {
+            $creditor->delete();
+            $creditor->requisites->delete();
+            $creditor->address->delete();
+        }
+        else throw new Exception('cant find creditor');
+    }
 
+    function getSearchListWithCession(SearchRequest $request): array | Collection
+    {
+        $data = Creditor::query()->byGroupId(getGroupId())->search([
+            'name' => $request->validated(),
+            'short' => $request->validated()
+        ])->with(['defaultCession:id,name', 'type'])->get();
+        return $data->map(function (Creditor $creditor) {
+            if ($creditor->type->id !== 3 && $creditor->short) $name = $creditor->short . ", ИНН: " . $creditor->court_identifier;
+            else $name = $creditor->name;
+            $data = [
+                'id' => $creditor->id,
+                'name' => $name
+            ];
+            if($creditor->defaultCession) {
+                $data['default_cession'] = [
+                    'id' => $creditor->defaultCession->id,
+                    'name' => $creditor->defaultCession->name
+                ];
+            }
+            return $data;
+        });
     }
 
 }

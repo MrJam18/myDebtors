@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { recieveDebtor } from "../../store/debtors/actions";
-import { getDebtor, getDebtorLoading } from "../../store/debtors/selectors";
 import InnerMenu from "../dummyComponents/InnerMenu";
 import Info from "./DebtorInfo";
 import Loading from '../dummyComponents/Loading';
 import styles from '../../css/debtor.module.css';
+import api from "../../http/index";
+import {Alert} from "../../classes/Alert";
 
 
 const menu = [{
@@ -26,9 +25,9 @@ const menu = [{
 
 const Debtor = () => {
     const { debtorId } = useParams();
-    const dispatch = useDispatch();
-    const loading = useSelector(getDebtorLoading);
-    const debtor = useSelector(getDebtor);
+    const [loading, setLoading] = useState(true);
+    const [debtor, setDebtor] = useState({});
+
     const [menuValue, setMenuValue] = useState('info');
     const menuSelector = () => {
         switch (menuValue) {
@@ -37,18 +36,23 @@ const Debtor = () => {
             default:
                 return <Info debtor={debtor} />
         }
-        
     }
 
-    useEffect( async ()=> {
-        await dispatch(recieveDebtor(debtorId));
+    useEffect( ()=> {
+        setLoading(true);
+        api.get('debtors/get-one/' + debtorId)
+            .then((response) => {
+                setDebtor(response.data);
+            })
+            .catch((reason) => Alert.setError('Данные не получены', reason))
+            .finally(() => setLoading(false));
     }, []);
     return (
     <div className={'background firstWindow'}>
        <div className="header">{ loading ? 'Загрузка' : 'Должник ' + debtor.initials }</div>
     <div className={"contentBox" + ' ' + styles.main}>
     <InnerMenu menu={menu} menuValue={menuValue} setMenuValue = {setMenuValue} />
-        {loading ? <div className="center"><Loading/></div> : menuSelector()    }
+        {loading ? <div className="center"><Loading/></div> : <Info debtor={debtor} />    }
     </div>
     </div>
     );

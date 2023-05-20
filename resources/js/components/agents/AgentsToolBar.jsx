@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 })
 
 
-const AgentsToolBar = () => {
+const AgentsToolBar = ({setUpdate}) => {
     const classes = useStyles();
     const [showAddAgent, setShowAddAgent] = useState(false);
     const addOrgClickHandler = () => {
@@ -21,7 +21,7 @@ const AgentsToolBar = () => {
     }
     return (
         <div className={styles.toolbar}>
-            { showAddAgent && <AddAgent show={showAddAgent} setShow={setShowAddAgent} /> }
+            { showAddAgent && <AddAgent setUpdate={setUpdate} show={showAddAgent} setShow={setShowAddAgent} /> }
             <Button variant="text" onClick={addOrgClickHandler} className={classes.toolBarButton}><FontAwesomeIcon icon={solid('plus')} className={styles.addIcon}/> Добавить</Button>
         </div>
     );

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('no_show_group')->default(false);
             $table->foreignId('user_id')->constrained();
             $table->foreignId('name_id')->constrained();
+            $table->foreignId('address_id')->constrained();
         });
     }
 

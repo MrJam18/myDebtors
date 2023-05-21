@@ -3,19 +3,25 @@ import usersSlice from "./reducer";
 import api from "../../http";
 const actions = usersSlice.actions;
 export const tryLogin = (data) => async (dispatch) => {
-    var _a;
-    const result = await api.post('users/login', data);
-    console.log(result);
-    if (result.status === 302)
-        throw new Error('Введены неверные учетные данные');
-    if ((_a = result.data) === null || _a === void 0 ? void 0 : _a.token)
-        localStorage.setItem('token', result.data.token);
-    else
-        throw new Error('cant take token from server response');
-    if (result.data.user)
-        dispatch(actions.login(result.data.user));
-    else
-        throw new Error('cant take user from server response');
+    var _a, _b;
+    try {
+        const result = await api.post('users/login', data);
+        if (result.status === 302)
+            throw new Error('Введены неверные учетные данные');
+        if ((_a = result.data) === null || _a === void 0 ? void 0 : _a.token)
+            localStorage.setItem('token', result.data.token);
+        else
+            throw new Error('cant take token from server response');
+        if (result.data.user)
+            dispatch(actions.login(result.data.user));
+        else
+            throw new Error('cant take user from server response');
+    }
+    catch (e) {
+        if (((_b = e.response) === null || _b === void 0 ? void 0 : _b.status) === 402)
+            throw new Error(e.response.data.error);
+        throw e;
+    }
 };
 export const tryLogout = () => async (dispatch) => {
     try {

@@ -26,6 +26,7 @@ class PaginateRequest extends BaseRequest
             $direction = $this->order[1];
             $data->orderBy = new OrderBy($this->order[0], constant(OrderDirection::class . "::$direction"));
         }
+        if($this->search) $data->search = $this->search;
         return $data;
     }
 
@@ -39,7 +40,8 @@ class PaginateRequest extends BaseRequest
         return [
             'perPage' => ['required', 'numeric'],
             'page' => ['required', 'numeric'],
-            'order' => ['array']
+            'order' => ['array'],
+            'search' => ['string']
         ];
     }
 

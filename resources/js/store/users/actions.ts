@@ -7,13 +7,19 @@ const actions = usersSlice.actions
 
 
 export const tryLogin = (data) => async dispatch => {
-    const result = await api.post('users/login', data);
-    console.log(result);
-    if(result.status === 302) throw new Error('Введены неверные учетные данные');
-    if(result.data?.token) localStorage.setItem('token', result.data.token);
-    else throw new Error('cant take token from server response');
-    if(result.data.user) dispatch(actions.login(result.data.user))
-    else throw new Error('cant take user from server response');
+    try {
+        const result = await api.post('users/login', data);
+        if(result.status === 302) throw new Error('Введены неверные учетные данные');
+        if(result.data?.token) localStorage.setItem('token', result.data.token);
+        else throw new Error('cant take token from server response');
+        if(result.data.user) dispatch(actions.login(result.data.user))
+        else throw new Error('cant take user from server response');
+    }
+    catch (e) {
+        if(e.response?.status === 402) throw new Error(e.response.data.error);
+        throw e;
+    }
+
 };
 
 export const tryLogout = () => async dispatch => {

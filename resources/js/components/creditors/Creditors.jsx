@@ -13,8 +13,8 @@ const Creditors = () => {
     const [update, setUpdate] = useState(false);
     const [creditorId, setCreditorId] = useState(null);
     const showChangeCreditor = useShow();
+    const [search, setSearch] = useState(null);
     const onClickRow = (id) => {
-        console.log(id);
         setCreditorId(id);
         showChangeCreditor.setShow(true);
     }
@@ -23,8 +23,8 @@ const Creditors = () => {
              <div className="header">Управление кредиторами</div>
             <div className={"contentBox" + ' ' + styles.main}>
                 <div className="header_small">Список</div>
-                <CreditorsToolBar setUpdate={setUpdate} />
-                <CustomList update={update} onClickRow={onClickRow} setUpdate={setUpdate} headers={headers} serverAddress={'creditors/list'} />
+                <CreditorsToolBar setSearch={setSearch} setUpdate={setUpdate} />
+                <CustomList search={search} update={update} onClickRow={onClickRow} setUpdate={setUpdate} headers={headers} serverAddress={'creditors/list'} />
             </div>
             {showChangeCreditor.state && <ChangeCreditor setUpdate={()=> setUpdate(true)} creditorId={creditorId} setShow={showChangeCreditor.setShow} />}
         </div>

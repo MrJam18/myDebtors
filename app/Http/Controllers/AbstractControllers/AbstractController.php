@@ -25,5 +25,9 @@ class AbstractController extends Controller
         }
         throw new Exception('cant get form data');
     }
+    function exceptionIfNull(mixed &$data, $message = 'data is null'): void
+    {
+        if(!$data) throw new Exception($message);
+    }
 
 }

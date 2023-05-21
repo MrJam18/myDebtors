@@ -11,7 +11,8 @@ class ListRequestData
     public function __construct(
         public int $page,
         public int $perPage,
-        public ?OrderBy $orderBy = null
+        public ?OrderBy $orderBy = null,
+        public ?string $search = null
     )
     {
 

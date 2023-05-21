@@ -18,7 +18,7 @@ const useStyles = makeStyles({
         fontFamily: 'Roboto_slab, serif'
     },
 });
-const EasySelect = React.forwardRef(({ name = null, label = null, variants, style, onChange = null, customClassName, defaultValue = "", value = "" }, ref) => {
+const EasySelect = React.forwardRef(({ name = null, label = null, variants, style, onChange = null, smallLabel = false, customClassName, defaultValue = "", value = "" }, ref) => {
     const classes = useStyles();
     const input = useInput(defaultValue);
     const Variants = variants.map((el) => <MenuItem value={el.id} key={el.id}>{el.name}</MenuItem>);
@@ -32,7 +32,7 @@ const EasySelect = React.forwardRef(({ name = null, label = null, variants, styl
             input.setValue(value);
     }, [value]);
     return (<div className={styles.selectBlock + ' ' + classes.input + ' ' + customClassName} style={style}>
-                <InputLabel id={name} className={classes.fullWidthLabel}>{label}</InputLabel>
+                <InputLabel id={name} className={smallLabel ? classes.selectLabel : classes.fullWidthLabel}>{label}</InputLabel>
                 <Select inputRef={ref} fullWidth defaultValue={defaultValue} variant='standard' labelId={name} {...input} onChange={changeHandler} name={name}>
                         {Variants}
                 </Select>

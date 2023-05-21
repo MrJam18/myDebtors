@@ -36,10 +36,12 @@ class CustomBuilder extends Builder
      */
     function search(array $attributes): static
     {
-        foreach ($attributes as $column => $searchString)
-        {
-            $this->whereRaw("LOWER($column) LIKE LOWER(?)", ['%' . $searchString . '%'], 'OR');
-        }
+        $this->where(function(CustomBuilder $query) use(&$attributes) {
+            foreach ($attributes as $column => $searchString)
+            {
+                $query->orWhereRaw("LOWER($column) LIKE LOWER(?)", ['%' . $searchString . '%']);
+            }
+        });
         return $this;
     }
 

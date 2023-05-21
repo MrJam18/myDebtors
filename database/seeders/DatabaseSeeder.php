@@ -31,7 +31,6 @@ class DatabaseSeeder extends Seeder
         $user = new User();
         $user->email = 'mr.jam18@yandex.ru';
         $user->password = '7262dD4600';
-        $user->email_verified_at = Carbon::now();
         $user->phone = '89821174497';
         $username = new Name();
         $username->name = 'Джамиль';
@@ -46,7 +45,10 @@ class DatabaseSeeder extends Seeder
         $userRole = new UserRole();
         $userRole->name = 'Администратор';
         $userRole->save();
-        $user->role_id = $userRole->id;
+        $userRole = new UserRole();
+        $userRole = $this->setNameAndSave($userRole, 'Владелец группы');
+        $this->setNameAndSave($userRole, 'Участник группы');
+        $user->role_id = 2;
         $user->save();
         $creditorType = new CreditorType();
         $creditorType->name = 'Микрофинансовая организация';

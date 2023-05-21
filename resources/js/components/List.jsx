@@ -26,10 +26,10 @@ const List = () => {
           <button className={styles.buttonUtil} title='добавить должника' onClick={openAddDebtor}>
           <FontAwesomeIcon icon={solid('user-plus')} className={styles.imgUtil}/>
           </button>
-          <button className={styles.buttonUtil} title='сортировка по фамилии должника'>
+          <button className={styles.buttonUtil} onClick={()=>list.setOrder(['names.surname', 'ASC'])} title='сортировка по фамилии должника'>
           <FontAwesomeIcon icon={solid("arrow-down-a-z")} className={styles.imgUtil}/>
           </button>
-          <button className={styles.buttonUtil} title='сортировка по фамилии должника'>
+          <button className={styles.buttonUtil} onClick={()=>list.setOrder(['names.surname', 'DESC'])} title='сортировка по фамилии должника'>
           <FontAwesomeIcon icon={solid("arrow-down-z-a")} className={styles.imgUtil}/>
           </button>
           <button className={styles.buttonUtil} title='сортировка по дате договора'>

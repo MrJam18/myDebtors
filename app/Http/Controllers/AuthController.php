@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -85,51 +86,53 @@ class AuthController extends AbstractController
     function registration(Request $request): void
     {
         $data = $request->all();
-        $formData = $data['formData'];
-        $user = new User();
-        $user->email = $formData['email'];
-        $user->password = $formData['password'];
-        $user->phone = $formData['phone'];
-        $role = UserRole::find($data['role_id']);
-        $this->exceptionIfNull($role);
-        $user->role()->associate($role);
-        $name = new Name();
-        $name->name = $formData['name'];
-        $name->surname = $formData['surname'];
-        $name->patronymic = $formData['patronymic'];
-        $name->save();
-        $user->name()->associate($name);
-        if(!isset($data['group_id'])) {
-            $group = new Group();
-            $group->name = $formData['groupName'];
-            $group->save();
-            $user->group()->associate($group);
-            $user->save();
-        }
-        else {
-            $group = Group::find($data['group_id']);
-            $this->exceptionIfNull($group);
-            $user->group()->associate($group);
-            $groupVerifyToken = new GroupVerifyToken();
-            $groupVerifyToken->token = Str::random(60);
-            $user->save();
-            $groupVerifyToken->user()->associate($user);
-            $groupVerifyToken->save();
-        }
-        $verifyToken = new EmailVerifyToken();
-        $verifyToken->token = Str::random(60);
-        $verifyToken->user()->associate($user);
-        $verifyToken->save();
-        $url = URL::temporarySignedRoute(
-            'verification.verify',
-            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-            [
-                'id' => $user->id,
-                'token' => $verifyToken->token,
-            ]
-        );
-        $email = new MailVerification($user, $url);
-        Mail::queue($email);
+        DB::transaction(function () use(&$data) {
+            $formData = $data['formData'];
+            $user = new User();
+            $user->email = $formData['email'];
+            $user->password = $formData['password'];
+            $user->phone = $formData['phone'];
+            $role = UserRole::find($data['role_id']);
+            $this->exceptionIfNull($role);
+            $user->role()->associate($role);
+            $name = new Name();
+            $name->name = $formData['name'];
+            $name->surname = $formData['surname'];
+            $name->patronymic = $formData['patronymic'];
+            $name->save();
+            $user->name()->associate($name);
+            if(!isset($data['group_id'])) {
+                $group = new Group();
+                $group->name = $formData['groupName'];
+                $group->save();
+                $user->group()->associate($group);
+                $user->save();
+            }
+            else {
+                $group = Group::find($data['group_id']);
+                $this->exceptionIfNull($group);
+                $user->group()->associate($group);
+                $groupVerifyToken = new GroupVerifyToken();
+                $groupVerifyToken->token = Str::random(60);
+                $user->save();
+                $groupVerifyToken->user()->associate($user);
+                $groupVerifyToken->save();
+            }
+            $verifyToken = new EmailVerifyToken();
+            $verifyToken->token = Str::random(60);
+            $verifyToken->user()->associate($user);
+            $verifyToken->save();
+            $url = URL::temporarySignedRoute(
+                'verification.verify',
+                Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+                [
+                    'id' => $user->id,
+                    'token' => $verifyToken->token,
+                ]
+            );
+            $email = new MailVerification($user, $url);
+            Mail::queue($email);
+        });
     }
 
     function verifyEmail(Request $request): View

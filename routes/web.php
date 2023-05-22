@@ -5,6 +5,8 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SearchController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +23,5 @@ Route::get('/email/verify/{id}/{token}', [AuthController::class, 'verifyEmail'])
 Route::view('/{path}', 'main')
     ->where('path', '^(?!api/).*')
     ->name('react');
+
+Route::post('api/search', [SearchController::class, 'index']);

@@ -20,4 +20,4 @@ yarn-error.log
 *.map
 .DS_Store
 envReserv.txt
-/public/dist/js/app.js
+public/dist/js/app.js

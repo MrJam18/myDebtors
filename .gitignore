@@ -19,3 +19,5 @@ yarn-error.log
 /.vscode
 *.map
 .DS_Store
+envReserv.txt
+/public/dist/js/app.js

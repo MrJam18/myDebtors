@@ -33,7 +33,7 @@ class Debtor extends BaseModel
         'name_id'
     ];
     protected $casts = [
-        'birth_date' => RUS_DATE_CAST
+        'birth_date' => 'datetime:d.m.Y'
     ];
     public $timestamps = true;
 

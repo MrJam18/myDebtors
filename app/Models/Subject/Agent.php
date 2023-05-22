@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Models\Subject;
 
+use App\Models\Address\Address;
 use App\Models\Auth\User;
 use App\Models\Base\BaseModel;
 use App\Models\CourtClaim\CourtClaim;
+use App\Models\Passport\Passport;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +23,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property User $user;
  * @property Name $name;
  * @property Collection $courtClaims;
+ * @property Address $address
+ * @property Passport $passport
  */
 class Agent extends BaseModel
 {
@@ -42,5 +46,13 @@ class Agent extends BaseModel
     function courtClaims(): HasMany
     {
         return $this->hasMany(CourtClaim::class);
+    }
+    function address(): BelongsTo
+    {
+        return $this->belongsTo(Address::class);
+    }
+    function passports(): BelongsTo
+    {
+        return $this->belongsTo(Passport::class);
     }
 }

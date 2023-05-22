@@ -29,8 +29,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = new User();
-        $user->email = 'mr.jam18@yandex.ru';
-        $user->password = '7262dD4600';
+        $user->email = 'and@ya.ru';
+        $user->password = '123';
         $user->email_verified_at = Carbon::now();
         $user->phone = '89821174497';
         $username = new Name();

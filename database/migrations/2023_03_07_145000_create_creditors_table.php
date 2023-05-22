@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name');
-            $table->string('short')->nullable();
+            $table->string('short');
             $table->string('court_identifier');
             $table->foreignId('user_id')->constrained();
             $table->foreignId('type_id')->constrained('creditor_types');

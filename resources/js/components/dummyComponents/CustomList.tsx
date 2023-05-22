@@ -22,6 +22,7 @@ export default function CustomList({headers, serverAddress, onClickRow = null, u
         }
     }, [update]);
     const clickRowHandler = (index: number)=> {
+        //console.log(list.get[index]);
         onClickRow(list.get[index].idd);
     }
     return(

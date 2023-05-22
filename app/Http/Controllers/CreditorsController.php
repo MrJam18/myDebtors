@@ -106,7 +106,7 @@ class CreditorsController
             $creditor->save();
         });
     }
-    function getOne(Request $request): array
+    function getOne(Request $request, $id): array
     {
         /**
          * @var $creditor Creditor

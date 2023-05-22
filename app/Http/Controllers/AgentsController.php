@@ -11,6 +11,7 @@ use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\Name;
 use App\Providers\Database\AgentsProvider;
 use App\Services\AddressService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,10 +65,11 @@ class AgentsController extends Controller
             $agent->no_show_group = $data['no_show_group'];
             $agent->enclosure = $formData['enclosure'];
             $agent->address()->associate($address);
-            $agent->save();
             $passport->series=$formData['passportSeries'];
             $passport->number=$formData['passportNumber'];
             $passport->save();
+            $agent->passport()->associate($passport);
+            $agent->save();
 
 
 
@@ -75,6 +77,31 @@ class AgentsController extends Controller
 
         });
     }
+
+    /**
+     * @throws Exception
+     */
+    function getOne(Request $request, $id): array
+    {
+        /**
+         * @var $agent Agent
+         */
+        $agent = Agent::query()->find($id);
+        if(!$agent) throw new Exception('cant find agent by id ' . $id);
+
+        return [
+            'name' => $agent->name->name,
+            'surname' => $agent->name->surname,
+            'patronymic' => $agent->name->patronymic,
+            'is_default' => $agent->is_default,
+            'no_show_group' => $agent->no_show_group,
+            'enclosure' => $agent->enclosure,
+            'fullAddress' => $agent->address->getFull(),
+            'passportSeries' => $agent->passport->series,
+            'passportNumber' => $agent->passport->number,
+        ];
+    }
+
 
 
 }

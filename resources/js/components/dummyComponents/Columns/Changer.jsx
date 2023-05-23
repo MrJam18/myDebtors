@@ -21,27 +21,22 @@ const Changer = ({ data, setModal, setReqData }) => {
         ev.preventDefault();
         setError(false);
         setLoading(true);
-        let requestData;
+        let column;
+        let value;
         try {
             if (data.type === 'address') {
                 if (!address)
                     throw new Error('Укажите измененные данные!');
-                requestData = {
-                    address
-                };
+                column = 'address';
+                value = address;
             }
             else {
-                // @ts-expect-error TS(2532): Object is possibly 'undefined'.
                 if (data.value === input.current.value)
                     throw new Error('Укажите измененные данные!');
-                requestData = {
-                    changingField: {
-                        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
-                        [data.colName]: input.current.value
-                    }
-                };
+                column = data.colName;
+                value = input.current.value;
             }
-            await setReqData(requestData);
+            await setReqData(column, value);
             setModal(false);
         }
         catch (e) {

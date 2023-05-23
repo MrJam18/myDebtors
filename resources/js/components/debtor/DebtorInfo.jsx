@@ -10,7 +10,8 @@ import AddPassport from "./AddPassport";
 import BaseColumner from "../dummyComponents/Columns/BaseColumner";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router";
-// import {changeDebtor, changePassport} from "../../store/debtors/actions";
+import {changeDebtor, changePassport} from "../../store/debtors/actions";
+import {ChangeDebtorDispatcher} from "../../store/Dispatchers/Debtor/ChangeDebtorDispatcher";
 // import { getPassport } from "../../store/debtors/selectors";
 
 
@@ -22,17 +23,20 @@ const useStyles = makeStyles({
     }
 })
 
-const DebtorInfo = ({debtor}) => {
+const DebtorInfo = ({debtor, update}) => {
     const classes = useStyles();
     const {debtorId} = useParams();
     // const passport = useSelector(getPassport);
-    const dispatch = useDispatch();
     const addPassport = useModal();
-    const debtorReqFunction = async (data) => {
-       // await dispatch(changeDebtor(data, debtorId));
+    const debtorReqFunction = async (column, value) => {
+        const dispatcher = new ChangeDebtorDispatcher();
+        dispatcher.addData(column, value);
+        dispatcher.addNoReqData('debtorId', debtorId);
+        dispatcher.addNoReqData('update', update);
+        await dispatcher.handle();
     }
-    const passportReqFunction = async (data) => {
-        // await dispatch(changePassport(data, passport.id, debtorId));
+    const passportReqFunction = async (column, value) => {
+        await debtorReqFunction('passport.' + column, value);
     }
     return (
         <div className={styles.content}>

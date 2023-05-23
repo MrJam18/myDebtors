@@ -13,6 +13,7 @@ import { capitalizeFirstLetter } from "../../utils/text/capitalize";
 import { useMedia } from "../../hooks/useMedia";
 import CustomCheckBox from "../dummyComponents/CustomCheckBox";
 import { AddDebtorDispatcher } from "../../store/Dispatchers/Debtor/AddDebtorDispatcher";
+import ServerSelect from "../dummyComponents/ServerSelect";
 const useStyles = makeStyles({
     input: {
         marginBottom: '4px',
@@ -39,7 +40,7 @@ const AddDebtor = ({ setAddDebtor, updateList }) => {
     const [fixedStyles, setFixedStyles] = useState({ top: '-65px' });
     const [noPatronymic, setNoPatronymic] = useState(false);
     const [noBirthPlace, setNoBirthPlace] = useState(false);
-    const [passportType, setPassportType] = useState('1');
+    const [passportTypeId, setPassportTypeId] = useState(1);
     const [addressForDB, setAddressForDB] = useState();
     const [loading, setLoading] = useState(false);
     const debtorForm = useRef();
@@ -52,7 +53,7 @@ const AddDebtor = ({ setAddDebtor, updateList }) => {
     const formHandler = async (ev) => {
         ev.preventDefault();
         const dispatcher = new AddDebtorDispatcher(setError, setLoading, debtorForm);
-        dispatcher.data.passportType = passportType;
+        // dispatcher.data.passportType = passportType;
         dispatcher.data.address = addressForDB;
         await dispatcher.handle();
         setAddDebtor(false);
@@ -62,7 +63,7 @@ const AddDebtor = ({ setAddDebtor, updateList }) => {
         return () => {
             setNoPatronymic(false);
             setNoBirthPlace(false);
-            setPassportType('1');
+            setPassportTypeId(1);
             setAddressForDB(null);
             setError(false);
             setLoading(false);
@@ -96,15 +97,20 @@ const AddDebtor = ({ setAddDebtor, updateList }) => {
         </div>
             <Address setAddressForDB={setAddressForDB}/>
              <div className={styles.passportBlock}>
-             <div className={styles.header}>Паспортные данные</div>
         <div className={styles.passport__fullWidthInput + ' ' + styles.passport_block + ' ' + 'margin_0'}>
-            <PassportTypeSelect sx={standardInputMUISx}  type={passportType} setType={setPassportType} />
+                <ServerSelect name={'typeId'} label={'Паспортные данные'} setId={setPassportTypeId} defaultId={1} serverAddress={'debtors/passport-types'} />
         </div>
-                 {passportType !== 'noPassport' && <>
+                 {passportTypeId === 1 && <>
                      <div className={styles.passport_block + ' ' + styles.inputsFullWidthFlexBlock}>
-                     <TextField label='Серия' variant="standard" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='series' className={classes.smallInput} sx={standardInputMUISx} required size='small'/>
-                     <TextField label='Номер' variant="standard" sx={standardInputMUISx} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='number' className={classes.smallInput} required size='small'/>
-                 </div>
+                         <TextField label='Серия' variant="standard" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='series' className={classes.smallInput} sx={standardInputMUISx} required size='small'/>
+                         <TextField label='Номер' variant="standard" sx={standardInputMUISx} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='number' className={classes.smallInput} required size='small'/>
+                     </div>
+                 </>}
+                 {passportTypeId !== 1 && <>
+                     <div className={styles.passport_block + ' ' + styles.inputsFullWidthFlexBlock}>
+                         <TextField label='Серия' variant="standard" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='series' className={classes.smallInput} sx={standardInputMUISx} required size='small'/>
+                         <TextField label='Номер' variant="standard" sx={standardInputMUISx} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='number' className={classes.smallInput} required size='small'/>
+                    </div>
                      <div className={styles.passport__fullWidthInput + ' ' + styles.passport_block}>
                      <TextField label='Выдан' name='issue' sx={standardInputMUISx} variant="standard" fullWidth size='small'/>
                      </div>

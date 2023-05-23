@@ -50,9 +50,9 @@ class SearchController extends Controller
         } else {
             $creditor = Creditor::where('name', 'LIKE', '%' . $req . '%')->orWhere('short', 'LIKE', '%' . $req . '%')->select('id', 'name', 'short', 'court_identifier')->paginate(10);
         }
-        $user = Auth::user();
-        $requestData = $request->validated();
-        $paginator = $provider->getList($user->group->id, $requestData);
+        // $user = Auth::user();
+        // $requestData = $request->validated();
+        // $paginator = $provider->getList($user->group->id, $requestData);
         // $list = $paginator->items()->map(function (Debtor $debtor) {
         //     $contracts = $debtor->contracts->map(function (Contract $contract) {
         //         return [

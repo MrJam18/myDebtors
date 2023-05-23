@@ -3,9 +3,9 @@ import {Dispatcher} from "../Abstract/Dispatcher";
 
 export class CreateAgentDispatcher extends Dispatcher
 {
-    protected async _handler(dispatcherData)
+    async _handler(dispatcherData)
     {
-        if(dispatcherData.address) throw new Error('Укажите адрес представителя');
+        if(!dispatcherData.address) throw new Error('Укажите адрес представителя');
         await this._api.post('agents/create-one', dispatcherData);
         Alert.set('Успешно', "Представитель успешно создан");
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AbstractControllers\AbstractController;
-use App\Models\Contract\Contract;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
 use App\Models\Subject\Debtor;
@@ -12,12 +11,12 @@ use App\Models\Subject\Name;
 use App\Services\AddressService;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DebtorsController extends AbstractController
 {
+
     function createOne(Request $request): void
     {
         $formData = $this->getFormData();
@@ -54,7 +53,6 @@ class DebtorsController extends AbstractController
             $debtor->save();
         });
     }
-
     function getOne(Debtor $debtor): array
     {
         $nameColums = $debtor->name;

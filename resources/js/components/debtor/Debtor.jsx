@@ -6,6 +6,7 @@ import Loading from '../dummyComponents/Loading';
 import styles from '../../css/debtor.module.css';
 import api from "../../http/index";
 import {Alert} from "../../classes/Alert";
+import {useUpdate} from "../../hooks/useUpdate";
 
 
 const menu = [{
@@ -27,7 +28,7 @@ const Debtor = () => {
     const { debtorId } = useParams();
     const [loading, setLoading] = useState(true);
     const [debtor, setDebtor] = useState({});
-
+    const update = useUpdate();
     const [menuValue, setMenuValue] = useState('info');
     const menuSelector = () => {
         switch (menuValue) {
@@ -37,22 +38,24 @@ const Debtor = () => {
                 return <Info debtor={debtor} />
         }
     }
-
     useEffect( ()=> {
-        setLoading(true);
-        api.get('debtors/get-one/' + debtorId)
-            .then((response) => {
-                setDebtor(response.data);
-            })
-            .catch((reason) => Alert.setError('Данные не получены', reason))
-            .finally(() => setLoading(false));
-    }, []);
+        if(update.state) {
+            setLoading(true);
+            console.log(123);
+            api.get('debtors/get-one/' + debtorId)
+                .then((response) => {
+                    setDebtor(response.data);
+                })
+                .catch((reason) => Alert.setError('Данные не получены', reason))
+                .finally(() => setLoading(false));
+        }
+    }, [update.state]);
     return (
     <div className={'background firstWindow'}>
        <div className="header">{ loading ? 'Загрузка' : 'Должник ' + debtor.initials }</div>
     <div className={"contentBox" + ' ' + styles.main}>
     <InnerMenu menu={menu} menuValue={menuValue} setMenuValue = {setMenuValue} />
-        {loading ? <div className="center"><Loading/></div> : <Info debtor={debtor} />    }
+        {loading ? <div className="center"><Loading/></div> : <Info setLoading={setLoading} update={update.set} debtor={debtor} />    }
     </div>
     </div>
     );

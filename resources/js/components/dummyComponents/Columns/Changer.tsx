@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {MutableRefObject, useRef, useState} from 'react';
 import styles from '../../../css/changer.module.css';
 import {changeDateFormatOnISO} from "../../../utils/changeDateFormat";
 import CustomModal from "../CustomModal";
@@ -12,7 +12,7 @@ const setAddress = (changedAddress) => address = changedAddress;
 
 const Changer = ({data, setModal, setReqData}) => {
     const [loading, setLoading] = useState(false);
-    const input = useRef();
+    const input = useRef() as MutableRefObject<HTMLInputElement>;
     const [error, setError] = useState(false);
     let Input;
     const handleClose = ev => {
@@ -23,25 +23,20 @@ const Changer = ({data, setModal, setReqData}) => {
         ev.preventDefault();
         setError(false);
         setLoading(true);
-        let requestData;
+        let column;
+        let value;
         try {
         if(data.type === 'address') {
             if(!address) throw new Error('Укажите измененные данные!');
-            requestData = {
-                address
-            }
+            column = 'address';
+            value = address;
         }
         else {
-            // @ts-expect-error TS(2532): Object is possibly 'undefined'.
             if(data.value === input.current.value) throw new Error('Укажите измененные данные!');
-            requestData = {
-                changingField: {
-                    // @ts-expect-error TS(2532): Object is possibly 'undefined'.
-                    [data.colName]: input.current.value
-                }
-            }
+            column = data.colName;
+            value = input.current.value;
         }
-            await setReqData(requestData);
+            await setReqData(column, value);
             setModal(false);
         } catch (e) {
             console.log(e);

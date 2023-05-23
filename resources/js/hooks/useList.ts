@@ -14,11 +14,11 @@ const defaultOptions: Options = {
     page: 1,
 }
 
-function useList(serverUrl: string, options: Options = defaultOptions) {
+function useList(serverUrl: string, options: Options = defaultOptions, search: string = null) {
     options = useMemo(()=> {
         if(options !== defaultOptions) return {...defaultOptions, ...options};
         return options;
-    },[]);
+    },[options]);
     const [list, setList] = useState([]);
     const [page, setPage] = useState(options.page);
     const [order, setOrder] = useState(options.order);
@@ -28,7 +28,9 @@ function useList(serverUrl: string, options: Options = defaultOptions) {
     const [loading, setLoading] = useState(true);
     const update = () => {
         setLoading(true);
-        api.get(`${serverUrl}?perPage=${perPage}&page=${page}&order[]=${order[0]}&order[]=${order[1]}`)
+        let url = `${serverUrl}?perPage=${perPage}&page=${page}&order[]=${order[0]}&order[]=${order[1]}`;
+        if(search) url += '&search=' + search;
+        api.get(url)
             .then((response) => {
                 if (response.data?.list) {
                     setList(response.data.list);
@@ -41,7 +43,7 @@ function useList(serverUrl: string, options: Options = defaultOptions) {
             })
             .finally(() => setLoading(false));
     }
-    useEffect(update, [order, perPage, page, serverUrl]);
+    useEffect(update, [order, perPage, page, search, serverUrl]);
     const goToPage = useCallback(function (pageNumber: number): void {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
             setPage(pageNumber);
@@ -74,7 +76,7 @@ function useList(serverUrl: string, options: Options = defaultOptions) {
         setOrder,
         update: updateList,
         loading,
-        setLoading
+        setLoading,
     };
 }
 

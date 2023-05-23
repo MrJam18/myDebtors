@@ -29,9 +29,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = new User();
-        $user->email = 'and@ya.ru';
-        $user->password = '123';
-        $user->email_verified_at = Carbon::now();
+        $user->email = 'mr.jam18@yandex.ru';
+        $user->password = '7262dD4600';
         $user->phone = '89821174497';
         $username = new Name();
         $username->name = 'Джамиль';
@@ -46,7 +45,10 @@ class DatabaseSeeder extends Seeder
         $userRole = new UserRole();
         $userRole->name = 'Администратор';
         $userRole->save();
-        $user->role_id = $userRole->id;
+        $userRole = new UserRole();
+        $userRole = $this->setNameAndSave($userRole, 'Владелец группы');
+        $this->setNameAndSave($userRole, 'Участник группы');
+        $user->role_id = 2;
         $user->save();
         $creditorType = new CreditorType();
         $creditorType->name = 'Микрофинансовая организация';
@@ -58,6 +60,7 @@ class DatabaseSeeder extends Seeder
         $creditorType->name = 'Физическое лицо';
         $creditorType->save();
         $passportType = new PassportType();
+        $passportType = $this->setNameAndSave($passportType, 'Паспорт РФ сокращенно.');
         $passportType = $this->setNameAndSave($passportType, "Паспорт гражданина РФ");
         $passportType = $this->setNameAndSave($passportType, 'Паспорт иностранного гражданина');
         $passportType = $this->setNameAndSave($passportType, 'Заграничный паспорт гражданина РФ');

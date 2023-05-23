@@ -22,8 +22,8 @@ class RoutersHandler
 
     function addFolder(string $folderName, ?string $middleware = null): RouteRegistrar
     {
-        $route = Route::name($folderName . '/');
-        if ($middleware) $route->middleware($middleware);
+        $route = null;
+        if ($middleware) $route = Route::middleware($middleware);
         $folderPath = \base_path() . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'routers' . DIRECTORY_SEPARATOR;
         if($this->folderPath) $folderPath .= $this->folderPath . DIRECTORY_SEPARATOR;
         $folderPath .= $folderName . DIRECTORY_SEPARATOR . '*.php';
@@ -31,8 +31,8 @@ class RoutersHandler
         if ($files) foreach ($files as $file)
         {
             $prefix = basename($file, '.php');
-            toConsole($file);
-            $route->prefix($prefix)->group($file);
+            if (!$route) $route = Route::prefix($prefix)->group($file);
+            else $route->prefix($prefix)->group($file);
         }
         return $route;
     }

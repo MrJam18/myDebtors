@@ -22,36 +22,36 @@ use Illuminate\Support\Facades\DB;
 class CreditorsController
 {
 
-    function getList(PaginateRequest $request, CreditorsProvider $provider): array | JsonResponse
+    function getList(PaginateRequest $request, CreditorsProvider $provider): array|JsonResponse
     {
         $data = $request->validated();
         $paginator = $provider->getList(getGroupId(), $data);
 
         $list = $paginator->items()->map(function (Creditor $creditor) {
-           return [
-               'idd' => $creditor->id,
-               'created_at' => $creditor->created_at,
-               'short' => $creditor->short,
-               'name' => $creditor->name,
-               'court_identifier' => $creditor->court_identifier,
-               'type' => $creditor->type->name,
-           ];
-    });
+            return [
+                'idd' => $creditor->id,
+                'created_at' => $creditor->created_at,
+                'short' => $creditor->short,
+                'name' => $creditor->name,
+                'court_identifier' => $creditor->court_identifier,
+                'type' => $creditor->type->name,
+            ];
+        });
         return $paginator->jsonResponse($list);
     }
 
-    function getTypeList(): array | Collection
+    function getTypeList(): array|Collection
     {
         return CreditorType::query()->get();
     }
 
-    function searchBankRequisites(SearchRequest $request): array | Collection
+    function searchBankRequisites(SearchRequest $request): array|Collection
     {
         $data = BankRequisites::query()->search([
             'name' => $request->validated(),
             'BIK' => $request->validated()
         ])->get();
-        return $data->map(function(BankRequisites $requisites){
+        return $data->map(function (BankRequisites $requisites) {
             return [
                 'id' => $requisites->id,
                 'name' => $requisites->name . ' ' . $requisites->BIK
@@ -59,7 +59,7 @@ class CreditorsController
         });
     }
 
-    function addBankRequisites(Request $request): array | JsonResponse
+    function addBankRequisites(Request $request): array|JsonResponse
     {
         try {
             $bankRequisites = new BankRequisites();
@@ -71,7 +71,7 @@ class CreditorsController
                 'name' => $bankRequisites->name . ' ' . $bankRequisites->BIK
             ];
         } catch (QueryException $exception) {
-            if($exception->getCode() == 23000) {
+            if ($exception->getCode() == 23000) {
                 return response()->json([
                     'message' => 'Реквизиты с таким же БИК уже существуют. Воспользуйтесь поиском.'
                 ])->setStatusCode(551);
@@ -82,11 +82,11 @@ class CreditorsController
     function addOne(Request $request): void
     {
         $data = $request->all();
-        DB::transaction(function () use(&$data) {
+        DB::transaction(function () use (&$data) {
             $user = Auth::user();
             $addressService = new AddressService();
             $formData = $data['formData'];
-            $creditorType = CreditorType::find((int)$formData['creditorTypeId']);
+            $creditorType = CreditorType::find((int) $formData['creditorTypeId']);
             $address = $addressService->addAddress($data['address']);
             $bankRequisites = BankRequisites::find($data['bankRequisitesId']);
             $requisites = new Requisites();
@@ -112,7 +112,8 @@ class CreditorsController
          * @var $creditor Creditor
          */
         $creditor = Creditor::query()->byGroupId(Auth::user()->group->id)->find($request->input('id'));
-        if(!$creditor) throw new Exception('cant find creditor by id ' . $request->input('id'));
+        if (!$creditor)
+            throw new Exception('cant find creditor by id ' . $request->input('id'));
         return [
             'type_id' => $creditor->type->id,
             'name' => $creditor->name,
@@ -135,20 +136,21 @@ class CreditorsController
             $requisites = $creditor->requisites;
             $requisites->checking_account = $formData['checking_account'];
             $requisites->correspondent_account = $formData['correspondent_account'];
-            if($requisites->bank->id !== $data['bankRequisitesId']) {
+            if ($requisites->bank->id !== $data['bankRequisitesId']) {
                 $bank = BankRequisites::find($data['bankRequisitesId']);
-                if($bank) $requisites->bank()->associate($bank);
+                if ($bank)
+                    $requisites->bank()->associate($bank);
             }
             $requisites->save();
             $oldAddress = null;
-            if($data['address'] !== 'initial') {
+            if ($data['address'] !== 'initial') {
                 $addressService = new AddressService();
                 $address = $addressService->addAddress($data['address']);
                 $oldAddress = $creditor->address;
                 $creditor->address()->associate($address);
             }
-            if((int)$formData['creditorTypeId'] !== $creditor->type->id) {
-                $type = CreditorType::find((int)$formData['creditorTypeId']);
+            if ((int) $formData['creditorTypeId'] !== $creditor->type->id) {
+                $type = CreditorType::find((int) $formData['creditorTypeId']);
                 $creditor->type()->associate($type);
             }
             $creditor->name = $formData['name'];
@@ -168,24 +170,26 @@ class CreditorsController
             $creditor->delete();
             $creditor->requisites->delete();
             $creditor->address->delete();
-        }
-        else throw new Exception('cant find creditor');
+        } else
+            throw new Exception('cant find creditor');
     }
 
-    function getSearchListWithCession(SearchRequest $request): array | Collection
+    function getSearchListWithCession(SearchRequest $request): array|Collection
     {
         $data = Creditor::query()->byGroupId(getGroupId())->search([
             'name' => $request->validated(),
             'short' => $request->validated()
         ])->with(['defaultCession:id,name', 'type'])->get();
         return $data->map(function (Creditor $creditor) {
-            if ($creditor->type->id !== 3 && $creditor->short) $name = $creditor->short . ", ИНН: " . $creditor->court_identifier;
-            else $name = $creditor->name;
+            if ($creditor->type->id !== 3 && $creditor->short)
+                $name = $creditor->short . ", ИНН: " . $creditor->court_identifier;
+            else
+                $name = $creditor->name;
             $data = [
                 'id' => $creditor->id,
                 'name' => $name
             ];
-            if($creditor->defaultCession) {
+            if ($creditor->defaultCession) {
                 $data['default_cession'] = [
                     'id' => $creditor->defaultCession->id,
                     'name' => $creditor->defaultCession->name

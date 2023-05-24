@@ -77,7 +77,7 @@ class AgentsController extends Controller
     /**
      * @throws Exception
      */
-    function getOne(Request $request, $id): array
+    function getOne($id): array
     {
         /**
          * @var $agent Agent
@@ -92,9 +92,10 @@ class AgentsController extends Controller
             'is_default' => $agent->is_default,
             'no_show_group' => $agent->no_show_group,
             'enclosure' => $agent->enclosure,
-            'fullAddress' => $agent->address->getFull(),
-            'passportSeries' => $agent->passport->series,
-            'passportNumber' => $agent->passport->number,
+            'fullAddress' => $agent->address?->getFull(), // проверить на существование адреса перед вызовом getFull()
+            'passportSeries' => $agent->passport?->series, // проверить на существование паспорта перед обращением к series
+            'passportNumber' => $agent->passport?->number, // проверить на существование паспорта перед обращением к number
+
         ];
     }
 
@@ -112,11 +113,39 @@ class AgentsController extends Controller
             if (in_array($key, ['name', 'surname', 'patronymic'])) {
                 $agent->name->$key = $value;
                 $agent->name->save();
-            } elseif ($key === 'passportSeries') {
-                $agent->passport->series = $value;
-            } elseif ($key === 'passportNumber') {
-                $agent->passport->number = $value;
+            } elseif ($key === 'passportSeries' || $key === 'passportNumber') {
+                $passportData[$key] = $value;
+            } else {
+                $agent->$key = $value;
+            }
+        }
+        // Проверка, не пуст ли массив $passportData, который содержит информацию о паспорте
 
+        if (!empty($passportData)) {
+            // Если у агента уже есть паспорт (связанный объект Passport), то мы его обновляем
+            if ($agent->passport) {
+                // Если в массиве $passportData есть ключ 'passportSeries', обновляем серию паспорта агента
+                if (isset($passportData['passportSeries'])) {
+                    $agent->passport->series = $passportData['passportSeries'];
+                }
+                // Если в массиве $passportData есть ключ 'passportNumber', обновляем номер паспорта агента
+                if (isset($passportData['passportNumber'])) {
+                    $agent->passport->number = $passportData['passportNumber'];
+                }
+                $agent->passport->save();
+            } else {
+                // Если у агента нет связанного объекта Passport, создаем новый объект Passport
+                $passport = new Passport;
+                // Если в массиве $passportData есть ключ 'passportSeries', устанавливаем серию нового паспорта
+                if (isset($passportData['passportSeries'])) {
+                    $passport->series = $passportData['passportSeries'];
+                }
+                // Если в массиве $passportData есть ключ 'passportNumber', устанавливаем номер нового паспорта
+                if (isset($passportData['passportNumber'])) {
+                    $passport->number = $passportData['passportNumber'];
+                }
+                $passport->save();
+                $agent->passport()->associate($passport);
             }
         }
         // Обработка адреса
@@ -133,6 +162,17 @@ class AgentsController extends Controller
         if ($agent->save()) Log::info('saved'); // сохраняем обновленного агента
 
         return response()->json($agent, 200);
+    }
+
+    public function delete($id): JsonResponse
+    {
+        $agent = Agent::query()->find($id);
+        if(!$agent) throw new Exception('cant find agent by id ' . $id);
+        $agent->address?->delete();
+        $agent->passport?->delete();
+        $agent->delete();
+        return response()->json(['success' => 'Agent deleted'], 200);
+
     }
 
 

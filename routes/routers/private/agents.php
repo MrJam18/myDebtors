@@ -8,3 +8,4 @@ Route::get('list', [AgentsController::class, 'getList']);
 Route::post('create-one', [AgentsController::class, 'addOne']);
 Route::get('get-one/{id}', [AgentsController::class, 'getOne']);
 Route::post('change-one/', [AgentsController::class, 'update']);
+Route::delete('delete-one/{id}', [AgentsController::class, 'delete']);

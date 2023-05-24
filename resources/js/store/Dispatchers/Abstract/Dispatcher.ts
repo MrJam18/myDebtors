@@ -13,8 +13,8 @@ export type DispatcherData =  {
 export abstract class Dispatcher
 {
     protected readonly _setError: Function | null;
-    readonly #setLoading: Dispatch<SetStateAction<boolean>> | null;
-    readonly #setShow: Dispatch<SetStateAction<boolean>> | null;
+    readonly #setLoading?: Dispatch<SetStateAction<boolean>> | null;
+    readonly #setShow?: Dispatch<SetStateAction<boolean>> | null;
     public data: DispatcherData;
     public noReqData: Record<string, any>
     protected readonly _dispatch: typeof store.dispatch = dispatch;
@@ -61,8 +61,9 @@ export abstract class Dispatcher
         }
     }
 
-    protected _handleError(e: Error): void
+    protected _handleError(e: any): void
     {
+        if(e.response.status === 551) return this._setError(e.response.data.message);
         if(this._setError) this._setError(e.message);
     }
 
@@ -80,7 +81,5 @@ export abstract class Dispatcher
     {
         this.noReqData[key] = value;
     }
-
-
 
 }

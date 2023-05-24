@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 
+use App\Exceptions\ShowableException;
 use App\Http\Controllers\AbstractControllers\AbstractController;
+use App\Http\Requests\SearchRequest;
 use App\Mail\GroupVerification;
 use App\Mail\MailVerification;
 use App\Models\Auth\EmailVerifyToken;
@@ -13,10 +15,12 @@ use App\Models\Auth\GroupVerifyToken;
 use App\Models\Auth\User;
 use App\Models\Auth\UserRole;
 use App\Models\Subject\Name;
+use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -88,13 +92,12 @@ class AuthController extends AbstractController
         $data = $request->all();
         DB::transaction(function () use(&$data) {
             $formData = $data['formData'];
+            $found = User::query()->where('email', $formData['email'])->first(['id']);
+            if($found) throw new ShowableException('Пользователь с таким email уже существует.');
             $user = new User();
             $user->email = $formData['email'];
             $user->password = $formData['password'];
             $user->phone = $formData['phone'];
-            $role = UserRole::find($data['role_id']);
-            $this->exceptionIfNull($role);
-            $user->role()->associate($role);
             $name = new Name();
             $name->name = $formData['name'];
             $name->surname = $formData['surname'];
@@ -102,10 +105,13 @@ class AuthController extends AbstractController
             $name->save();
             $user->name()->associate($name);
             if(!isset($data['group_id'])) {
+                $found = Group::query()->where('name', $formData['groupName'])->first();
+                if($found) throw new ShowableException('Группа с таким названием уже существует');
                 $group = new Group();
                 $group->name = $formData['groupName'];
                 $group->save();
                 $user->group()->associate($group);
+                $user->role()->associate(UserRole::find(2));
                 $user->save();
             }
             else {
@@ -114,6 +120,7 @@ class AuthController extends AbstractController
                 $user->group()->associate($group);
                 $groupVerifyToken = new GroupVerifyToken();
                 $groupVerifyToken->token = Str::random(60);
+                $user->role()->associate(UserRole::find(3));
                 $user->save();
                 $groupVerifyToken->user()->associate($user);
                 $groupVerifyToken->save();
@@ -197,6 +204,11 @@ class AuthController extends AbstractController
         return \view('groupVerification', [
             'message' => $message
         ]);
+    }
+
+    function getGroupSearchList(SearchRequest $request): Collection
+    {
+        return Group::query()->search(['name' => $request->validated()])->limit(5)->get();
     }
 
 

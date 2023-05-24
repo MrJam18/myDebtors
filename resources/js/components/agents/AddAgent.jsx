@@ -19,8 +19,8 @@ const AddAgent = ({show, setShow, setUpdate}) => {
         dispatcher.addData('no_show_group', noShowGroup);
         dispatcher.addData('is_default', isDefaultAgent);
         dispatcher.addData('address', address);
+        dispatcher.addNoReqData('update', setUpdate);
         await dispatcher.handle();
-        setUpdate();
     }
 
     useEffect(()=>{

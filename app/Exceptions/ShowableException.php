@@ -3,7 +3,14 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-class ShowableException
+use Exception;
+use Illuminate\Http\JsonResponse;
+
+class ShowableException extends Exception
 {
-$END$
+
+    public function render(): JsonResponse
+    {
+        return response()->json(['message' => $this->message], 551);
+    }
 }

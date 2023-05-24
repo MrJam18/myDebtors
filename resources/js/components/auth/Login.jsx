@@ -4,10 +4,10 @@ import { makeStyles } from '@mui/styles';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-// @ts-expect-error TS(2307): Cannot find module '../css/login.module.css' or it... Remove this comment to see the full error message
-import styles from '../css/login.module.css';
-import { tryLogin } from '../store/users/actions';
-import { formDataConverter } from '../utils/formDataConverter';
+// @ts-expect-error TS(2307): Cannot find module '../css/auth.module.css' or it... Remove this comment to see the full error message
+import styles from '../../css/auth.module.css';
+import { tryLogin } from '../../store/users/actions';
+import { formDataConverter } from '../../utils/formDataConverter';
 const useStyles = makeStyles({
     input: {
         marginBottom: '10px',
@@ -51,7 +51,7 @@ const Login = () => {
                 <TextField label='Пароль' type='password' name='password' fullWidth size='small' required className={classes.input}/>
                 <LoadingButton loading={loading} className={classes.button} variant='contained' type='submit'>Войти
                 </LoadingButton>
-                <Link to='regRequest' className={styles.regLink + ' ' + 'antiLink'}>Подать заявку на регистрацию.</Link>
+                <Link to='/registration' className={styles.regLink + ' ' + 'antiLink'}>Регистрация</Link>
                 {error && <div className="error">{error}</div>}
             </div>
             </form>

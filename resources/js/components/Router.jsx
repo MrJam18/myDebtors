@@ -6,7 +6,7 @@ import Claim from './Claim';
 import Contract from './contract/Contract';
 import PrivateAccess from './dummyComponents/PrivateAccess';
 import PublicAccess from './dummyComponents/PublicAccess';
-import Login from './Login';
+import Login from './auth/Login';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '../store/users/actions';
@@ -21,6 +21,7 @@ import usersSlice from '../store/users/reducer';
 import LeftMenu from './LeftMenu';
 import Agents from './agents/Agents';
 import Debtor from "./debtor/Debtor";
+import Registration from "./auth/Registration";
 
 function Router() {
     const dispatch = useDispatch();
@@ -47,14 +48,15 @@ function Router() {
         <LeftMenu />
         <HidingAlert></HidingAlert>
             <Routes>
-            <Route path='login' exact element={<PublicAccess wrapped={<Login />}/>}/>
-            <Route path='list' exact element={<PrivateAccess Wrapped={<ListOld />}/>}/>
-            <Route path='claim' exact element={<PrivateAccess Wrapped={<Claim />}/>}/>
-            <Route path='creditors' exact element={<PrivateAccess Wrapped={<Creditors />}/>}/>
-            <Route path='agents' exact element={<PrivateAccess Wrapped={<Agents />}/>}/>
-            <Route path='contracts/:contractId' element={<PrivateAccess Wrapped={<Contract />}/>}/>
-            <Route path='debtors/:debtorId' element={<PrivateAccess Wrapped={<Debtor />}/>}/>
-            <Route path='/' element={<PrivateAccess Wrapped={<Start />}/>}/>
+                <Route path={'registration'} element={<PublicAccess wrapped={<Registration />}/>} />
+                <Route path='login' exact element={<PublicAccess wrapped={<Login />}/>}/>
+                <Route path='list' exact element={<PrivateAccess Wrapped={<ListOld />}/>}/>
+                <Route path='claim' exact element={<PrivateAccess Wrapped={<Claim />}/>}/>
+                <Route path='creditors' exact element={<PrivateAccess Wrapped={<Creditors />}/>}/>
+                <Route path='agents' exact element={<PrivateAccess Wrapped={<Agents />}/>}/>
+                <Route path='contracts/:contractId' element={<PrivateAccess Wrapped={<Contract />}/>}/>
+                <Route path='debtors/:debtorId' element={<PrivateAccess Wrapped={<Debtor />}/>}/>
+                <Route path='/' element={<PrivateAccess Wrapped={<Start />}/>}/>
             </Routes>
       </BrowserRouter>);
 }

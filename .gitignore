@@ -1,6 +1,6 @@
 /.phpunit.cache
 /node_modules
-/public/build
+/public/dist
 /public/hot
 /public/storage
 /public/dist
@@ -19,3 +19,6 @@ yarn-error.log
 /.idea
 /.vscode
 *.map
+.DS_Store
+envReserv.txt
+public/dist/js/app.js

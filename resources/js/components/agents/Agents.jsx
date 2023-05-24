@@ -18,8 +18,8 @@ const Agents = () => {
             <div className={"contentBox" + ' ' + styles.main}>
                 <AgentsToolBar setUpdate={setUpdate}  />
                 {changedAgentId && <ChangeAgent setUpdate={setUpdate} agent={changedAgentId} setShow={setChangedAgentId} /> }
-                <CustomList headers={headers} serverAddress={'api/agents/list'} update={update} setUpdate={setUpdate} onClickRow={onClickRow} />
-            </div> 
+                <CustomList headers={headers} serverAddress={'/agents/list'} update={update} setUpdate={setUpdate} onClickRow={onClickRow} />
+            </div>
         </div>
     );
 };

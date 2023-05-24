@@ -4,19 +4,19 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AbstractControllers\AbstractController;
-use App\Models\Contract\Contract;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
 use App\Models\Subject\Debtor;
 use App\Models\Subject\Name;
 use App\Services\AddressService;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DebtorsController extends AbstractController
 {
+
     function createOne(Request $request): void
     {
         $formData = $this->getFormData();
@@ -37,10 +37,12 @@ class DebtorsController extends AbstractController
             $passport = new Passport([
                 'series' => $formData['series'],
                 'number' => $formData['number'],
-                'issued_by' => $formData['issue'],
-                'issued_date' => $formData['issueDate'],
-                'gov_unit_code' => $formData['govCode'],
             ]);
+            if(isset($formData['issue'])) {
+                $passport->issued_by = $formData['issue'];
+                $passport->issued_date = $formData['issueDate'];
+                $passport->gov_unit_code = $formData['govCode'];
+            }
             $type = PassportType::find($formData['typeId']);
             $passport->type()->associate($type);
             $passport->save();
@@ -51,15 +53,14 @@ class DebtorsController extends AbstractController
             $debtor->save();
         });
     }
-
     function getOne(Debtor $debtor): array
     {
         $nameColums = $debtor->name;
         $passport = $debtor->passport;
         $data = [
-            'surname' => $nameColums->surname,
-            'name' => $nameColums->name,
-            'patronymic' => $nameColums->patronymic,
+            'name.surname' => $nameColums->surname,
+            'name.name' => $nameColums->name,
+            'name.patronymic' => $nameColums->patronymic,
             'birth_date' => $debtor->birth_date->format(RUS_DATE_FORMAT),
             'birth_place' => $debtor->birth_place,
             'countContracts' => Contract::query()->where('debtor_id', '=', $debtor->id)->count(),
@@ -87,5 +88,22 @@ class DebtorsController extends AbstractController
     function getPassportTypes(): array | Collection
     {
         return PassportType::all();
+    }
+    function changeOne(Request $request, Debtor $debtor): void
+    {
+        if(!$debtor->exists() || $debtor->user->group->id !== getGroupId()) throw new Exception('cant find debtor');
+        $data = $request->all();
+        $column = array_key_first($data);
+        $value = $data[$column];
+        if($column === 'address') {
+            $addressService = new AddressService();
+            $address = $addressService->addAddress($value);
+            $oldAddress = $debtor->address;
+            $debtor->address()->associate($address);
+            $debtor->save();
+            $oldAddress->delete();
+            return;
+        }
+        $debtor->updateInnerModel($column, $value);
     }
 }

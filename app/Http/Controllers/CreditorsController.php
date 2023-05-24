@@ -90,8 +90,8 @@ class CreditorsController
             $address = $addressService->addAddress($data['address']);
             $bankRequisites = BankRequisites::find($data['bankRequisitesId']);
             $requisites = new Requisites();
-            $requisites->checking_account = $formData['checking_account'];
-            $requisites->correspondent_account = $formData['correspondent_account'];
+            $requisites->checking_account = $formData['checkingAccount'];
+            $requisites->correspondent_account = $formData['correspondentAccount'];
             $requisites->bank()->associate($bankRequisites);
             $requisites->user()->associate($user);
             $requisites->save();

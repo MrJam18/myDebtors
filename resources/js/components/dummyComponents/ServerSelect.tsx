@@ -8,7 +8,7 @@ type ServerSelectProps = {
     name?: string,
     label: string,
     style?: React.CSSProperties,
-    setId:  React.Dispatch<React.SetStateAction<number>>,
+    setId?:  React.Dispatch<React.SetStateAction<number>>,
     customClassName?: string,
     defaultId?: string | number,
     serverAddress: string,

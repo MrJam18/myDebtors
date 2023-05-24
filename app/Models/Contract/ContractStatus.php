@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property int $id;
  * @property string $name;
- * @property Collection $collection;
+ * @property Collection $contracts;
  */
 class ContractStatus extends BaseModel
 {

@@ -18,13 +18,13 @@ return new class extends Migration
             $table->decimal('issued_sum');
             $table->date('issued_date');
             $table->date('due_date');
-            $table->decimal('percent', 5);
-            $table->decimal('penalty', 5);
+            $table->decimal('percent', 4, 2);
+            $table->decimal('penalty');
             $table->timestamp('status_changed_at');
-            $table->boolean('is_contract_jurisdiction')->default(false);
+            $table->boolean('is_contract_jurisdiction');
             $table->foreignId('status_id')->constrained('contract_statuses');
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('cession_id')->nullable()->constrained('cession_groups');
+            $table->foreignId('cession_id')->constrained('cession_groups');
             $table->foreignId('creditor_id')->constrained();
             $table->foreignId('type_id')->constrained('contract_types');
             $table->foreignId('debtor_id')->constrained();

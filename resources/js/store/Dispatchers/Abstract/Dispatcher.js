@@ -21,7 +21,7 @@ export class Dispatcher {
      * @param {function} setShow function which change show state for close modalWindow
      * @param {object} formRef formRef what inserted to data properties
      */
-    constructor(setError, setLoading, formRef = null, setShow = null) {
+    constructor(setError, setLoading = null, formRef = null, setShow = null) {
         _Dispatcher_setLoading.set(this, void 0);
         _Dispatcher_setShow.set(this, void 0);
         this._dispatch = dispatch;
@@ -33,12 +33,14 @@ export class Dispatcher {
         __classPrivateFieldSet(this, _Dispatcher_setLoading, setLoading, "f");
         __classPrivateFieldSet(this, _Dispatcher_setShow, setShow, "f");
         this.data = { formData: null };
+        this.noReqData = {};
         if (formRef)
             this.data.formData = formDataConverter(formRef.current.elements);
     }
     async handle() {
         var _a;
-        __classPrivateFieldGet(this, _Dispatcher_setLoading, "f").call(this, true);
+        if (__classPrivateFieldGet(this, _Dispatcher_setLoading, "f"))
+            __classPrivateFieldGet(this, _Dispatcher_setLoading, "f").call(this, true);
         if (this._setError)
             this._setError(false);
         try {
@@ -57,7 +59,8 @@ export class Dispatcher {
             this._handleError(e);
         }
         finally {
-            __classPrivateFieldGet(this, _Dispatcher_setLoading, "f").call(this, false);
+            if (__classPrivateFieldGet(this, _Dispatcher_setLoading, "f"))
+                __classPrivateFieldGet(this, _Dispatcher_setLoading, "f").call(this, false);
         }
     }
     _handleError(e) {
@@ -69,6 +72,9 @@ export class Dispatcher {
     }
     addData(key, value) {
         this.data[key] = value;
+    }
+    addNoReqData(key, value) {
+        this.noReqData[key] = value;
     }
 }
 _Dispatcher_setLoading = new WeakMap(), _Dispatcher_setShow = new WeakMap();

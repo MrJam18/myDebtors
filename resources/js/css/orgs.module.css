@@ -11,7 +11,7 @@
 }
 .toolbar {
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
 }
 .smallInputsHolder {
     display: flex;

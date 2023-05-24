@@ -32,10 +32,11 @@ type Props = {
     onChange?: Dispatch<SetStateAction<string>> | Function
     customClassName?: string,
     defaultValue?: string | number,
-    value?: string | number
+    value?: string | number,
+    smallLabel?:boolean
 }
 
-const EasySelect = React.forwardRef<HTMLElement, Props>(({name = null, label = null, variants, style, onChange = null, customClassName, defaultValue = "", value = ""}: Props, ref) => {
+const EasySelect = React.forwardRef<HTMLElement, Props>(({name = null, label = null, variants, style, onChange = null, smallLabel=false, customClassName, defaultValue = "", value = ""}: Props, ref) => {
     const classes: Record<any, any> = useStyles();
     const input = useInput(defaultValue);
     const Variants = variants.map((el)=> <MenuItem value={el.id} key={el.id}>{el.name}</MenuItem>);
@@ -48,7 +49,7 @@ const EasySelect = React.forwardRef<HTMLElement, Props>(({name = null, label = n
     }, [value]);
     return (
             <div className={styles.selectBlock + ' ' + classes.input + ' ' + customClassName } style={style}>
-                <InputLabel id={name} className={classes.fullWidthLabel} >{label}</InputLabel>
+                <InputLabel id={name} className={smallLabel ? classes.selectLabel : classes.fullWidthLabel} >{label}</InputLabel>
                 <Select inputRef={ref} fullWidth defaultValue={defaultValue} variant='standard' labelId={name} {...input} onChange={changeHandler} name={name}>
                         {Variants}
                 </Select>

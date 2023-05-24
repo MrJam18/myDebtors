@@ -13,9 +13,10 @@ export type DispatcherData =  {
 export abstract class Dispatcher
 {
     protected readonly _setError: Function | null;
-    readonly #setLoading: Dispatch<SetStateAction<boolean>>;
+    readonly #setLoading: Dispatch<SetStateAction<boolean>> | null;
     readonly #setShow: Dispatch<SetStateAction<boolean>> | null;
     public data: DispatcherData;
+    public noReqData: Record<string, any>
     protected readonly _dispatch: typeof store.dispatch = dispatch;
     protected readonly _getState: typeof store.getState = getState;
     protected readonly _api = api;
@@ -28,18 +29,19 @@ export abstract class Dispatcher
      * @param {function} setShow function which change show state for close modalWindow
      * @param {object} formRef formRef what inserted to data properties
      */
-    constructor(setError: Function | null, setLoading: Dispatch<SetStateAction<boolean>>, formRef:  MutableRefObject<HTMLFormElement> | null = null, setShow: Dispatch<SetStateAction<boolean>> | null = null)
+    constructor(setError: Function | null, setLoading: Dispatch<SetStateAction<boolean>> | null = null, formRef:  MutableRefObject<HTMLFormElement> | null = null, setShow: Dispatch<SetStateAction<boolean>> | null = null)
     {
         if(setError) this._setError = setError;
         this.#setLoading = setLoading;
         this.#setShow = setShow;
         this.data = {formData: null};
+        this.noReqData = {};
         if(formRef) this.data.formData = formDataConverter(formRef.current.elements);
     }
 
     async handle()
     {
-        this.#setLoading(true);
+        if(this.#setLoading) this.#setLoading(true);
         if(this._setError) this._setError(false);
         try {
             if(!this._handler){
@@ -55,7 +57,7 @@ export abstract class Dispatcher
             this._handleError(e);
         }
         finally {
-            this.#setLoading(false);
+            if(this.#setLoading) this.#setLoading(false);
         }
     }
 
@@ -74,6 +76,11 @@ export abstract class Dispatcher
     {
         this.data[key] = value;
     }
+    public addNoReqData(key: string, value: any): void
+    {
+        this.noReqData[key] = value;
+    }
+
 
 
 }

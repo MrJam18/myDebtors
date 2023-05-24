@@ -16,9 +16,9 @@ return new class extends Migration
             $table->timestamps();
             $table->string('series');
             $table->string('number');
-            $table->string('issued_by');
-            $table->date('issued_date');
-            $table->string('gov_unit_code');
+            $table->string('issued_by')->nullable();
+            $table->date('issued_date')->nullable();
+            $table->string('gov_unit_code')->nullable();
             $table->foreignId('type_id')->constrained('passport_types');
         });
     }

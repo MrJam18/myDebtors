@@ -15,7 +15,7 @@ export class ErrorsCatcher extends React.Component {
     render() {
         if (this.state.hasError) {
             // You can render any custom fallback UI
-            return (<h1 className='center'>Something went wrong.</h1>);
+            return (<h1 className='center'>Что то пошло не так.</h1>);
         }
         return this.props.children;
     }

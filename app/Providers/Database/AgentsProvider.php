@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Providers\Database;
 
 use App\Http\Requests\Base\ListRequestData;
+use App\Models\Auth\User;
 use App\Models\Base\CustomPaginator;
 use App\Models\Subject\Agent;
 use App\Models\Subject\Creditor\Creditor;
@@ -18,6 +19,6 @@ class AgentsProvider extends AbstractProvider
     }
     function getList(ListRequestData $data): CustomPaginator
     {
-        return $this->getOrdered()->paginate($data->perPage, page: $data->page);
+        return $this->byGroupId(getGroupId(), $data->orderBy)->paginate($data->perPage, page: $data->page);
     }
 }

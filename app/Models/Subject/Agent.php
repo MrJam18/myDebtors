@@ -51,7 +51,7 @@ class Agent extends BaseModel
     {
         return $this->belongsTo(Address::class);
     }
-    function passports(): BelongsTo
+    function passport(): BelongsTo
     {
         return $this->belongsTo(Passport::class);
     }

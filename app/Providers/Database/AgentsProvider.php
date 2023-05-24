@@ -18,6 +18,6 @@ class AgentsProvider extends AbstractProvider
     }
     function getList(ListRequestData $data): CustomPaginator
     {
-        return $this->getOrdered()->paginate($data->perPage, page: $data->page);
+        return $this->byGroupId(getGroupId(), $data->orderBy)->paginate($data->perPage, page: $data->page);
     }
 }

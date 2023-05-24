@@ -16,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AgentsController extends Controller
 {
@@ -70,11 +71,6 @@ class AgentsController extends Controller
             $passport->save();
             $agent->passport()->associate($passport);
             $agent->save();
-
-
-
-
-
         });
     }
 
@@ -102,6 +98,42 @@ class AgentsController extends Controller
         ];
     }
 
+    public function update(Request $request): JsonResponse
+    {
+        $addressService = new AddressService();
+        $input = $request->all();
+        $formData=$input['formData'];
+        $agentId = $input['id'];
+        $agent = Agent::query()->find($agentId);
+        if(!$agent) throw new Exception('cant find agent by id ' . $agentId);
+
+        // Обработка данных формы
+        foreach ($formData as $key => $value) {
+            if (in_array($key, ['name', 'surname', 'patronymic'])) {
+                $agent->name->$key = $value;
+                $agent->name->save();
+            } elseif ($key === 'passportSeries') {
+                $agent->passport->series = $value;
+            } elseif ($key === 'passportNumber') {
+                $agent->passport->number = $value;
+
+            }
+        }
+        // Обработка адреса
+        if (isset($input['address']) && $input['address'] != 'initial') {
+            $updatedAddress = $addressService->updateAddress($agent->address, $input['address']);
+            $agent->address()->associate($updatedAddress);
+        }
+        // Обработка checkbox
+        if (isset($input['is_default']) and $input['no_show_group']){
+            $agent->no_show_group=$input['no_show_group'];
+            $agent->is_default = $input['is_default'];
+        }
+
+        if ($agent->save()) Log::info('saved'); // сохраняем обновленного агента
+
+        return response()->json($agent, 200);
+    }
 
 
 }

@@ -10,17 +10,13 @@ type Props = {
     }>
     serverAddress: string,
     onClickRow?: (id: number) => void,
-    update?: boolean,
-    setUpdate?: React.Dispatch<React.SetStateAction<boolean>>,
+    update: number,
     search?: string
 }
-export default function CustomList({headers, serverAddress, onClickRow = null, update = false, setUpdate = null, search=null}: Props) {
+export default function CustomList({headers, serverAddress, onClickRow = null, update, search=null}: Props) {
     const list = useList(serverAddress, {perPage: 25}, search);
     useEffect(() => {
-        if (update) {
-            setUpdate(false);
-            list.update();
-        }
+        if(update) list.update();
     }, [update]);
     const clickRowHandler = (index: number)=> {
         //console.log(list.get[index]);

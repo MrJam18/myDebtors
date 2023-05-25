@@ -8,5 +8,6 @@ export class CreateAgentDispatcher extends Dispatcher
         if(!dispatcherData.address) throw new Error('Укажите адрес представителя');
         await this._api.post('agents/create-one', dispatcherData);
         Alert.set('Успешно', "Представитель успешно создан");
+        this.noReqData.update();
     }
 }

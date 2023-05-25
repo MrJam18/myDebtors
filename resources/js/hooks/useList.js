@@ -11,7 +11,7 @@ function useList(serverUrl, options = defaultOptions, search = null) {
         if (options !== defaultOptions)
             return Object.assign(Object.assign({}, defaultOptions), options);
         return options;
-    }, [options]);
+    }, []);
     const [list, setList] = useState([]);
     const [page, setPage] = useState(options.page);
     const [order, setOrder] = useState(options.order);
@@ -20,6 +20,7 @@ function useList(serverUrl, options = defaultOptions, search = null) {
     const [totalItems, setTotalItems] = useState(0);
     const [loading, setLoading] = useState(true);
     const update = () => {
+        console.log(list);
         setLoading(true);
         let url = `${serverUrl}?perPage=${perPage}&page=${page}&order[]=${order[0]}&order[]=${order[1]}`;
         if (search)
@@ -53,8 +54,7 @@ function useList(serverUrl, options = defaultOptions, search = null) {
         }
     }, []);
     const updateList = useCallback(() => {
-        const samePage = page === 1;
-        if (samePage)
+        if (page === 1)
             update();
         else
             setPage(1);

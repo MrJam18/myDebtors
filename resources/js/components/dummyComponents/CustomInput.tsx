@@ -1,5 +1,7 @@
+``
 import React, {useEffect, useRef} from 'react';
-import TextField, {BaseTextFieldProps} from "@mui/material/TextField";
+import TextField, {BaseTextFieldProps, } from "@mui/material/TextField";
+import {useForwardRef} from "../../hooks/useForwardRef";
 import {MUITextFieldVariant} from "../../Types/Mui/MUITextFieldVariant";
 import {capitalizeFirstLetter} from "../../utils/text/capitalize";
 import {validityHandler} from "../../utils/inputs/validityHandler";
@@ -34,25 +36,20 @@ const CustomInput = React.forwardRef<HTMLInputElement, Props>(({autofocus = fals
           if(onEnter) onEnter(ev);
       }
   }
-  const inputRef = useRef();
-  useEffect(() => {
-        // @ts-expect-error TS(2339): Property 'current' does not exist on type 'Forward... Remove this comment to see the full error message
-        if(ref) ref.current = inputRef.current;
-    }, [inputRef.current]);
+    const inputRef = useForwardRef(ref);
   useEffect(()=> {
       if(customValidity) {
           const input = inputRef.current;
-          // @ts-expect-error TS(2532): Object is possibly 'undefined'.
           input.removeEventListener('change', suggestionsHandler);
           suggestionsHandler = () => validityHandler(input, customValidity);
           validityHandler(input, customValidity);
-          // @ts-expect-error TS(2532): Object is possibly 'undefined'.
           input.addEventListener('change', suggestionsHandler);
       }
   }, [customValidity])
+    // @ts-ignore
  return (
   <TextField placeholder={placeholder} onKeyDown={onKeyDown} autoFocus={autofocus} disabled={disabled} defaultValue={defaultValue} label={label} inputProps={{pattern}} inputRef={inputRef} variant={variant} required={required} InputLabelProps={type === 'date' ? { shrink: true } : null} className={className} name={name} fullWidth type={type} size={size} />
  );
 });
 
-export default CustomInput;
+export default CustomInput;``

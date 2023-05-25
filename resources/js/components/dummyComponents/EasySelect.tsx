@@ -29,7 +29,7 @@ type Props = {
         name: string
     }>,
     style?: React.CSSProperties,
-    onChange?: Dispatch<SetStateAction<string>> | Function
+    onChange?: Dispatch<SetStateAction<number>> | Function
     customClassName?: string,
     defaultValue?: string | number,
     value?: string | number,
@@ -42,7 +42,7 @@ const EasySelect = React.forwardRef<HTMLElement, Props>(({name = null, label = n
     const Variants = variants.map((el)=> <MenuItem value={el.id} key={el.id}>{el.name}</MenuItem>);
     const changeHandler = (ev) => {
         input.onChange(ev);
-        if(onChange) onChange(ev.target.value);
+        if(onChange) onChange(Number(ev.target.value));
     }
     useEffect(()=> {
         if(value) input.setValue(value);

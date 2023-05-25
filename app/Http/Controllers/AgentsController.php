@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PaginateRequest;
 use App\Models\Passport\Passport;
+use App\Models\Passport\PassportType;
 use App\Models\Requisites\BankRequisites;
 use App\Models\Requisites\Requisites;
 use App\Models\Subject\Agent;
@@ -38,8 +39,6 @@ class AgentsController extends Controller
                 'patronymic'=> $agent->name->patronymic,
                 'createdAt'=>$agent->created_at->format(RUS_DATE_FORMAT),
                 'enclosure'=>$agent->enclosure,
-
-
             ];
         });
         return $paginator->jsonResponse($list);
@@ -55,7 +54,6 @@ class AgentsController extends Controller
             $address = $addressService->addAddress($data['address']);
             $passport = new Passport();
             $agent = new Agent();
-            $agent->user()->associate(Auth::user());
             $name = new Name();
             $name->name = $formData['name'];
             $name->surname = $formData['surname'];
@@ -65,9 +63,12 @@ class AgentsController extends Controller
             $agent->is_default = $data['is_default'];
             $agent->no_show_group = $data['no_show_group'];
             $agent->enclosure = $formData['enclosure'];
+            $agent->user()->associate($user);
             $agent->address()->associate($address);
             $passport->series=$formData['passportSeries'];
             $passport->number=$formData['passportNumber'];
+            $passportType = PassportType::find(1);
+            $passport->type()->associate($passportType);
             $passport->save();
             $agent->passport()->associate($passport);
             $agent->save();

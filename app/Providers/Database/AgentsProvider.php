@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Providers\Database;
 
 use App\Http\Requests\Base\ListRequestData;
+use App\Models\Auth\User;
 use App\Models\Base\CustomPaginator;
 use App\Models\Subject\Agent;
 use App\Models\Subject\Creditor\Creditor;

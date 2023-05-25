@@ -39,16 +39,13 @@ const Debtor = () => {
         }
     }
     useEffect( ()=> {
-        if(update.state) {
             setLoading(true);
-            console.log(123);
             api.get('debtors/get-one/' + debtorId)
                 .then((response) => {
                     setDebtor(response.data);
                 })
                 .catch((reason) => Alert.setError('Данные не получены', reason))
                 .finally(() => setLoading(false));
-        }
     }, [update.state]);
     return (
     <div className={'background firstWindow'}>

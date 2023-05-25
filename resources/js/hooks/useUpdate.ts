@@ -1,19 +1,13 @@
 import {useCallback, useEffect, useState} from "react";
 
 type Returned = {
-    state: boolean,
+    state: number,
     set: ()=> void
 }
 
 export function useUpdate() {
-    const [updateState, setUpdateState] = useState(false);
-    const setUpdate = useCallback(()=> setUpdateState(true), [])
-    useEffect(()=> {
-        if(updateState) setUpdateState(false);
-    }, [updateState]);
-    useEffect(()=> {
-        setUpdate();
-    }, []);
+    const [updateState, setUpdateState] = useState(0);
+    const setUpdate = useCallback(()=> setUpdateState((prevState) => ++prevState), []);
     return {
         state: updateState,
         set: setUpdate

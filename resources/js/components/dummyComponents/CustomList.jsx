@@ -2,13 +2,11 @@ import React, { useEffect } from "react";
 import useList from "../../hooks/useList";
 import NoBorderTable from "./NoBorderTable";
 import Pagination from "./Pagination";
-export default function CustomList({ headers, serverAddress, onClickRow = null, update = false, setUpdate = null, search = null }) {
+export default function CustomList({ headers, serverAddress, onClickRow = null, update, search = null }) {
     const list = useList(serverAddress, { perPage: 25 }, search);
     useEffect(() => {
-        if (update) {
-            setUpdate(false);
+        if (update)
             list.update();
-        }
     }, [update]);
     const clickRowHandler = (index) => {
         //console.log(list.get[index]);

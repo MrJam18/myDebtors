@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ContractsController
 {
@@ -71,6 +72,7 @@ class ContractsController
         $contract->status_changed_at = Carbon::now();
         $contract->user()->associate(Auth::user());
         $contract->save();
+
     }
 
 

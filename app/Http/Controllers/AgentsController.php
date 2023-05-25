@@ -84,6 +84,7 @@ class AgentsController extends Controller
          * @var $agent Agent
          */
         $agent = Agent::query()->find($id);
+        Log::info($id);
         if(!$agent) throw new Exception('cant find agent by id ' . $id);
 
         return [

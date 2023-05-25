@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AbstractControllers\AbstractController;
+use App\Models\Contract\Contract;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
 use App\Models\Subject\Debtor;
@@ -11,6 +12,7 @@ use App\Models\Subject\Name;
 use App\Services\AddressService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -70,14 +72,14 @@ class DebtorsController extends AbstractController
             'initials' => $debtor->name->initials()
         ];
         if($passport) $data['passport'] = [
-          'type' => [
-              'value' => $passport->type->name,
-              'id' => $passport->type->id
-          ],
-          'seriesAndNumber' => [
-              'series' => $passport->series,
-              'number' => $passport->number
-          ],
+            'type' => [
+                'value' => $passport->type->name,
+                'id' => $passport->type->id
+            ],
+            'seriesAndNumber' => [
+                'series' => $passport->series,
+                'number' => $passport->number
+            ],
             'issued_date' => $passport->issued_date->format(RUS_DATE_FORMAT),
             'issued_by' => $passport->issued_by,
             'gov_unit_code' => $passport->gov_unit_code,

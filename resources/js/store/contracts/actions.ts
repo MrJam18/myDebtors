@@ -16,7 +16,7 @@ export const createContract = (data) => async (dispatch) =>  {
 export const getCurrentContract = (id) => async (dispatch) => {
     // @ts-expect-error TS(2554): Expected 1 arguments, but got 0.
     dispatch(actions.fetchPending());
-    const {data} = await api.get('contracts/getContract?id=' + id);
+    const {data} = await api.get('contracts/get-contract/id=' + id);
     dispatch(actions.setCurrentContract(data.contract));
     if (data.contract.executiveDoc) {
         dispatch(actions.setExecutiveDoc(data.contract.executiveDoc));

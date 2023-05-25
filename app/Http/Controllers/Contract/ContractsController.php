@@ -75,5 +75,11 @@ class ContractsController
 
     }
 
+    public function getOne($id){
+        $contract = Contract::query()->findOrFail($id);
+        Log::info('find by id');
+        if (!$contract) throw new Exception('cant find contract by id');
+        Log::info((string)$contract);
+    }
 
 }

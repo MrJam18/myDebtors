@@ -40,8 +40,10 @@ use Ramsey\Collection\Collection;
  * @property Collection $courtClaims;
  * @property Collection $actions;
  */
+
 class Contract extends BaseModel
 {
+
     protected $fillable = [
         'number',
         'issued_date',

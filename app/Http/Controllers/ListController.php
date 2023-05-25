@@ -24,7 +24,7 @@ class ListController extends AbstractController
         $list = $paginator->items()->map(function (Debtor $debtor){
             $contracts = $debtor->contracts->map(function (Contract $contract) {
                 return [
-                    'text' => 'договор № ' . $contract->number . ' выдан ' . $contract->issued_date . ' г.',
+                    'text' => 'договор № ' . $contract->number . ' выдан ' . $contract->issued_date->format(RUS_DATE_FORMAT) . ' г.',
                     'id' => $contract->id,
                     'creditor' => $contract->creditor->name,
                     'status' => $contract->status->name

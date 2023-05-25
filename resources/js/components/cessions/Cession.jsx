@@ -3,7 +3,7 @@ import EasyInput from "../dummyComponents/EasyInput";
 import CustomCheckBox from "../dummyComponents/CustomCheckBox";
 import {makeStyles} from "@mui/styles";
 import {smallInput} from '../../constants/css';
-import EasySearch from 'components/dummyComponents/search/EasySearch';
+import EasySearch from '../dummyComponents/search/EasySearch';
 import CustomChips from "../dummyComponents/customChips/CustomChips";
 import {TextField} from "@mui/material";
 import {getDefaultCessionText} from "../../utils/getDefaultCessionText";

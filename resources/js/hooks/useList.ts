@@ -27,7 +27,6 @@ function useList(serverUrl: string, options: Options = defaultOptions, search: s
     const [totalItems, setTotalItems] = useState(0);
     const [loading, setLoading] = useState(true);
     const update = () => {
-        console.log(list);
         setLoading(true);
         let url = `${serverUrl}?perPage=${perPage}&page=${page}&order[]=${order[0]}&order[]=${order[1]}`;
         if(search) url += '&search=' + search;

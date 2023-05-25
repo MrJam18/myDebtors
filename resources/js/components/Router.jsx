@@ -22,6 +22,7 @@ import LeftMenu from './LeftMenu';
 import Agents from './agents/Agents';
 import Debtor from "./debtor/Debtor";
 import Registration from "./auth/Registration";
+import Cessions from "./cessions/Cessions";
 
 function Router() {
     const dispatch = useDispatch();
@@ -56,6 +57,7 @@ function Router() {
                 <Route path='agents' exact element={<PrivateAccess Wrapped={<Agents />}/>}/>
                 <Route path='contracts/:contractId' element={<PrivateAccess Wrapped={<Contract />}/>}/>
                 <Route path='debtors/:debtorId' element={<PrivateAccess Wrapped={<Debtor />}/>}/>
+                <Route path={'cessions'} element={<PrivateAccess Wrapped={<Cessions />}/>}/>
                 <Route path='/' element={<PrivateAccess Wrapped={<Start />}/>}/>
             </Routes>
       </BrowserRouter>);

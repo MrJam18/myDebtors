@@ -1,6 +1,6 @@
 import React from 'react';
 import { Chip, Fab } from "@mui/material";
-import styles from 'css/customChips.module.css';
+import styles from '../../../css/customChips.module.css';
 import AddIcon from '@mui/icons-material/Add';
 import useModal from "../../../hooks/useModal";
 import AddModal from "./AddModal";

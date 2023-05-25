@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('contract', function (Blueprint $table) {
-            //
+        Schema::table('contracts', function (Blueprint $table) {
+            $table->dropColumn('is_contract_jurisdiction');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('contract', function (Blueprint $table) {
-            //
+        Schema::table('contracts', function (Blueprint $table) {
+            $table->boolean('is_contract_jurisdiction');
         });
     }
 };

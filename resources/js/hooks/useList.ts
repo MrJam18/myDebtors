@@ -32,7 +32,7 @@ function useList(serverUrl: string, options: Options = defaultOptions, search: s
         if(search) url += '&search=' + search;
         api.get(url)
             .then((response) => {
-                if (response.data?.list) {
+                if (response.data.list) {
                     setList(response.data.list);
                     setTotalPages(response.data.totalPages);
                     setTotalItems(response.data.totalItems);

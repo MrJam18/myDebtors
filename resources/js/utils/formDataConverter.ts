@@ -22,7 +22,10 @@ export const formDataConverter = (formRef, exceptions: Array<string> = null): Re
         function setData(el)
         {
             const name = data[el].name;
-            if(name) returned[name] = data[name].value;
+            if(name) {
+                if(data[name].value === '') return;
+                returned[name] = data[name].value;
+            }
         }
     return returned;
 }

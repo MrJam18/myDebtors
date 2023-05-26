@@ -38,8 +38,11 @@ export const recieveCessionsList = (page = 1, limit = 25, order= ['createdAt', '
 export const recieveCessionInfo = (cessionId) => async dispatch => {
     dispatch(actions.setInfoLoading(true));
     try{
-        const {data} = await api.get('cessions/getInfo?id=' + cessionId);
+        const {data} = await api.get('cessions/get-one/' + cessionId);
+        const header = data.name;
+        delete data.name;
         dispatch(actions.setInfoRows(data));
+        return header;
     }
     catch (e) {
         alertHandler(e, 'Ошибка получения цессий!');
@@ -60,27 +63,18 @@ export const setCessionChanges = (data, assignee, assignor, enclosures, useDefau
         dispatch(actions.setInfoRow({index, data}));
 }
 
-export const sendCessionChanges = (name, defaultCession) => async (dispatch, getState) => {
+export const sendCessionChanges = (name, defaultCession, cessionId) => async (dispatch, getState) => {
     const state = getState();
-    const cessionId = state.cessions.info.cessionId;
     const info = prepareInfo(state.cessions.info.rows);
-    const lastInfo = {...state.cessions.info.lastInfo};
-    lastInfo.assigneeId = lastInfo.assignee.id;
-    lastInfo.assignorId = lastInfo.assignor.id;
-    delete lastInfo.assignee;
-    delete lastInfo.assignor;
     const data = {
-        info,
-        lastInfo,
-        cessionId,
+        cessions: info,
         name,
         deleteIds: state.cessions.info.deleteIds,
         defaultCession
     }
-    await api.post('cessions/changeOne', data);
+    await api.post('cessions/change-one/' + cessionId, data);
     dispatch(setAlert('Успешно', "Цессия успешно изменена."));
     dispatch(actions.setInfoShow(false));
-    await dispatch(recieveCessionsList());
 }
 
 export const deleteCessionInfoHandler = () => (dispatch, getState) => {
@@ -96,11 +90,11 @@ export const deleteCessionInfoHandler = () => (dispatch, getState) => {
     dispatch(actions.forceUpdate());
 }
 
-export const deleteCessionGroup = (cessionId) => async (dispatch) => {
+export const deleteCessionGroup = (cessionId, setShow, update) => async (dispatch) => {
     try{
-        await api.post('cessions/deleteOne', {cessionId});
-        dispatch(actions.setInfoShow(false));
-        await dispatch(recieveCessionsList());
+        await api.delete('cessions/delete-one/' + cessionId);
+        setShow(false);
+        update();
         dispatch(setAlert('Успешно', "Группа цессий успешно удалена."));
     }
     catch (e) {
@@ -112,18 +106,11 @@ export const deleteCessionGroup = (cessionId) => async (dispatch) => {
 
 export const addCessionGroup = (name, defaultCession) => async (dispatch, getState) => {
     const state = getState();
-    const lastInfo = {...state.cessions.info.lastInfo};
-    lastInfo.assigneeId = lastInfo.assignee.id;
-    lastInfo.assignorId = lastInfo.assignor.id;
-    delete lastInfo.assignee;
-    delete lastInfo.assignor;
     const data = {
-        info: prepareInfo(state.cessions.info.rows),
+        cessions: prepareInfo(state.cessions.info.rows),
         name,
-        lastInfo,
         defaultCession
     }
-    await api.post('cessions/createOne', data);
+    await api.post('cessions/create-one', data);
     dispatch(setAlert('Успешно', "Цессия успешно добавлена."));
-    await dispatch(recieveCessionsList());
 }

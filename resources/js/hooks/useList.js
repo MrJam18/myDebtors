@@ -26,8 +26,7 @@ function useList(serverUrl, options = defaultOptions, search = null) {
             url += '&search=' + search;
         api.get(url)
             .then((response) => {
-            var _a;
-            if ((_a = response.data) === null || _a === void 0 ? void 0 : _a.list) {
+            if (response.data.list) {
                 setList(response.data.list);
                 setTotalPages(response.data.totalPages);
                 setTotalItems(response.data.totalItems);

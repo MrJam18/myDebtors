@@ -10,28 +10,23 @@ import {TextField} from "@mui/material";
 import useInput from "../../hooks/useInput";
 import CustomCheckBox from "../dummyComponents/CustomCheckBox";
 
-const NameChanger = ({onSubmit, defCession, name}) => {
-    const dispatch = useDispatch();
+const NameChanger = ({onSubmit, defCession = false, name, setShow}) => {
     const lastInfo = useSelector(cessionsSelector.selectLastInfo);
     const nameInput = useInput(name || `дог. ${lastInfo.number ? '№ ' + lastInfo.number : 'б/н'} от ${changeDateFormatOnRus(lastInfo.transferDate)} г. ${lastInfo.assignor.short} - ${lastInfo.assignee.short}`);
     const [loading, setLoading] = useState(false);
-    const {error, setError, ErrorComp} = useError();
+    const error = useError();
     const [defaultCession, setDefaultCession] = useState(defCession);
-    const setShow = (show) => {
-        dispatch(cessionsSlice.actions.setInfoShowConfirm(show));
-    }
-    useEffect(()=> {
-        return ()=> setShow(false);
-    }, []);
     const submitHandler = async (ev) => {
+        error.setError(false);
         setLoading(true);
         ev.preventDefault();
         try{
             await onSubmit(nameInput.value, defaultCession)
+            setShow(false);
         }
         catch(e) {
             console.dir(e);
-            setError(e);
+            error.setError(e.message);
         }
         finally {
             setLoading(false);
@@ -47,7 +42,7 @@ const NameChanger = ({onSubmit, defCession, name}) => {
           <CustomCheckBox checked={defaultCession} setChecked={setDefaultCession} label={'Сделать цессией по умолчанию для кредитора'} size={'big'} />
           <div className="margin-bottom_10">
    <ButtonInForm loading={loading} />
-          {error && <ErrorComp />}
+              {error.Comp()}
           </div>
       </form>
   </CustomModal>

@@ -9,9 +9,12 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import CustomButton from "../../dummyComponents/CustomButton";
 import NameChanger from "../NameChanger";
 import Cession from "../Cession";
+import {useShow} from "../../../hooks/useShow";
 
-const ChangerUI = ({ error, info, activeCession, header, setShow, forceUpdate, showDeleteGroup, cessionName, onSubmit }) => {
- const ActiveCession = useCallback(() => info.loading ? null : <Cession data={info.rows[activeCession]} />, [activeCession, info.loading, forceUpdate]);
+const ChangerUI = ({ error, cessionGroupId = null, info, activeCession, header, setShow, update = null, forceUpdate, showDeleteGroup, cessionName, onSubmit }) => {
+    const showNameChanger = useShow(NameChanger, {name: cessionName, onSubmit});
+ const ActiveCession = useCallback(() => info.loading ? null : <Cession setShowNameChanger={showNameChanger.setShow} data={info.rows[activeCession]} />, [activeCession, info.loading, forceUpdate]);
+ // const showNameChanger = useShow(<NameChanger name={cessionName} onSubmit={onSubmit} />);
 
  return (
   <>
@@ -19,7 +22,7 @@ const ChangerUI = ({ error, info, activeCession, header, setShow, forceUpdate, s
     <div className="header_small margin-bottom_10">{cessionName}</div>
     {
      info.loading ? <Loading size='90' bold='9' addStyles={{padding: '120px'}} /> : <>
-      <Toolbar showDeleteGroup={showDeleteGroup} />
+      <Toolbar cessionGroupId={cessionGroupId} setShow={setShow} update={update} showDeleteGroup={showDeleteGroup} />
       <ActiveCession />
       <MobileStepper
           variant="dots"
@@ -42,7 +45,7 @@ const ChangerUI = ({ error, info, activeCession, header, setShow, forceUpdate, s
       />
       <CustomButton text={'Продолжить'} formId='cessionData' />
       {error && <div className="error"> {error} </div>  }
-      {info.showConfirm && <NameChanger name={cessionName} onSubmit={onSubmit} />}
+         {showNameChanger.Comp()}
      </>
     }
    </CustomModal>

@@ -14,3 +14,4 @@ Route::get('get-one', [CreditorsController::class, 'getOne']);
 Route::post('change-one', [CreditorsController::class, 'changeOne']);
 Route::delete('delete-one', [CreditorsController::class, 'deleteOne']);
 Route::get('search-list-with-cession', [CreditorsController::class, 'getSearchListWithCession']);
+Route::get('search-list', [CreditorsController::class, 'getSearchList']);

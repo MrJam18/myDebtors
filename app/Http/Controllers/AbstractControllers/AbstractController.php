@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\AbstractControllers;
 
+use App\Exceptions\ShowableException;
+use Closure;
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class AbstractController extends Controller
@@ -30,9 +34,20 @@ class AbstractController extends Controller
     {
         if(!$data) throw new Exception($message);
     }
-    function showableException(string $message): JsonResponse
+    function transaction(Request $request, Closure $callback): mixed
     {
-        return response()->json(['message' => $message], 551);
+        $data = $request->all();
+        $formData = null;
+        if(isset($data['formData'])) $formData = $data['formData'];
+        return $callback($data, $formData);
+    }
+
+    function throwExceptionIfGroupDontCompared(Model $model)
+    {
+        $groupId = $model->user->group->id;
+        if($groupId !== getGroupId()) {
+            throw new ShowableException('У вас нет прав на получение/изменение данной сущности');
+        }
     }
 
 }

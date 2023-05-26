@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\AbstractControllers;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
 class AbstractController extends Controller
@@ -28,6 +29,10 @@ class AbstractController extends Controller
     function exceptionIfNull(mixed &$data, $message = 'data is null'): void
     {
         if(!$data) throw new Exception($message);
+    }
+    function showableException(string $message): JsonResponse
+    {
+        return response()->json(['message' => $message], 551);
     }
 
 }

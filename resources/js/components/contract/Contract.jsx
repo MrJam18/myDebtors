@@ -27,7 +27,7 @@ const Contract = () => {
         switch (menuValue) {
             case 'data':
                 return <ContractData contractId={contractId}/>
-            case 'payments': 
+            case 'payments':
                 return <ContractPayments />
             case 'actions':
                 return <Actions />

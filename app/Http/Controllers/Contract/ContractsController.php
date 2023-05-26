@@ -15,6 +15,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ContractsController
 {
@@ -71,6 +73,41 @@ class ContractsController
         $contract->status_changed_at = Carbon::now();
         $contract->user()->associate(Auth::user());
         $contract->save();
+    }
+
+    public function getOne($id){
+        $contractId = (int)$id;
+        /**
+         * @var Contract $contract
+         */
+        $contract = Contract::query()->findOrFail($contractId);
+        if (!$contract) throw new Exception('cant find contract by id');
+
+        return [ 'contract' => [
+            'name'=>$contract->type->name,
+            'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
+            'debtorId'=> $contract->debtor->id,
+            'debtorName' => $contract->debtor->name->getFull(),
+            'status' => [
+                'id'=>$contract->status->name,
+                "value"=> 'string'
+            ],
+            'creditor' => $contract->creditor->short,
+            'firstCreditor' => $contract->creditor->short,
+            'cession' => 'dummy',
+            'number' => $contract->number,
+            'sum_issue' => $contract->issued_sum,
+            'due_date' => $contract->due_date->format(RUS_DATE_FORMAT),
+            'delayDays' => 1, //CountService
+            'mainToday' => 1,
+            'percent' => $contract->percent,
+            'percentToday'=> 1,
+            'penalty' => $contract->penalty,
+            'penaltyToday' => 10, //CountService
+            'paymentsCount' => 1,
+            'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
+            'executiveDocName' => 'dummy'
+        ]];
     }
 
 

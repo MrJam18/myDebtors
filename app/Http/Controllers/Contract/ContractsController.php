@@ -11,6 +11,7 @@ use App\Models\Contract\ContractType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\Debtor;
 use App\Providers\Database\ContractsProvider;
+use App\Services\CountService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -75,6 +76,9 @@ class ContractsController
         $contract->save();
     }
 
+    /**
+     * @throws Exception
+     */
     public function getOne($id){
         $contractId = (int)$id;
         /**
@@ -82,23 +86,20 @@ class ContractsController
          */
         $contract = Contract::query()->findOrFail($contractId);
         if (!$contract) throw new Exception('cant find contract by id');
-
+        $countServise = new CountService();
         return [ 'contract' => [
             'name'=>$contract->type->name,
             'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
             'debtorId'=> $contract->debtor->id,
             'debtorName' => $contract->debtor->name->getFull(),
-            'status' => [
-                'id'=>$contract->status->name,
-                "value"=> 'string'
-            ],
+            'status' => $this->getStatusList(),
             'creditor' => $contract->creditor->short,
             'firstCreditor' => $contract->creditor->short,
             'cession' => 'dummy',
             'number' => $contract->number,
             'sum_issue' => $contract->issued_sum,
             'due_date' => $contract->due_date->format(RUS_DATE_FORMAT),
-            'delayDays' => 1, //CountService
+            'delayDays' => $countServise->countDelay($contract->due_date, now()), //CountService
             'mainToday' => 1,
             'percent' => $contract->percent,
             'percentToday'=> 1,
@@ -109,6 +110,16 @@ class ContractsController
             'executiveDocName' => 'dummy'
         ]];
     }
+    public function changeContract(Request $request){
+        /**
+         * @var Contract $contract
+         */
 
+        $data = $request->all();
+        $contract=Contract::find($data['contractId']);
 
+      Log::info(print_r($data, true));
+////        Log::info(print_r($status, true));
+//        $contract->save();
+    }
 }

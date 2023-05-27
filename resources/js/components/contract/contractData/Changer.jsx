@@ -20,6 +20,7 @@ const useStyles = makeStyles({
 })
 
 const Changer = ({data, setModal, contractId}) => {
+    console.log("Changer props:", {data, setModal, contractId});
     const classes = useStyles();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -35,15 +36,17 @@ const Changer = ({data, setModal, contractId}) => {
         const requestData = {
             contractId,
             changingField: {
-                [data.DBName]: input.current.value
+                [data.colName]: input.current.value
             }
+
         }
         try {
+          //  console.log(requestData)
         await dispatch(await changeContract(requestData))
         await dispatch(getCurrentContract(contractId));
         dispatch(setAlert('Успешно!', "Контракт успешно изменен!"));
         setModal(false);
-        } 
+        }
         catch(e) {
             setError(e.message)
         }
@@ -51,18 +54,22 @@ const Changer = ({data, setModal, contractId}) => {
         setLoading(false);
         }
     }
-    
+
     const ModalChildren = React.forwardRef((props, ref) => <div className={styles.contentBox}> <h3 className={styles.header} id="child-modal-title">{data.header}</h3>
     <form onSubmit={changeHandler}>
-    <TextField fullWidth defaultValue={data.type === 'date' ? changeDateFormatOnISO(data.defaultValue) : data.defaultValue} inputRef={input} type= {data.type} />
-    <LoadingButton loading={loading} type='submit' variant='contained' className={classes.button}>Подтвердить </LoadingButton> 
+    <TextField fullWidth defaultValue={data.type === 'date' ? changeDateFormatOnISO(data.defaultValue) : data.defaultValue}
+               inputRef={input}
+               type= {data.type}
+               onChange={(e) => console.log(e.target.value)}
+    />
+    <LoadingButton loading={loading} type='submit' variant='contained' className={classes.button}>Подтвердить </LoadingButton>
     <div className="error">{error}</div>
     </form>
     </div>
     )
     return (
         <div className={styles.relative}>
-                <Modal onBackdropClick={handleClose} 
+                <Modal onBackdropClick={handleClose}
                 open={data}
                 onClose={handleClose}
                 aria-labelledby="child-modal-title"

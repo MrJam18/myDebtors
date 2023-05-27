@@ -5,7 +5,7 @@ const noChange = true;
 const fullWidth = true;
 
 const getContractStatuses = async () => {
-    const {data} = await api.get('contracts/getStatuses');
+    const {data} = await api.get('contracts/get-statuses');
     return data;
 }
 

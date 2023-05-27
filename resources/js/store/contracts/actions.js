@@ -25,7 +25,7 @@ export const getCurrentContract = (id) => async (dispatch) => {
 };
 export const changeContract = (data, contractId) => async (dispatch) => {
     try {
-        await api.post('contracts/changeContract', Object.assign(Object.assign({}, data), { contractId }));
+        await api.post('contracts/change-contract', Object.assign(Object.assign({}, data), { contractId }));
         dispatch(setAlert('Успешно', 'Контракт успешно изменен'));
         await dispatch(getCurrentContract(contractId));
     }

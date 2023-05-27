@@ -64,6 +64,8 @@ export class Dispatcher {
         }
     }
     _handleError(e) {
+        if (e.response.status === 551)
+            return this._setError(e.response.data.message);
         if (this._setError)
             this._setError(e.message);
     }

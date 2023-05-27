@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" href="{{asset('img/mace.png')}}">
     <script defer src="{{mix('dist/js/app.js')}}"></script>
-    <title>Document</title>
+    <title>My Debtors App</title>
 </head>
 <body>
     <div id="root"></div>

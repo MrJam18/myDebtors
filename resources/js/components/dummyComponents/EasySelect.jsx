@@ -25,7 +25,7 @@ const EasySelect = React.forwardRef(({ name = null, label = null, variants, styl
     const changeHandler = (ev) => {
         input.onChange(ev);
         if (onChange)
-            onChange(ev.target.value);
+            onChange(Number(ev.target.value));
     };
     useEffect(() => {
         if (value)

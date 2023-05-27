@@ -9,9 +9,8 @@ import {cessionsSelector} from "../../store/cessions/selectors";
 import {deleteCessionGroup} from "../../store/cessions/actions";
 
 
-const Toolbar = ({showDeleteGroup}) => {
+const Toolbar = ({showDeleteGroup, cessionGroupId, setShow, update}) => {
     const dispatch = useDispatch();
-    const cessionId = useSelector(cessionsSelector.selectInfoCessionId);
     const deleteGroupWarning = useModal();
     const onDelete = () => {
         dispatch(deleteCessionInfoHandler());
@@ -20,7 +19,7 @@ const Toolbar = ({showDeleteGroup}) => {
         deleteGroupWarning.setShowTrue();
     }
     const onDeleteGroup = async () => {
-       await dispatch(deleteCessionGroup(cessionId));
+       await dispatch(deleteCessionGroup(cessionGroupId, setShow, update));
     }
  return (
   <>

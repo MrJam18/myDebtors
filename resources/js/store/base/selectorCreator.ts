@@ -30,11 +30,9 @@ export const selectorCreator = (bigChunk) => {
 
 }
 
-/**
- * deprecated
- */
 export class SelectorCreator
 {
+    [index: string]: any;
     #bigChunk;
     easyCreator;
     /**

@@ -35,6 +35,9 @@ class Cession extends BaseModel
     ];
     public $timestamps = true;
 
+    protected $casts = [
+        'transfer_date' => 'date'
+    ];
     function cessionGroup(): BelongsTo
     {
         return $this->belongsTo(CessionGroup::class);
@@ -51,4 +54,5 @@ class Cession extends BaseModel
     {
         return $this->hasMany(CessionEnclosure::class, 'cession_id');
     }
+
 }

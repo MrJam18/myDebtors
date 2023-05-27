@@ -9,7 +9,7 @@ const initialState = {
     },
     info: {
         loading: true,
-        rows: null,
+        rows: [],
         count: 0,
         lastInfo: null,
         error: false,
@@ -36,11 +36,13 @@ export const cessionsSlice = createSlice({
             state.list = action.payload;
         },
         setInfoRows(state, action) {
-            state.info.rows = action.payload.rows;
+            state.info.rows = action.payload.cessions;
             state.info.count = action.payload.count;
         },
         setInfoRow(state, action) {
-            action.payload.data.id = state.info.rows[action.payload.index].id;
+            var _a;
+            if ((_a = state.info.rows[action.payload.index]) === null || _a === void 0 ? void 0 : _a.id)
+                action.payload.data.id = state.info.rows[action.payload.index].id;
             state.info.rows[action.payload.index] = action.payload.data;
         },
         setInfoLoading(state, action) {
@@ -65,7 +67,7 @@ export const cessionsSlice = createSlice({
         setActiveCession(state, action) {
             state.info.activeCession = action.payload;
         },
-        pushInfoRow(state, action) {
+        pushInfoRow(state) {
             state.info.rows.push({});
             state.info.count++;
             state.info.activeCession = state.info.count - 1;

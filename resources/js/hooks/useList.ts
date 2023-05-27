@@ -18,7 +18,7 @@ function useList(serverUrl: string, options: Options = defaultOptions, search: s
     options = useMemo(()=> {
         if(options !== defaultOptions) return {...defaultOptions, ...options};
         return options;
-    },[options]);
+    },[]);
     const [list, setList] = useState([]);
     const [page, setPage] = useState(options.page);
     const [order, setOrder] = useState(options.order);
@@ -32,7 +32,7 @@ function useList(serverUrl: string, options: Options = defaultOptions, search: s
         if(search) url += '&search=' + search;
         api.get(url)
             .then((response) => {
-                if (response.data?.list) {
+                if (response.data.list) {
                     setList(response.data.list);
                     setTotalPages(response.data.totalPages);
                     setTotalItems(response.data.totalItems);
@@ -58,8 +58,7 @@ function useList(serverUrl: string, options: Options = defaultOptions, search: s
     }, []);
 
     const updateList = useCallback((): void => {
-        const samePage = page === 1;
-        if(samePage) update();
+        if(page === 1) update();
         else setPage(1);
     }, []);
 

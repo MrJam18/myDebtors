@@ -71,22 +71,24 @@ class DebtorsController extends AbstractController
             'initials' => $debtor->name->initials()
         ];
         if($passport) $data['passport'] = [
-            'type' => [
-                'value' => $passport->type->name,
-                'id' => $passport->type->id
-            ],
-            'seriesAndNumber' => [
-                'series' => $passport->series,
-                'number' => $passport->number
-            ],
-        ];
-        if($passport->issued_date) {
-            $otherFields = [
-                'issued_date' => $passport->issued_date->format(RUS_DATE_FORMAT),
-                'issued_by' => $passport->issued_by,
-                'gov_unit_code' => $passport->gov_unit_code,
-                'updated_at' => $passport->updated_at->format(RUS_DATE_FORMAT)
+
+          'type' => [
+              'value' => $passport->type->name,
+              'id' => $passport->type->id
+          ],
+          'seriesAndNumber' => [
+              'series' => $passport->series,
+              'number' => $passport->number
+          ],
             ];
+        if($passport->issued_date) {
+           $otherFields = [
+               'issued_date' => $passport->issued_date->format(RUS_DATE_FORMAT),
+               'issued_by' => $passport->issued_by,
+               'gov_unit_code' => $passport->gov_unit_code,
+               'updated_at' => $passport->updated_at->format(RUS_DATE_FORMAT)
+           ];
+
             $data['passport'] = array_merge($data['passport'], $otherFields);
         }
         return $data;

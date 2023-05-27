@@ -18,8 +18,7 @@ const rootReducer = combineReducers({
     payments: paymentsSlice.reducer,
     alert: alertReducer,
     organizations: organizationsSlice.reducer,
-    // @ts-expect-error TS(2769): No overload matches this call.
-    cessions: cessionsSlice,
+    cessions: cessionsSlice.reducer,
     debtors: debtorsReducer,
     global: globalReducer,
     actions: actionsSlice.reducer,

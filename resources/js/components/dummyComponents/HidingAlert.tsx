@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles';
 import React, {useState} from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {useLocation} from "react-router";
 import styles from '../../css/hidingAlert.module.css';
 import { hideAlert } from '../../store/alert/actions';
 import { getAlert } from '../../store/alert/selectors';

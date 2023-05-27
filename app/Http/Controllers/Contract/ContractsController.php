@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+
 class ContractsController
 {
     function getLimitations(PaginateRequest $request, ContractsProvider $provider): array
@@ -76,6 +77,7 @@ class ContractsController
         $contract->save();
     }
 
+
     /**
      * @throws Exception
      */
@@ -86,7 +88,7 @@ class ContractsController
          */
         $contract = Contract::query()->findOrFail($contractId);
         if (!$contract) throw new Exception('cant find contract by id');
-        $countServise = new CountService();
+        $countServiсe = new CountService();
         return [ 'contract' => [
             'name'=>$contract->type->name,
             'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
@@ -99,7 +101,7 @@ class ContractsController
             'number' => $contract->number,
             'sum_issue' => $contract->issued_sum,
             'due_date' => $contract->due_date->format(RUS_DATE_FORMAT),
-            'delayDays' => $countServise->countDelay($contract->due_date, now()), //CountService
+            'delayDays' => $countServiсe->countDelay($contract->due_date, now()), //CountService
             'mainToday' => 1,
             'percent' => $contract->percent,
             'percentToday'=> 1,

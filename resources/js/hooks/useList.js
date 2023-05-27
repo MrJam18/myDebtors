@@ -11,7 +11,7 @@ function useList(serverUrl, options = defaultOptions, search = null) {
         if (options !== defaultOptions)
             return Object.assign(Object.assign({}, defaultOptions), options);
         return options;
-    }, [options]);
+    }, []);
     const [list, setList] = useState([]);
     const [page, setPage] = useState(options.page);
     const [order, setOrder] = useState(options.order);
@@ -26,8 +26,7 @@ function useList(serverUrl, options = defaultOptions, search = null) {
             url += '&search=' + search;
         api.get(url)
             .then((response) => {
-            var _a;
-            if ((_a = response.data) === null || _a === void 0 ? void 0 : _a.list) {
+            if (response.data.list) {
                 setList(response.data.list);
                 setTotalPages(response.data.totalPages);
                 setTotalItems(response.data.totalItems);
@@ -53,8 +52,7 @@ function useList(serverUrl, options = defaultOptions, search = null) {
         }
     }, []);
     const updateList = useCallback(() => {
-        const samePage = page === 1;
-        if (samePage)
+        if (page === 1)
             update();
         else
             setPage(1);

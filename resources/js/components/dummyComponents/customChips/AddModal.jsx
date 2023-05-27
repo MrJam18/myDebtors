@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import styles from 'css/customChips.module.css';
+import styles from '../../../css/customChips.module.css';
 import CustomModal from "../CustomModal";
 import { Input } from "@mui/material";
 import CustomButton from "../CustomButton";

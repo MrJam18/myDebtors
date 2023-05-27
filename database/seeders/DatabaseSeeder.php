@@ -59,6 +59,8 @@ class DatabaseSeeder extends Seeder
         $creditorType = new CreditorType();
         $creditorType->name = 'Физическое лицо';
         $creditorType->save();
+        $creditorType = new CreditorType(['name' => 'Коллекторское агентство']);
+        $creditorType->save();
         $passportType = new PassportType();
         $passportType = $this->setNameAndSave($passportType, 'Паспорт РФ сокращенно.');
         $passportType = $this->setNameAndSave($passportType, "Паспорт гражданина РФ");

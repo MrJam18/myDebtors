@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Collection $defaultCreditors;
  * @property Collection $cessions;
  * @property Collection $contracts;
+ * @property User $user;
  */
 class CessionGroup extends BaseModel
 {
@@ -28,7 +29,7 @@ class CessionGroup extends BaseModel
     ];
     public $timestamps = true;
 
-    function users(): BelongsTo
+    function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

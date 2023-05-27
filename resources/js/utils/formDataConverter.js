@@ -21,8 +21,11 @@ export const formDataConverter = (formRef, exceptions = null) => {
         keys.forEach(el => setData(el));
     function setData(el) {
         const name = data[el].name;
-        if (name)
+        if (name) {
+            if (data[name].value === '')
+                return;
             returned[name] = data[name].value;
+        }
     }
     return returned;
 };

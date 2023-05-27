@@ -8,3 +8,4 @@ Route::post('login', [AuthController::class, 'login']);
 Route::get('get', [AuthController::class, 'getUser'])->middleware('auth');
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::post('registration', [AuthController::class, 'registration']);
+Route::get('group-search', [AuthController::class, 'getGroupSearchList']);

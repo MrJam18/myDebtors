@@ -1,13 +1,11 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {cessionsSelector} from "../../store/cessions/selectors";
-import {cessionsSlice} from "../../store/cessions/reducer";
 import ChangerUI from "./UI/ChangerUI";
 import {addCessionGroup} from "../../store/cessions/actions";
 
-const actions = cessionsSlice.actions;
 
-const CessionAdder = ({ setShow }) => {
+const CessionAdder = ({ setShow, update }) => {
  const dispatch = useDispatch();
  const info = useSelector(cessionsSelector.getInfo);
  const error = useSelector(cessionsSelector.selectInfoError);
@@ -17,12 +15,8 @@ const CessionAdder = ({ setShow }) => {
  const onSubmit = async (name, defaultCession) => {
   await dispatch(addCessionGroup(name, defaultCession));
   setShow(false);
+  update();
  }
- useEffect(()=> {
-  return () => {
-   dispatch(actions.setInfoDefault());
-  }
- }, []);
 
  return (
   <>

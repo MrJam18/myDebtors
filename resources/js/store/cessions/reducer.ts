@@ -10,7 +10,7 @@ const initialState = {
     },
     info: {
         loading: true,
-        rows: null,
+        rows: [],
         count: 0,
         lastInfo: null,
         error: false,
@@ -41,11 +41,11 @@ const initialState = {
                 state.list = action.payload;
             },
             setInfoRows(state, action) {
-                state.info.rows = action.payload.rows;
+                state.info.rows = action.payload.cessions;
                 state.info.count = action.payload.count;
             },
             setInfoRow(state, action) {
-                action.payload.data.id = state.info.rows[action.payload.index].id;
+                if(state.info.rows[action.payload.index]?.id) action.payload.data.id = state.info.rows[action.payload.index].id;
                 state.info.rows[action.payload.index] = action.payload.data;
             },
             setInfoLoading(state, action) {
@@ -70,7 +70,7 @@ const initialState = {
             setActiveCession(state, action) {
                 state.info.activeCession = action.payload;
             },
-            pushInfoRow(state, action) {
+            pushInfoRow(state) {
                 state.info.rows.push({});
                 state.info.count++;
                 state.info.activeCession = state.info.count - 1;

@@ -3,7 +3,7 @@ import EasyInput from "../dummyComponents/EasyInput";
 import CustomCheckBox from "../dummyComponents/CustomCheckBox";
 import {makeStyles} from "@mui/styles";
 import {smallInput} from '../../constants/css';
-import EasySearch from 'components/dummyComponents/search/EasySearch';
+import EasySearch from '../dummyComponents/search/EasySearch';
 import CustomChips from "../dummyComponents/customChips/CustomChips";
 import {TextField} from "@mui/material";
 import {getDefaultCessionText} from "../../utils/getDefaultCessionText";
@@ -12,14 +12,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {setCessionChanges} from "../../store/cessions/actions";
 import {cessionsSelector} from "../../store/cessions/selectors";
 import {cessionsSlice} from "../../store/cessions/reducer";
-
 const actions = cessionsSlice.actions;
 
 const useStyles = makeStyles({
     smallInput
 })
 
-const Cession = ({data = {}}) => {
+const Cession = ({data = {}, setShowNameChanger}) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const textRef = useRef();
@@ -42,8 +41,8 @@ const Cession = ({data = {}}) => {
     }
     const formSubmitHandler = async (ev) => {
         ev.preventDefault();
-        const data = formDataConverter(formRef);
-        if(enclosures.length === 0) return dispatch(actions.setInfoError('Цессия должна иметь хотябы один подтверждающий документ!'));
+        const data = formDataConverter(formRef.current);
+        if(enclosures.length === 0) return dispatch(actions.setInfoError('Цессия должна иметь хотя бы один подтверждающий документ!'));
         dispatch(setCessionChanges(data, assignee, assignor, enclosures, useDefaultText, activeCession, cessionId));
         switch(ev.nativeEvent.submitter.name){
             case('prev'):
@@ -57,7 +56,7 @@ const Cession = ({data = {}}) => {
                 break;
             default:
                 dispatch(actions.setLastInfo());
-                dispatch(actions.setInfoShowConfirm(true));
+                setShowNameChanger(true);
         }
     }
     return (
@@ -68,10 +67,10 @@ const Cession = ({data = {}}) => {
                 <EasyInput label='Номер цессии' className={classes.smallInput} defaultValue={data.number} name='number' />
             </div>
             <div className="full-width-box">
-                <EasySearch label={'Цедент'} required value={assignor} serverAddress='creditors/getNameListForCessions' getValue='short' setValue={setAssignor} />
+                <EasySearch label={'Цедент'} required value={assignor} serverAddress='creditors/search-list' getValue='short' setValue={setAssignor} />
             </div>
             <div className="full-width-box">
-               <EasySearch label='Цессионарий' required value={assignee} serverAddress='creditors/getNameListForCessions' getValue='short' setValue={setAssignee} />
+               <EasySearch label='Цессионарий' required value={assignee} serverAddress='creditors/search-list' getValue='short' setValue={setAssignee} />
             </div>
             <div className='full-width-box'>
                 <CustomChips header='Подтверждающие документы' list={enclosures} setList={setEnclosures} addHeader='Введите название документа' />

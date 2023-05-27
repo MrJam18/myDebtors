@@ -8,7 +8,6 @@ const getContractStatuses = async () => {
     const {data} = await api.get('contracts/get-statuses');
     return data;
 }
-
 // @ts-expect-error TS(2554): Expected 4 arguments, but got 2.
 export const contractColumns =
     [new Column('Должник', 'debtorName', 'ref', {ref: '/debtors', refColName: 'debtorId'}),
@@ -29,3 +28,4 @@ export const contractColumns =
     new Column('Количество платежей', 'paymentsCount', 'text', {noChange}),
     new Column('Дата создания договора', 'createdAt', 'date', {noChange}),
     new Column('Исполнительный документ', 'executiveDocName', 'setter')];
+

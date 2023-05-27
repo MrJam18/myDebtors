@@ -177,7 +177,7 @@ class CreditorsController
         $data = Creditor::query()->byGroupId(getGroupId())->search([
             'name' => $request->validated(),
             'short' => $request->validated()
-        ])->with(['defaultCession:id,name', 'type'])->get();
+        ])->with(['defaultCession:id,name', 'type'])->limit(5)->get();
         return $data->map(function (Creditor $creditor) {
             if ($creditor->type->id !== 3 && $creditor->short) $name = $creditor->short . ", ИНН: " . $creditor->court_identifier;
             else $name = $creditor->name;
@@ -192,6 +192,22 @@ class CreditorsController
                 ];
             }
             return $data;
+        });
+    }
+    function getSearchList(SearchRequest $request): array | Collection
+    {
+        $data = Creditor::query()->byGroupId(getGroupId())->search([
+            'name' => $request->validated(),
+            'short' => $request->validated()
+        ])->limit(5)->get();
+        return $data->map(function (Creditor $creditor) {
+            if ($creditor->type->id !== 3 && $creditor->short) $name = $creditor->short . ", ИНН: " . $creditor->court_identifier;
+            else $name = $creditor->name;
+            return [
+                'id' => $creditor->id,
+                'name' => $name,
+                'short' => $creditor->short
+            ];
         });
     }
 

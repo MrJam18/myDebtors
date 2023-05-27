@@ -36,9 +36,6 @@ export const selectorCreator = (bigChunk) => {
     };
     return selectorMiniChunkCreator;
 };
-/**
- * deprecated
- */
 export class SelectorCreator {
     /**
      *

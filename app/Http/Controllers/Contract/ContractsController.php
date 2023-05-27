@@ -117,6 +117,7 @@ class ContractsController
 
         $data = $request->all();
         $contract=Contract::find($data['contractId']);
+        toConsole($data);
 
       Log::info(print_r($data, true));
 ////        Log::info(print_r($status, true));

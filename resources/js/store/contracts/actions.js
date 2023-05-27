@@ -23,9 +23,9 @@ export const getCurrentContract = (id) => async (dispatch) => {
     // @ts-expect-error TS(2554): Expected 1 arguments, but got 0.
     dispatch(actions.fetchSuccess());
 };
-export const changeContract = (data, contractId) => async (dispatch) => {
+export const changeContract = (column, value, contractId) => async (dispatch) => {
     try {
-        await api.post('contracts/change-contract', Object.assign(Object.assign({}, data), { contractId }));
+        await api.post('contracts/change-contract', { column, value, contractId });
         dispatch(setAlert('Успешно', 'Контракт успешно изменен'));
         await dispatch(getCurrentContract(contractId));
     }

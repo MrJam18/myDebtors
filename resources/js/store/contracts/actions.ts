@@ -28,10 +28,9 @@ export const getCurrentContract = (id) => async (dispatch) => {
     dispatch(actions.fetchSuccess());
 }
 
-export const changeContract = (data, contractId) => async (dispatch) => {
+export const changeContract = (column, value, contractId) => async (dispatch) => {
     try {
-
-        await api.post('contracts/change-contract', {...data, contractId});
+        await api.post('contracts/change-contract', {column, value, contractId});
         dispatch(setAlert('Успешно', 'Контракт успешно изменен'));
         await dispatch( getCurrentContract(contractId));
     }

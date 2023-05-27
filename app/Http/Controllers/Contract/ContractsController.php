@@ -87,8 +87,10 @@ class ContractsController
          * @var Contract $contract
          */
         $contract = Contract::query()->findOrFail($contractId);
+        Log::info($contract->cession->name);
         if (!$contract) throw new Exception('cant find contract by id');
         $countServiсe = new CountService();
+
         return [ 'contract' => [
             'name'=>$contract->type->name,
             'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
@@ -97,7 +99,7 @@ class ContractsController
             'status' => $this->getStatusList(),
             'creditor' => $contract->creditor->short,
             'firstCreditor' => $contract->creditor->short,
-            'cession' => 'dummy',
+            'cession' => $contract->cession->name,
             'number' => $contract->number,
             'sum_issue' => $contract->issued_sum,
             'due_date' => $contract->due_date->format(RUS_DATE_FORMAT),
@@ -107,7 +109,7 @@ class ContractsController
             'percentToday'=> 1,
             'penalty' => $contract->penalty,
             'penaltyToday' => 10, //CountService
-            'paymentsCount' => 1,
+            'paymentsCount' => 1, //CountService
             'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
             'executiveDocName' => 'dummy'
         ]];

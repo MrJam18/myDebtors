@@ -24,4 +24,10 @@ class MoneySum extends BaseModel
         'main'
     ];
     public $timestamps = true;
+
+    public function countSum(): float
+    {
+        $this->sum = $this->main + $this->percents + $this->penalties;
+        return $this->sum;
+    }
 }

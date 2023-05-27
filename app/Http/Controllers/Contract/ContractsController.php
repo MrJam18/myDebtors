@@ -117,10 +117,27 @@ class ContractsController
 
         $data = $request->all();
         $contract=Contract::find($data['contractId']);
-        toConsole($data);
+        switch ($data['column']) {
+            case 'statusId':
+                $contract->status()->associate($data['value']);
+               break;
 
+            case 'penalty':
+                $contract->penalty = $data['value'];
+                break;
+            case 'percent':
+                $contract->percent = $data['value'];
+                break;
+            case 'sum_issue':
+                $contract->issued_sum = $data['value'];
+                break;
+            case 'mainToday':
+                return 'in process';
+            case 'number':
+                $contract->number = $data['value'];
+        }
       Log::info(print_r($data, true));
-////        Log::info(print_r($status, true));
-//        $contract->save();
+////
+           $contract->save();
     }
 }

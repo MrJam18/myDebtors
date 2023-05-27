@@ -57,4 +57,5 @@ class Debtor extends BaseModel
     {
         return $this->hasMany(Contract::class);
     }
+
 }

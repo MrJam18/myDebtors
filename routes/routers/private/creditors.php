@@ -11,7 +11,9 @@ Route::get('search-bank-requisites', [CreditorsController::class, 'searchBankReq
 Route::post('add-bank-requisites', [CreditorsController::class, 'addBankRequisites']);
 Route::post('add-one', [CreditorsController::class, 'addOne']);
 Route::get('get-one', [CreditorsController::class, 'getOne']);
+Route::get('search-list-with-cession', [CreditorsController::class, 'getSearchListWithCession']);
 Route::post('change-one', [CreditorsController::class, 'changeOne']);
 Route::delete('delete-one', [CreditorsController::class, 'deleteOne']);
 Route::get('search-list-with-cession', [CreditorsController::class, 'getSearchListWithCession']);
 Route::get('search-list', [CreditorsController::class, 'getSearchList']);
+

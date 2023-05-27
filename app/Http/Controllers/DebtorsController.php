@@ -71,6 +71,7 @@ class DebtorsController extends AbstractController
             'initials' => $debtor->name->initials()
         ];
         if($passport) $data['passport'] = [
+
           'type' => [
               'value' => $passport->type->name,
               'id' => $passport->type->id
@@ -87,6 +88,7 @@ class DebtorsController extends AbstractController
                'gov_unit_code' => $passport->gov_unit_code,
                'updated_at' => $passport->updated_at->format(RUS_DATE_FORMAT)
            ];
+
             $data['passport'] = array_merge($data['passport'], $otherFields);
         }
         return $data;

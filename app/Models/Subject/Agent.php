@@ -55,4 +55,5 @@ class Agent extends BaseModel
     {
         return $this->belongsTo(Passport::class);
     }
+
 }

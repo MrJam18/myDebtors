@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Counters;
+namespace App\Services\Counters\Base;
 
 
 use Carbon\Carbon;

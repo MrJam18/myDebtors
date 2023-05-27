@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Counters;
+namespace App\Services\Counters\Base;
 
 use App\Models\Contract\Payment;
 use App\Models\MoneySum;
@@ -15,6 +15,7 @@ class CountBreak
         public ?Payment $payment = null,
         public bool $isPercentsCounted = true,
         public bool $isPenaltiesCounted = true,
+        public bool $isNoPenalty = false
     )
     {
 

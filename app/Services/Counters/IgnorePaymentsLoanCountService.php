@@ -3,7 +3,33 @@ declare(strict_types=1);
 
 namespace App\Services\Counters;
 
-class IgnorePaymentsLoanCounter
-{
+use App\Models\Contract\Contract;
+use App\Services\Counters\Base\Limited;
+use Carbon\Carbon;
 
+class IgnorePaymentsLoanCountService extends CountService
+{
+    protected Limited $limited;
+
+    public function __construct(Contract $contract, Carbon $endDate)
+    {
+        parent::__construct($contract, $endDate);
+        $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
+        $this->count();
+        $this->countLimitedPercents();
+    }
+
+    protected function countPeriod(Carbon $startDate, Carbon $endDate): void
+    {
+        $this->countPercents($startDate, $endDate);
+        $this->countPenaltiesPeriod($startDate, $endDate);
+    }
+    private function countLimitedPercents()
+    {
+        $sum = $this->sum->percents;
+        if($this->limited->isLimitedPenalty) $sum += $this->sum->penalties;
+        if($this->limited->isLimited && $sum > $this->limited->limitSum) {
+            $this->limited->setPercents($this->limited->isLimitedPenalty ? $this->limited->limitSum - $this->sum->penalties : $this->limited->limitSum);
+        }
+    }
 }

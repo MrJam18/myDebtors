@@ -6,7 +6,7 @@ import EasyInput from "../dummyComponents/EasyInput";
 
 const Agent = ({defaultValues = {
     enclosure: 'Копия доверенности представителя'
-}, setAddressForDB, setDefaultAgent, setNoShowGroup}) => {
+}, setAddress, setDefaultAgent, setNoShowGroup}) => {
     const onChangeDefaultAgent = ev => {
         setDefaultAgent(ev.target.checked);
     }
@@ -24,7 +24,7 @@ const Agent = ({defaultValues = {
                 <EasyInput defaultValue={defaultValues.passportSeries} label={'Серия паспорта'} name={'passportSeries'} className={styles.smallInput} required type={'number'} />
                 <EasyInput defaultValue={defaultValues.passportNumber} label={'Номер паспорта'} name={'passportNumber'} className={styles.smallInput} required type={'number'} />
             </div>
-            <Address setAddressForDB={setAddressForDB} defaultValue={defaultValues.fullAddress} />
+            <Address setAddressForDB={setAddress} defaultValue={defaultValues.fullAddress} />
             <FormControlLabel control={<Checkbox checked={defaultValues.defaultAgent} onChange={onChangeDefaultAgent}  />} label="Представитель по умолчанию" />
             <FormControlLabel control={<Checkbox checked={defaultValues.noShowGroup} onChange={onChangeNoGroup} />} label="Представитель не виден группе" />
         </>

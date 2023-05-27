@@ -17,8 +17,8 @@ const ContractData = ({contractId}) => {
     const onClickExecutiveDoc = () => {
         setShowExecutiveDocChanger(true);
     }
-    const requestFunction = async (data) => {
-       await dispatch(changeContract(data, contractId));
+    const requestFunction = async (column, value) => {
+       await dispatch(changeContract(column, value, contractId));
     }
     const setters = [{
         colName: 'executiveDocName',

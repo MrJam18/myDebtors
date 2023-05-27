@@ -20,6 +20,7 @@ const useStyles = makeStyles({
 
 
 const ChangeAgent = ({setShow, agentId, setUpdate}) => {
+    const [originalAgent, setOriginalAgent] = useState({});
     const classes = useStyles();
     const [address, setAddress] = useState('initial');
     const [error, setError] = useState(false);
@@ -76,7 +77,7 @@ const ChangeAgent = ({setShow, agentId, setUpdate}) => {
                 {showDeleteWarning && <Warning onSubmit={deleteHandler} setShow={setShowDeleteWarning} text={'Вы уверены, что хотите удалить представителя? Это действие необратимо.'} /> }
             </CustomModal>
             </form>
-            
+
         </div>
     );
 };

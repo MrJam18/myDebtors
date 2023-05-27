@@ -10,8 +10,9 @@ const headers = [{key: 'createdAt', name: 'Дата создания', type: 'da
 const Agents = () => {
     const update = useUpdate();
     const [changedAgentId, setChangedAgentId] = useState(false);
-    const onClickRow = (id) => {
-        setChangedAgentId(id);
+    const onClickRow = (idd) => {
+        console.log(idd);
+        setChangedAgentId(idd);
     }
     return (
         <div className="firstWindow background">

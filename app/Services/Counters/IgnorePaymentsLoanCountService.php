@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services\Counters;
 
 use App\Models\Contract\Contract;
+use App\Models\MoneySum;
 use App\Services\Counters\Base\Limited;
 use Carbon\Carbon;
 
@@ -15,8 +16,6 @@ class IgnorePaymentsLoanCountService extends CountService
     {
         parent::__construct($contract, $endDate);
         $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
-        $this->count();
-        $this->countLimitedPercents();
     }
 
     protected function countPeriod(Carbon $startDate, Carbon $endDate): void
@@ -31,5 +30,16 @@ class IgnorePaymentsLoanCountService extends CountService
         if($this->limited->isLimited && $sum > $this->limited->limitSum) {
             $this->limited->setPercents($this->limited->isLimitedPenalty ? $this->limited->limitSum - $this->sum->penalties : $this->limited->limitSum);
         }
+    }
+    function count(): MoneySum
+    {
+        $result = parent::count();
+        $this->countLimitedPercents();
+        return $result;
+    }
+
+    function getLimited(): Limited
+    {
+        return $this->limited;
     }
 }

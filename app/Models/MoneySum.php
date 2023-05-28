@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\Money;
 use App\Models\Base\BaseModel;
 use Carbon\Carbon;
 
@@ -24,6 +25,13 @@ class MoneySum extends BaseModel
         'main'
     ];
     public $timestamps = true;
+
+    protected $casts = [
+        'sum' => Money::class,
+        'percents' => Money::class,
+        'penalties' => Money::class,
+        'main' => Money::class
+    ];
 
     public function countSum(): float
     {

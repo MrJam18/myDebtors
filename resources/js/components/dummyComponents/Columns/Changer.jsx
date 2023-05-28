@@ -40,7 +40,7 @@ const Changer = ({ data, setModal, setReqData }) => {
             setModal(false);
         }
         catch (e) {
-            console.log(e);
+            console.dir(e);
             setError(e.message);
         }
         finally {

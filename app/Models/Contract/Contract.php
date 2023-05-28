@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Contract;
 
+use App\Casts\Money;
 use App\Models\Action\Action;
 use App\Models\Auth\User;
 use App\Models\Base\BaseModel;
@@ -54,7 +55,10 @@ class Contract extends BaseModel
     ];
     protected $casts = [
         'issued_date' => RUS_DATE_CAST,
-        'due_date' => RUS_DATE_CAST
+        'due_date' => RUS_DATE_CAST,
+        'percent' => Money::class,
+        'penalty' => Money::class,
+        'issued_sum' => Money::class
     ];
     public $timestamps = true;
 

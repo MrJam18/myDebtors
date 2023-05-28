@@ -42,11 +42,11 @@ class Years
     public function getMiddleYears(): Collection
     {
         if($this->list->count() < 3) return new Collection();
-        return $this->list->pop()->shift();
+        return $this->list->except([0, $this->list->count() - 1]);
     }
     public function getLastYear(): ?Year
     {
-        if($this->list->count() < 2) return $this->list->last();
+        if($this->list->count() > 1) return $this->list->last();
         else return null;
     }
 

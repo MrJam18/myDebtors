@@ -49,7 +49,7 @@ class BaseModel extends Model
     /**
      * @throws ShowableException
      */
-    static function findWithGroupId(int $id, $columns = ['*']): static | Collection
+    static function findWithGroupId(int $id, $columns = ['*']): static | Collection | null
     {
         $result = static::query()->find($id, $columns);
         if($result && $result->user->group->id !== getGroupId()) throw new ShowableException('Вы не имеете права на изменение/получение данной сущности');

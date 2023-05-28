@@ -47,7 +47,7 @@ abstract class CountService
         $this->years = new Years($this->startDate, $this->endDate, $contract->payments);
     }
 
-    function count(): void
+    function count(): MoneySum
     {
         $this->addBreak($this->startDate);
         /**
@@ -69,6 +69,7 @@ abstract class CountService
         }
         else $this->countYear($this->startDate, $this->endDate, $firstYear);
         $this->addBreak($this->endDate);
+        return $this->sum;
     }
 
     protected function addBreak(Carbon $date, Payment $payment = null): void
@@ -78,17 +79,17 @@ abstract class CountService
 
     protected function countPercents(Carbon $startDate, Carbon $endDate): float
     {
-        $counted = $this->getPercents($startDate, $endDate);
+        $counted = $this->getPercents($startDate, $endDate, $this->percent);
         $this->sum->percents += $counted;
         return $counted;
     }
 
-    protected function getPercents(Carbon $startDate, Carbon $endDate): float
+    protected function getPercents(Carbon $startDate, Carbon $endDate, float $percent): float
     {
         $days = $startDate->diffInDays($endDate);
         if($startDate->isLeapYear()) $daysInYear = 366;
         else $daysInYear = 365;
-        return $this->sum->main * $days / $daysInYear * $this->percent / 100;
+        return $this->sum->main * $days / $daysInYear * $percent / 100;
     }
 
     protected function countYear(Carbon $startDate, Carbon $endDate, Year $year): void
@@ -150,7 +151,7 @@ abstract class CountService
     }
     protected function countPenalties(Carbon $startDate, Carbon $endDate): float
     {
-        $counted = $this->getPercents($startDate, $endDate);
+        $counted = $this->getPercents($startDate, $endDate, $this->penalty);
         $this->sum->penalties += $counted;
         return $counted;
     }

@@ -11,12 +11,11 @@ use App\Models\Contract\ContractType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\Debtor;
 use App\Providers\Database\ContractsProvider;
-use App\Services\CountService;
+use App\Services\Counters\LoanCountService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ContractsController
@@ -84,9 +83,12 @@ class ContractsController
         /**
          * @var Contract $contract
          */
-        $contract = Contract::query()->findOrFail($contractId);
+        $contract = Contract::findWithGroupId($contractId);
         if (!$contract) throw new Exception('cant find contract by id');
-        $countServise = new CountService();
+        $now  = Carbon::now();
+        $countService = new LoanCountService($contract, $now);
+        $result = $countService->count();
+        $delayDays = $now->diffInDays($contract->due_date);
         return [ 'contract' => [
             'name'=>$contract->type->name,
             'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
@@ -99,12 +101,12 @@ class ContractsController
             'number' => $contract->number,
             'sum_issue' => $contract->issued_sum,
             'due_date' => $contract->due_date->format(RUS_DATE_FORMAT),
-            'delayDays' => $countServise->countDelay($contract->due_date, now()), //CountService
-            'mainToday' => 1,
+            'delayDays' => $delayDays,
+            'mainToday' => $result->main,
             'percent' => $contract->percent,
-            'percentToday'=> 1,
+            'percentToday'=> $result->percents,
             'penalty' => $contract->penalty,
-            'penaltyToday' => 10, //CountService
+            'penaltyToday' => $result->penalties,
             'paymentsCount' => 1,
             'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
             'executiveDocName' => 'dummy'

@@ -20,7 +20,6 @@ class LoanCountService extends CountService
     {
         parent::__construct($contract, $endDate);
         $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
-        $this->count();
     }
 
     protected function countLimitedDate(Carbon $currentDate): void
@@ -40,7 +39,7 @@ class LoanCountService extends CountService
             $countedDay += $this->sum->main / 365 * $this->penalty / 100;
         }
         $days = $this->limited->limit / $countedDay + 1;
-        $this->limitedDate = $currentDate->addDays($days);
+        $this->limitedDate = $currentDate->clone()->addDays($days);
     }
 
     protected function countPeriod(Carbon $startDate, Carbon $endDate): void
@@ -69,7 +68,7 @@ class LoanCountService extends CountService
                     $this->sum->percents = $this->limited->limitSum - $this->sum->penalties;
                     $this->addBreak($this->limitedDate);
                 } else {
-                    $this->sum->percents = $this->limited->sum;
+                    $this->sum->percents = $this->limited->limitSum;
                     $this->addBreak($this->limitedDate, null, true);
                     $this->countPenaltiesPeriod($this->limitedDate, $endDate);
                 }

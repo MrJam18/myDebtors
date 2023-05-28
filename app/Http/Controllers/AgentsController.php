@@ -60,8 +60,8 @@ class AgentsController extends Controller
             $name->patronymic = $formData['patronymic'];
             $name->save();
             $agent->name()->associate($name);
-            $agent->is_default = $data['is_default'];
-            $agent->no_show_group = $data['no_show_group'];
+            $agent->is_default = $formData['is_default'];
+            $agent->no_show_group = $formData['no_show_group'];
             $agent->enclosure = $formData['enclosure'];
             $agent->user()->associate($user);
             $agent->address()->associate($address);
@@ -78,14 +78,9 @@ class AgentsController extends Controller
     /**
      * @throws Exception
      */
-    function getOne($id): array
+    function getOne(Agent $agent): array
     {
-        /**
-         * @var $agent Agent
-         */
-        $agent = Agent::query()->find($id);
-        if(!$agent) throw new Exception('cant find agent by id ' . $id);
-
+        toConsole($agent->no_show_group);
         return [
             'name' => $agent->name->name,
             'surname' => $agent->name->surname,
@@ -106,9 +101,7 @@ class AgentsController extends Controller
         $input = $request->all();
         $formData=$input['formData'];
         $agentId = $input['id'];
-        $agent = Agent::query()->find($agentId);
-        if(!$agent) throw new Exception('cant find agent by id ' . $agentId);
-
+        $agent = Agent::findWithGroupId($agentId);
         // Обработка данных формы
         foreach ($formData as $key => $value) {
             if (in_array($key, ['name', 'surname', 'patronymic'])) {
@@ -150,28 +143,22 @@ class AgentsController extends Controller
             }
         }
         // Обработка адреса
-        if (isset($input['address']) && $input['address'] != 'initial') {
+        if ($input['address'] !== 'initial') {
             $updatedAddress = $addressService->updateAddress($agent->address, $input['address']);
             $agent->address()->associate($updatedAddress);
         }
         // Обработка checkbox
-        if (isset($input['is_default']) and $input['no_show_group']){
-            $agent->no_show_group=$input['no_show_group'];
-            $agent->is_default = $input['is_default'];
-        }
-
+            $agent->no_show_group=$formData['no_show_group'];
+            $agent->is_default = $formData['is_default'];
         if ($agent->save()) Log::info('saved'); // сохраняем обновленного агента
-
         return response()->json($agent, 200);
     }
 
-    public function delete($id): JsonResponse
+    public function delete(Agent $agent): JsonResponse
     {
-        $agent = Agent::query()->find($id);
-        if(!$agent) throw new Exception('cant find agent by id ' . $id);
+        $agent->delete();
         $agent->address?->delete();
         $agent->passport?->delete();
-        $agent->delete();
         return response()->json(['success' => 'Agent deleted'], 200);
 
     }

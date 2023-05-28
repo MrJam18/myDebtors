@@ -45,6 +45,17 @@ class CustomBuilder extends Builder
         return $this;
     }
 
+    function searchOne(array $byColumns, string &$search): static
+    {
+        $this->where(function(CustomBuilder $query) use(&$byColumns, &$search) {
+            foreach ($byColumns as $column)
+            {
+                $query->orWhereRaw("LOWER($column) LIKE LOWER(?)", ['%' . $search . '%']);
+            }
+        });
+        return $this;
+    }
+
     function byGroupId(int $groupId): static
     {
         $in = User::query()->where('group_id', '=', $groupId)->get('id')->map(function (User $user) {

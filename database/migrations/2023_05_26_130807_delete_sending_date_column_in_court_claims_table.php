@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('agents', function (Blueprint $table) {
-            $table->foreignId('passport_id')->nullable()->constrained()->after('name_id');
+        Schema::table('court_claims', function (Blueprint $table) {
+            $table->dropColumn('sending_date');
         });
     }
 
@@ -21,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('agents', function (Blueprint $table) {
-            $table->dropForeign(['passport_id']);
-            $table->dropColumn('passport_id');
+        Schema::table('court_claims', function (Blueprint $table) {
+            $table->date('sending_date');
         });
     }
 };

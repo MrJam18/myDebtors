@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('contracts', function (Blueprint $table) {
-            $table->foreignId('cession_id')->nullable()->constrained();
+        Schema::table('agents', function (Blueprint $table) {
+            $table->foreignId('address_id')->constrained();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('contracts', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('cession_id');
+        Schema::table('agents', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('address_id');
         });
     }
 };

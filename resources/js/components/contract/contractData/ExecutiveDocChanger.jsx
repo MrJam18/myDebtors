@@ -57,10 +57,10 @@ const ExecutiveDocChanger = ({setShow}) => {
                 {showCreateBailiff && <CreateBailiff setShow={setShowCreateBailiff} setNewValue={setBailiff} /> }
                 {showCourtCreator.show && <CourtCreator setValue={setCourt} setShow={showCourtCreator.setShow} show={showCourtCreator.show} /> }
                 <div className={styles.contentBlock}>
-                    <SearchAndAddButton value={court} onClickButton={showCourtCreator.setShowTrue} serverAddress={'courts/findByName'} required setValue={setCourt} label='Суд, вынесший решение' />
+                    <SearchAndAddButton value={court} onClickAddButton={showCourtCreator.setShowTrue} serverAddress={'courts/findByName'} required setValue={setCourt} label='Суд, вынесший решение' />
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
-                    <SearchAndAddButton value={bailiff} serverAddress={'bailiffs/search'} required setValue={setBailiff} label='Отдел судебных приставов-исполнителей' onClickButton={onClickCreateBailiff} />
+                    <SearchAndAddButton value={bailiff} serverAddress={'bailiffs/search'} required setValue={setBailiff} label='Отдел судебных приставов-исполнителей' onClickAddButton={onClickCreateBailiff} />
                 </div>
                 <div className={styles.contentBlock}>
                     <EasyInput size={'small'}  className={styles.smallInput} pattern='lessThenNow' defaultValue={executiveDoc.dateIssue} type='date' name='dateIssue' required label='дата ИД' />

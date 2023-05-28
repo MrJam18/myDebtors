@@ -11,6 +11,8 @@ use App\Models\Auth\User;
 use App\Models\Auth\UserRole;
 use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
+use App\Models\CourtClaim\CourtClaimStatus;
+use App\Models\CourtClaim\CourtClaimType;
 use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\Passport\PassportType;
 use App\Models\Subject\Court\CourtLevel;
@@ -121,6 +123,15 @@ class DatabaseSeeder extends Seeder
         $this->setNameAndSave($model, "Кредит");
         $model = new Country();
         $this->setNameAndSave($model, 'Россия');
+        $model = new CourtClaimType();
+        $model = $this->setNameAndSave($model, 'Судебный приказ');
+        $this->setNameAndSave($model, 'Исковое заявление');
+        $model = new CourtClaimStatus();
+        $model = $this->setNameAndSave($model, 'Не готов');
+        $model = $this->setNameAndSave($model, "Отправлен");
+        $model = $this->setNameAndSave($model, 'Получено решение');
+        $model = $this->setNameAndSave($model, 'Получен исполнительный документ');
+
     }
 
     private function setNameAndSave(Model $model, string $name): Model

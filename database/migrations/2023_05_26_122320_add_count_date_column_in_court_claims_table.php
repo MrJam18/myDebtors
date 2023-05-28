@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('contracts', function (Blueprint $table) {
-            $table->dropColumn('is_contract_jurisdiction');
+        Schema::table('court_claims', function (Blueprint $table) {
+            $table->date('count_date');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('contract', function (Blueprint $table) {
-            $table->boolean('is_contract_jurisdiction');
+        Schema::table('court_claims', function (Blueprint $table) {
+            $table->dropColumn('count_date');
         });
     }
 };

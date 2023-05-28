@@ -6,14 +6,13 @@ const getContractStatuses = async () => {
     const { data } = await api.get('contracts/get-statuses');
     return data;
 };
-// @ts-expect-error TS(2554): Expected 4 arguments, but got 2.
-export const contractColumns = [new Column('Должник', 'debtorName', 'ref', { ref: '/debtors', refColName: 'debtorId' }),
+export const contractColumns = [
+    new Column('Должник', 'debtorName', 'ref', { ref: '/debtors', refColName: 'debtorId' }),
     new Column('статус', "status", 'selected', { func: getContractStatuses }),
     new Column('Действующий кредитор', 'creditor', 'text', { noChange, style: 'fullString' }),
     new Column('первоначальный кредитор', 'firstCreditor', undefined, { noChange, style: 'fullString' }),
     new Column('Договор цессии', 'cession', undefined, { noChange }),
-    new Column('Номер договора', "number"),
-    new Column('дата выдачи', 'date_issue', 'date'),
+    new Column('Номер договора', "number"), new Column('дата выдачи', 'date_issue', 'date'),
     new Column("сумма выдачи", 'sum_issue', 'money'),
     new Column('дата исполнения', 'due_date', 'date'),
     new Column('Количество дней просрочки', 'delayDays', undefined, { noChange }),
@@ -24,4 +23,5 @@ export const contractColumns = [new Column('Должник', 'debtorName', 'ref'
     new Column('неустойка на сегодня', 'penaltyToday', 'money', { noChange }),
     new Column('Количество платежей', 'paymentsCount', 'text', { noChange }),
     new Column('Дата создания договора', 'createdAt', 'date', { noChange }),
-    new Column('Исполнительный документ', 'executiveDocName', 'setter')];
+    new Column('Исполнительный документ', 'executiveDocName', 'setter')
+];

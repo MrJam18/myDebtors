@@ -7,10 +7,8 @@ import { useRef } from 'react';
 import Address from '../dummyComponents/Address/Address';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { standardFontSize } from "../../utils/standardFontSize";
-import PassportTypeSelect from "./PassportTypeSelect";
 import CustomModal from "../dummyComponents/CustomModal";
 import { capitalizeFirstLetter } from "../../utils/text/capitalize";
-import { useMedia } from "../../hooks/useMedia";
 import CustomCheckBox from "../dummyComponents/CustomCheckBox";
 import { AddDebtorDispatcher } from "../../store/Dispatchers/Debtor/AddDebtorDispatcher";
 import ServerSelect from "../dummyComponents/ServerSelect";
@@ -37,10 +35,10 @@ const standardInputMUISx = { '& .MuiInput-root': standardFontSize, '& .MuiInputL
 const checkBoxInputProps = { tabIndex: '-1' };
 const AddDebtor = ({ setAddDebtor, updateList }) => {
     const classes = useStyles();
-    const [fixedStyles, setFixedStyles] = useState({ top: '-65px' });
     const [noPatronymic, setNoPatronymic] = useState(false);
     const [noBirthPlace, setNoBirthPlace] = useState(false);
     const [passportTypeId, setPassportTypeId] = useState(1);
+    const [isForeign, setIsForeign] = useState(false);
     const [addressForDB, setAddressForDB] = useState();
     const [loading, setLoading] = useState(false);
     const debtorForm = useRef();
@@ -69,16 +67,15 @@ const AddDebtor = ({ setAddDebtor, updateList }) => {
             setLoading(false);
         };
     }, []);
-    useMedia('max-height: 800px', { bottom: '5px' }, setFixedStyles, { top: '-65px' });
     return (
     // @ts-expect-error TS(2741): Property 'onClose' is missing in type '{ children:... Remove this comment to see the full error message
-    <CustomModal header={'Создание должника'} show={true} fixedStyles={fixedStyles} customStyles={{ width: '40%', minWidth: '465px', maxWidth: '500px' }} setShow={setAddDebtor}>
+    <CustomModal header={'Создание должника'} show={true}  customStyles={{ width: '40%', minWidth: '465px', maxWidth: '500px' }} setShow={setAddDebtor}>
             <form onSubmit={formHandler} ref={debtorForm}>
                 <div className={styles.debtor__block}>
                 <div className={styles.header + ' ' + styles.header_first}>Информация о должнике</div>
                     <div className="position_relative">
                         <TextField label='Фамилия' onBlur={onBlurName} size='small' name='surname' required variant='standard' className={classes.input} sx={standardInputMUISx} fullWidth/>
-                        <CustomCheckBox tabIndex={-1} inputProps={checkBoxInputProps} name='isForeign' label='иностранный гражданин' className={classes.checkbox + ' ' + 'position_absolute'}/>
+                        <CustomCheckBox setChecked={setIsForeign} tabIndex={-1} inputProps={checkBoxInputProps} name='isForeign' label='иностранный гражданин' className={classes.checkbox + ' ' + 'position_absolute'}/>
           </div>
           <div className="position_relative">
                         <TextField onBlur={onBlurName} label='Имя' size='small' required sx={standardInputMUISx} variant='standard' className={classes.input} fullWidth name='name'/>

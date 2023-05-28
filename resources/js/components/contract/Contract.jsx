@@ -27,7 +27,7 @@ const Contract = () => {
         switch (menuValue) {
             case 'data':
                 return <ContractData contractId={contractId}/>
-            case 'payments': 
+            case 'payments':
                 return <ContractPayments />
             case 'actions':
                 return <Actions />
@@ -42,7 +42,7 @@ const Contract = () => {
         await dispatch(getCurrentContract(contractId));
         }
         catch(e){
-            console.log(e.response.data.message);
+          //  console.log(e.response.data.message);
             setError(e.response.data.message);
             setAlert('Ошибка!', "Ошибка при получении данных контракта!", 'error');
         }

@@ -18,8 +18,11 @@ class CessionsProvider extends AbstractProvider
 
     function getList(ListRequestData $data): CustomPaginator
     {
-        return $this->byGroupId(getGroupId(), $data->orderBy)->with(['cessions' => [
+
+        $builder = $this->byGroupId(getGroupId(), $data->orderBy)->with(['cessions' => [
             'assignee:id,name', 'assignor:id,name'
-        ]])->paginate($data->perPage, page: $data->page);
+        ]]);
+        if ($data->search) $builder->searchOne(['name'], $data->search);
+        return $builder->paginate($data->perPage, page: $data->page);
     }
 }

@@ -23,7 +23,6 @@ return new class extends Migration
     {
         Schema::table('agents', function (Blueprint $table) {
             $table->dropConstrainedForeignId('passport_id');
-            $table->dropColumn('passport_id');
         });
     }
 };

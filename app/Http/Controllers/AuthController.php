@@ -47,15 +47,15 @@ class AuthController extends AbstractController
             Auth::login($user);
             $user->is_online = true;
             $user->save();
-           return [
-               'token' => $token,
-               'user' => [
-                   'id' => $user->id,
-                   'groupId' => $user->group->id,
-                   'name' => $user->name->getFull(),
-                   'email' => $user->email
-               ]
-           ];
+            return [
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'groupId' => $user->group->id,
+                    'name' => $user->name->getFull(),
+                    'email' => $user->email
+                ]
+            ];
         }
         return response()->json(['error' => 'Unauthorized'])->setStatusCode(401);
     }
@@ -173,7 +173,7 @@ class AuthController extends AbstractController
             else $data =  [
                 'message' => 'Аккаунт успешно авторизован. Через 10 секунд вы будете перенаправлены на страницу входа.',
                 'redirect' => true
-                ];
+            ];
             $user->emailVerifyToken->delete();
         }
         else {

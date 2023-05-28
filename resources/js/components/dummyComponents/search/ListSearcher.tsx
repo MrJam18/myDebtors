@@ -2,7 +2,12 @@ import {TextField} from "@mui/material";
 import React from 'react';
 import useDebounce from "../../../hooks/useDebounce";
 
-function ListSearcher({setSearch, label='Поиск'}) {
+type Props = {
+    setSearch: React.Dispatch<React.SetStateAction<string>>,
+    label?: string
+}
+
+function ListSearcher({setSearch, label='Поиск'}: Props) {
     const onSearch = (val)=> {
         setSearch(val);
     }

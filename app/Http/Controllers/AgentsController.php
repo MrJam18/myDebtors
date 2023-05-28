@@ -12,10 +12,12 @@ use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\Name;
 use App\Providers\Database\AgentsProvider;
 use App\Services\AddressService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AgentsController extends Controller
 {
@@ -58,8 +60,8 @@ class AgentsController extends Controller
             $name->patronymic = $formData['patronymic'];
             $name->save();
             $agent->name()->associate($name);
-            $agent->is_default = $data['is_default'];
-            $agent->no_show_group = $data['no_show_group'];
+            $agent->is_default = $formData['is_default'];
+            $agent->no_show_group = $formData['no_show_group'];
             $agent->enclosure = $formData['enclosure'];
             $agent->user()->associate($user);
             $agent->address()->associate($address);
@@ -71,6 +73,94 @@ class AgentsController extends Controller
             $agent->passport()->associate($passport);
             $agent->save();
         });
+    }
+
+    /**
+     * @throws Exception
+     */
+    function getOne(Agent $agent): array
+    {
+        toConsole($agent->no_show_group);
+        return [
+            'name' => $agent->name->name,
+            'surname' => $agent->name->surname,
+            'patronymic' => $agent->name->patronymic,
+            'is_default' => $agent->is_default,
+            'no_show_group' => $agent->no_show_group,
+            'enclosure' => $agent->enclosure,
+            'fullAddress' => $agent->address?->getFull(), // проверить на существование адреса перед вызовом getFull()
+            'passportSeries' => $agent->passport?->series, // проверить на существование паспорта перед обращением к series
+            'passportNumber' => $agent->passport?->number, // проверить на существование паспорта перед обращением к number
+
+        ];
+    }
+
+    public function update(Request $request): JsonResponse
+    {
+        $addressService = new AddressService();
+        $input = $request->all();
+        $formData=$input['formData'];
+        $agentId = $input['id'];
+        $agent = Agent::findWithGroupId($agentId);
+        // Обработка данных формы
+        foreach ($formData as $key => $value) {
+            if (in_array($key, ['name', 'surname', 'patronymic'])) {
+                $agent->name->$key = $value;
+                $agent->name->save();
+            } elseif ($key === 'passportSeries' || $key === 'passportNumber') {
+                $passportData[$key] = $value;
+            } else {
+                $agent->$key = $value;
+            }
+        }
+        // Проверка, не пуст ли массив $passportData, который содержит информацию о паспорте
+
+        if (!empty($passportData)) {
+            // Если у агента уже есть паспорт (связанный объект Passport), то мы его обновляем
+            if ($agent->passport) {
+                // Если в массиве $passportData есть ключ 'passportSeries', обновляем серию паспорта агента
+                if (isset($passportData['passportSeries'])) {
+                    $agent->passport->series = $passportData['passportSeries'];
+                }
+                // Если в массиве $passportData есть ключ 'passportNumber', обновляем номер паспорта агента
+                if (isset($passportData['passportNumber'])) {
+                    $agent->passport->number = $passportData['passportNumber'];
+                }
+                $agent->passport->save();
+            } else {
+                // Если у агента нет связанного объекта Passport, создаем новый объект Passport
+                $passport = new Passport;
+                // Если в массиве $passportData есть ключ 'passportSeries', устанавливаем серию нового паспорта
+                if (isset($passportData['passportSeries'])) {
+                    $passport->series = $passportData['passportSeries'];
+                }
+                // Если в массиве $passportData есть ключ 'passportNumber', устанавливаем номер нового паспорта
+                if (isset($passportData['passportNumber'])) {
+                    $passport->number = $passportData['passportNumber'];
+                }
+                $passport->save();
+                $agent->passport()->associate($passport);
+            }
+        }
+        // Обработка адреса
+        if ($input['address'] !== 'initial') {
+            $updatedAddress = $addressService->updateAddress($agent->address, $input['address']);
+            $agent->address()->associate($updatedAddress);
+        }
+        // Обработка checkbox
+            $agent->no_show_group=$formData['no_show_group'];
+            $agent->is_default = $formData['is_default'];
+        if ($agent->save()) Log::info('saved'); // сохраняем обновленного агента
+        return response()->json($agent, 200);
+    }
+
+    public function delete(Agent $agent): JsonResponse
+    {
+        $agent->delete();
+        $agent->address?->delete();
+        $agent->passport?->delete();
+        return response()->json(['success' => 'Agent deleted'], 200);
+
     }
 
 

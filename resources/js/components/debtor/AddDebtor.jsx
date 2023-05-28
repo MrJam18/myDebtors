@@ -35,7 +35,6 @@ const standardInputMUISx = { '& .MuiInput-root': standardFontSize, '& .MuiInputL
 const checkBoxInputProps = { tabIndex: '-1' };
 const AddDebtor = ({ setAddDebtor, updateList }) => {
     const classes = useStyles();
-    // const [fixedStyles, setFixedStyles] = useState({ top: '-65px' });
     const [noPatronymic, setNoPatronymic] = useState(false);
     const [noBirthPlace, setNoBirthPlace] = useState(false);
     const [passportTypeId, setPassportTypeId] = useState(1);
@@ -76,7 +75,6 @@ const AddDebtor = ({ setAddDebtor, updateList }) => {
                 <div className={styles.header + ' ' + styles.header_first}>Информация о должнике</div>
                     <div className="position_relative">
                         <TextField label='Фамилия' onBlur={onBlurName} size='small' name='surname' required variant='standard' className={classes.input} sx={standardInputMUISx} fullWidth/>
-
                         <CustomCheckBox setChecked={setIsForeign} tabIndex={-1} inputProps={checkBoxInputProps} name='isForeign' label='иностранный гражданин' className={classes.checkbox + ' ' + 'position_absolute'}/>
           </div>
           <div className="position_relative">

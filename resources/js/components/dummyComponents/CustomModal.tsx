@@ -3,11 +3,11 @@ import React, {useEffect, useState} from 'react';
 import styles from '../../css/customModal.module.css';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
-
+const defaultHeaderStyles = {maxWidth: '400px', display: 'none'}
 
 
 const CustomModal = ({children, show = true, setShow, onClose = null, customStyles = null, fixedStyles = null, header = null, customClassName = null}) => {
-    const [headerStyles, setHeaderStyles] = useState({maxWidth: '400px'})
+    const [headerStyles, setHeaderStyles] = useState(defaultHeaderStyles);
     const closeHandler = () => {
         if (onClose){
             onClose();
@@ -24,7 +24,7 @@ const CustomModal = ({children, show = true, setShow, onClose = null, customStyl
     }
     useEffect(()=> {
         if(customStyles?.width){
-            setHeaderStyles({maxWidth: customStyles.width});
+            setHeaderStyles({...defaultHeaderStyles, maxWidth: customStyles.width});
         }
     }, [customStyles])
 

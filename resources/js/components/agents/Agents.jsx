@@ -10,16 +10,16 @@ const headers = [{key: 'createdAt', name: 'Дата создания', type: 'da
 const Agents = () => {
     const update = useUpdate();
     const [changedAgentId, setChangedAgentId] = useState(false);
-    const onClickRow = (idd) => {
-        console.log(idd);
-        setChangedAgentId(idd);
+    const onClickRow = (id) => {
+        console.log(id)
+        setChangedAgentId(id);
     }
     return (
         <div className="firstWindow background">
             <div className="header">Управление представителями</div>
             <div className={"contentBox" + ' ' + styles.main}>
                 <AgentsToolBar setUpdate={update.set}  />
-                {changedAgentId && <ChangeAgent setUpdate={update.set} agent={changedAgentId} setShow={setChangedAgentId} /> }
+                {changedAgentId && <ChangeAgent setUpdate={update.set} agentId={changedAgentId} setShow={setChangedAgentId} /> }
                 <CustomList headers={headers} serverAddress={'/agents/list'} update={update.state} onClickRow={onClickRow} />
             </div>
         </div>

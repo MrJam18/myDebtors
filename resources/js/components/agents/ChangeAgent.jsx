@@ -13,14 +13,13 @@ import {DeleteAgentDispatcher} from "../../store/Dispatchers/Agent/DeleteAgentDi
 
 const useStyles = makeStyles({
     deleteButton: {
-        width: '30%',
+        width: '180px',
         marginBottom: '20px'
     }
 })
 
 
 const ChangeAgent = ({setShow, agentId, setUpdate}) => {
-    const [originalAgent, setOriginalAgent] = useState({});
     const classes = useStyles();
     const [address, setAddress] = useState('initial');
     const [error, setError] = useState(false);
@@ -28,15 +27,11 @@ const ChangeAgent = ({setShow, agentId, setUpdate}) => {
     const [buttonLoading, setButtonLoading] = useState(false);
     const [agent, setAgent] = useState({});
     const form = useRef();
-    const [isDefaultAgent, setIsDefaultAgent] = useState(agent.isDefault);
-    const [noShowGroup, setNoShowGroup] = useState(agent.noShowGroup);
     const [showDeleteWarning, setShowDeleteWarning] = useState(false);
     const formHandler = async (ev) => {
         ev.preventDefault();
         const dispatcher = new ChangeAgentDispatcher(setError, setButtonLoading, form, setShow);
         dispatcher.addData('id', agentId);
-        dispatcher.addData('no_show_group', noShowGroup);
-        dispatcher.addData('is_default', isDefaultAgent);
         dispatcher.addData('address', address);
         await dispatcher.handle();
         setUpdate(true);
@@ -44,6 +39,7 @@ const ChangeAgent = ({setShow, agentId, setUpdate}) => {
     const deleteHandler = async () => {
         const dispatcher = new DeleteAgentDispatcher(setError, setLoading, null, setShow);
         dispatcher.addData('id', agentId);
+        dispatcher.addNoReqData('update', setUpdate);
         await dispatcher.handle();
         setShowDeleteWarning(false);
     }
@@ -51,7 +47,10 @@ const ChangeAgent = ({setShow, agentId, setUpdate}) => {
         setLoading(true);
         api.get('agents/get-one/' + agentId)
             .then((res) => {
-                if (res.data) setAgent(res.data);
+                if (res.data) {
+                    const data = res.data;
+                    setAgent(data);
+                }
             })
             .catch((reason) => Alert.setError('Ошибка при получении представителя', reason))
             .finally(() => setLoading(false));
@@ -69,7 +68,7 @@ const ChangeAgent = ({setShow, agentId, setUpdate}) => {
                     <>
                     <div className="header_small">Изменение представителя</div>
                     <Button color='error' onClick={()=>setShowDeleteWarning(true)} className={classes.deleteButton} variant='contained' > Удалить агента </Button>
-                    <Agent setAddress={setAddress} setDefaultAgent={setIsDefaultAgent} setNoShowGroup={setNoShowGroup} defaultValues={agent} />
+                    <Agent setAddressForDB={setAddress} defaultValues={agent} />
                     <ButtonInForm loading={buttonLoading} />
                     <div className="error">{error}</div>
 

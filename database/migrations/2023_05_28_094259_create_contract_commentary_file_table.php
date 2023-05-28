@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('agents', function (Blueprint $table) {
-            $table->foreignId('passport_id')->constrained();
+        Schema::create('contract_commentary_file', function (Blueprint $table) {
+            $table->id();
+            $table->string('file_url');
+            $table->foreignId('commentary_id')->constrained('contract_commentary');
+            $table->timestamps();
         });
     }
 
@@ -21,6 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+
         Schema::table('agents', function (Blueprint $table) {
             $table->dropConstrainedForeignId('passport_id');
         });

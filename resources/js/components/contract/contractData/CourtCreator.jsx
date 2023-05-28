@@ -20,9 +20,9 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
     const [addressError, setAddressError] = useState(false);
     const levels = useSelector(getCourtsLevels);
     const types = useSelector(getCourtsTypes);
-    const getNecessary =  async () => {
-       await dispatch(recieveCourtTypes());
-       await dispatch(recieveCourtLevels());
+    const getNecessary =  () => {
+        dispatch(recieveCourtTypes());
+        dispatch(recieveCourtLevels());
     }
     useEffect(getNecessary, []);
     const onSubmit = async () => {
@@ -63,7 +63,7 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
              <EasySelect name='courtLevelId' label='Уровень' variants={levels} />
              </div>
              <div className={styles.courtCreator__inputMargin}>
-             <Address error={addressError} setError={setAddressError} setAdressForDB={setAddress} />
+             <Address error={addressError} setError={setAddressError} setAddressForDB={setAddress} />
              </div>
              <ButtonInForm type='button' loading={loading} onClick={onSubmit} />
              </form>

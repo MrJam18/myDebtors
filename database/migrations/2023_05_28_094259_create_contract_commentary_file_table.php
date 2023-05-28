@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('contracts', function (Blueprint $table) {
-            $table->dropColumn('is_contract_jurisdiction');
+        Schema::create('contract_commentary_file', function (Blueprint $table) {
+            $table->id();
+            $table->string('file_url');
+            $table->foreignId('commentary_id')->constrained('contract_commentary');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('contract', function (Blueprint $table) {
-            $table->boolean('is_contract_jurisdiction');
-        });
+        Schema::dropIfExists('contract_commentary_file');
     }
 };

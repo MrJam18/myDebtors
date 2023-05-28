@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon $created_at;
  * @property Carbon $updated_at;
  * @property string $name;
- * @property CourtLevel $level;
- * @property CourtType $type;
+ * @property CourtLevel $level_id;
+ * @property CourtType $type_id;
  * @property Collection $executiveDocuments;
  * @property Collection $courtClaims;
  */

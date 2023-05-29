@@ -10,13 +10,12 @@ use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\Debtor;
-use App\Providers\Database\ContractsProvider;
+use App\Providers\Database\Contracts\ContractsProvider;
 use App\Services\CountService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 

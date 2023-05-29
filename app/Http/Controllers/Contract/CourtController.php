@@ -19,7 +19,8 @@ class CourtController extends Controller
      * @param Request $request
      * @return void
      */
-    public function create(Request $request){
+    public function create(Request $request): void
+    {
         $court = new Court();
         $data = $request->all();
         //Log::info(print_r($data, true));
@@ -41,11 +42,15 @@ class CourtController extends Controller
         return CourtType::query()->get();
     }
 
-    public function findByName(SearchRequest $request){
+    public function findByName(SearchRequest $request): array
+    {
         $data = Court::query()->search(['name'=>$request->validated()])->get();
        // Log::info(print_r($data, true));
         return $data->map(function(Court $court){
-            return ['name'=> $court->name];
+            return [
+                'name'=> $court->name,
+                'id' => $court->id
+            ];
         });
     }
 }

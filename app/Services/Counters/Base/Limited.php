@@ -24,19 +24,19 @@ class Limited {
             $this->isLimitedPercents = false;
             $this->isLimited = false;
         }
-        elseif($this->compareIssuedDate('2016-03-28', '2016-12-31')) {
+        else if($this->compareIssuedDate('2016-03-28', '2016-12-31')) {
             $this->limit = $issued * 4;
             $this->isLimitedPenalty = false;
         }
-        elseif($this->compareIssuedDate('2016-12-31', '2019-01-27')) {
+        else if($this->compareIssuedDate('2016-12-31', '2019-01-27')) {
             $this->limit = $issued * 3;
             $this->isLimitedPenalty = false;
         }
-        elseif($this->compareIssuedDate('2019-01-27', '2019-06-30')) {
+        else if($this->compareIssuedDate('2019-01-27', '2019-06-30')) {
             $this->limit = $issued * 2.5;
             $this->isLimitedPenalty = true;
         }
-        elseif($this->compareIssuedDate('2019-06-30', '2019-12-31')) {
+        else if($this->compareIssuedDate('2019-06-30', '2019-12-31')) {
             $this->limit = $issued * 2;
             $this->isLimitedPenalty = true;
         }
@@ -49,8 +49,7 @@ class Limited {
 
     private function compareIssuedDate(string $firstDate, string $lastDate): bool
     {
-        return ($this->issuedDate >= Carbon::createFromFormat(ISO_DATE_FORMAT, $firstDate)) &&
-            (Carbon::createFromFormat(ISO_DATE_FORMAT, $lastDate) < $this->issuedDate);
+        return ($this->issuedDate >= new Carbon($firstDate)) && ($this->issuedDate < new Carbon($lastDate));
     }
 
     public function getPercents(): float {

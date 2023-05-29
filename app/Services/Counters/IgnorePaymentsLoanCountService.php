@@ -12,11 +12,12 @@ class IgnorePaymentsLoanCountService extends CountService
 {
     protected Limited $limited;
 
-    public function __construct(Contract $contract, Carbon $endDate)
-    {
-        parent::__construct($contract, $endDate);
-        $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
-    }
+//    public function __construct(Contract $contract, Carbon $endDate)
+//    {
+//        parent::__construct($contract, $endDate);
+//
+//    }
+
 
     protected function countPeriod(Carbon $startDate, Carbon $endDate): void
     {
@@ -31,9 +32,10 @@ class IgnorePaymentsLoanCountService extends CountService
             $this->limited->setPercents($this->limited->isLimitedPenalty ? $this->limited->limitSum - $this->sum->penalties : $this->limited->limitSum);
         }
     }
-    function count(): MoneySum
+    function count(Contract $contract, Carbon $endDate): MoneySum
     {
-        $result = parent::count();
+        $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
+        $result = parent::count($contract, $endDate);
         $this->countLimitedPercents();
         return $result;
     }

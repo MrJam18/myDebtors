@@ -109,7 +109,7 @@ class ContractsController
             'penaltyToday' => $result->penalties,
             'paymentsCount' => 1,
             'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
-            'executiveDocName' => 'dummy'
+            'executiveDocName' => $contract->executiveDocument->type->name
         ]];
     }
 

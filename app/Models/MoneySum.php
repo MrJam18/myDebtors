@@ -18,13 +18,14 @@ use Carbon\Carbon;
  */
 class MoneySum extends BaseModel
 {
+
     protected $fillable = [
         'sum',
         'percents',
         'penalties',
         'main'
     ];
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $casts = [
         'sum' => Money::class,

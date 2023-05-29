@@ -9,7 +9,7 @@ use App\Models\Subject\Court\Court;
 use App\Models\Subject\Court\CourtLevel;
 use App\Models\Subject\Court\CourtType;
 use App\Services\AddressService;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -42,7 +42,7 @@ class CourtController extends Controller
         return CourtType::query()->get();
     }
 
-    public function findByName(SearchRequest $request): array
+    public function findByName(SearchRequest $request): array | Collection
     {
         $data = Court::query()->search(['name'=>$request->validated()])->get();
        // Log::info(print_r($data, true));

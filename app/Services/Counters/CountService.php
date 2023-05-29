@@ -31,7 +31,23 @@ abstract class CountService
     ];
     protected float $fee;
 
-    public function __construct(Contract $contract, Carbon $endDate)
+//    public function __construct()
+//    {
+//        $this->percent = $contract->percent;
+//        $this->penalty = $contract->penalty;
+//        $this->startDate = $contract->issued_date;
+//        $this->endDate = $endDate;
+//        $this->dueDate = $contract->due_date;
+//        $this->issued = $contract->issued_sum;
+//        $this->sum = new MoneySum();
+//        $this->breaks = new Collection();
+//        $this->sum->main = $contract->issued_sum;
+//        $this->sum->percents = 0;
+//        $this->sum->penalties = 0;
+//        $this->years = new Years($this->startDate, $this->endDate, $contract->payments);
+//    }
+
+    function count(Contract $contract, Carbon $endDate): MoneySum
     {
         $this->percent = $contract->percent;
         $this->penalty = $contract->penalty;
@@ -45,10 +61,10 @@ abstract class CountService
         $this->sum->percents = 0;
         $this->sum->penalties = 0;
         $this->years = new Years($this->startDate, $this->endDate, $contract->payments);
-    }
-
-    function count(): MoneySum
-    {
+        $this->isPenaltiesCounted = [
+            'started' => false,
+            'ended' => false
+        ];
         $this->addBreak($this->startDate);
         /**
          * @var Year $firstYear
@@ -87,19 +103,19 @@ abstract class CountService
     protected function getPercents(Carbon $startDate, Carbon $endDate, float $percent): float
     {
         $days = $startDate->diffInDays($endDate);
-        if($startDate->isLeapYear()) $daysInYear = 366;
+        if($endDate->isLeapYear()) $daysInYear = 366;
         else $daysInYear = 365;
         return $this->sum->main * $days / $daysInYear * $percent / 100;
     }
 
     protected function countYear(Carbon $startDate, Carbon $endDate, Year $year): void
     {
-        if(!$year->payments->isEmpty()) $this->countPeriod($startDate, $year->payments->first());
+        if(!$year->payments->isEmpty()) $this->countPeriod($startDate, $year->payments->first()->date);
         else $this->countPeriod($startDate, $endDate);
         $year->payments->each(function (Payment $payment, int $index) use ($year, $endDate) {
             $this->addBreak($payment->date, $payment);
             $snapshot = $this->sum->replicate();
-            $this->sum->percents -= $payment->moneySum->sum;
+            $this->sum->percents -= $payment->money_sum->sum;
             if ($this->sum->percents < 0) {
                 $this->sum->main += $this->sum->percents;
                 $this->sum->percents = 0;
@@ -108,9 +124,9 @@ abstract class CountService
                     $this->sum->main = 0;
                 }
             }
-            $payment->moneySum->percents = $snapshot->percents - $this->sum->percents;
-            $payment->moneySum->penalties = $snapshot->penalties - $this->sum->penalties;
-            $payment->moneySum->main = $snapshot->main - $this->sum->main;
+            $payment->money_sum->percents = $snapshot->percents - $this->sum->percents;
+            $payment->money_sum->penalties = $snapshot->penalties - $this->sum->penalties;
+            $payment->money_sum->main = $snapshot->main - $this->sum->main;
             if (isset($year->payments[$index + 1])) $this->countPeriod($payment->date, $year->payments[$index + 1]->date);
             else $this->countPeriod($payment->date, $endDate);
         });
@@ -118,7 +134,7 @@ abstract class CountService
 
     protected function getLastYearDate(int $year): Carbon
     {
-        return Carbon::createFromFormat(ISO_DATE_FORMAT, $year . '-12-31');
+        return  new Carbon($year . '-12-31');
     }
 
     public function countFee(ContractType $type): float
@@ -166,4 +182,9 @@ abstract class CountService
         return $counted;
     }
     abstract protected function countPeriod(Carbon $startDate, Carbon $endDate): void;
+
+    static function getResult(Contract $contract, Carbon $endDate): MoneySum
+    {
+        return (new static())->count($contract, $endDate);
+    }
 }

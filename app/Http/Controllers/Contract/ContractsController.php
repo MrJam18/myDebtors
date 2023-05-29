@@ -107,7 +107,7 @@ class ContractsController
             'percentToday'=> $result->percents,
             'penalty' => $contract->penalty,
             'penaltyToday' => $result->penalties,
-            'paymentsCount' => 1,
+            'paymentsCount' => $contract->payments->count(),
             'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
             'executiveDocName' => 'dummy'
         ]];

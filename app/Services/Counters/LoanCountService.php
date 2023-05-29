@@ -5,6 +5,7 @@ namespace App\Services\Counters;
 
 use App\Models\Contract\Contract;
 use App\Models\Contract\Payment;
+use App\Models\MoneySum;
 use App\Services\Counters\Base\CountBreak;
 use App\Services\Counters\Base\Limited;
 use Carbon\Carbon;
@@ -16,10 +17,16 @@ class LoanCountService extends CountService
     protected bool $isPercentsCounted = true;
     protected bool $endFlag = false;
 
-    public function __construct(Contract $contract, Carbon $endDate)
+//    public function __construct(Contract $contract, Carbon $endDate)
+//    {
+//        parent::__construct($contract, $endDate);
+//        $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
+//    }
+
+    function count(Contract $contract, Carbon $endDate): MoneySum
     {
-        parent::__construct($contract, $endDate);
         $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
+        return parent::count($contract, $endDate);
     }
 
     protected function countLimitedDate(Carbon $currentDate): void
@@ -89,5 +96,8 @@ class LoanCountService extends CountService
     {
         $this->breaks->push(new CountBreak($date, $this->sum, $payment, $this->isPercentsCounted, $this->isPenaltiesCounted['ended'], $noPenalty));
     }
+
+
+
 
 }

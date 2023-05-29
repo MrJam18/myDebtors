@@ -102,7 +102,7 @@ class ContractsController
          * @var Contract $contract
          */
         $contract = Contract::findWithGroupId($contractId);
-       // Log::info(print_r($contract->executiveDocument, true));
+        // Log::info(print_r($contract->executiveDocument, true));
         if (!$contract) throw new Exception('cant find contract by id');
         $now  = Carbon::now();
         $countService = new LimitedLoanCountService();

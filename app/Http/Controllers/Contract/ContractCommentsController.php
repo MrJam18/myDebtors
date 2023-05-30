@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Contract;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ContractCommentaryController extends Controller
+class ContractCommentsController extends Controller
 {
 
 

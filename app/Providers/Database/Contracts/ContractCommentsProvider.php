@@ -11,7 +11,7 @@ use App\Models\Contract\ContractCommentary;
 use App\Providers\Database\AbstractProviders\AbstractProvider;
 use Illuminate\Support\ServiceProvider;
 
-class ContractsCommentaryProvider extends AbstractProvider
+class ContractCommentsProvider extends AbstractProvider
 {
 
     public function __construct()
@@ -22,8 +22,8 @@ class ContractsCommentaryProvider extends AbstractProvider
 
     function getList(ListRequestData $data): CustomPaginator
     {
-        return $this->byGroupId(getGroupId(), $data->orderBy)->with(['contracts_commentary' => [
-            'contract_id:id,number', 'comm:id,name'
+        return $this->byGroupId(getGroupId(), $data->orderBy)->with(['contracts_comments' => [
+            'contract_id:id,number', 'user_id:id,name', 'contract_comment_id:id, file_url'
         ]])->paginate($data->perPage, page: $data->page);
     }
 }

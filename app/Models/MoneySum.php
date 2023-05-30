@@ -25,3 +25,7 @@ class MoneySum extends BaseModel
     ];
     public $timestamps = true;
 }
+
+
+
+

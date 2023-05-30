@@ -18,7 +18,7 @@ const ChangerUI = ({ error, cessionGroupId = null, info, activeCession, header, 
 
  return (
   <>
-   <CustomModal customStyles={{width: '510px', minHeight: '473px'}} fixedStyles={{top: '-63px'}} setShow={setShow} header={header} >
+   <CustomModal customStyles={{width: '510px', minHeight: '473px'}} setShow={setShow} header={header} >
     <div className="header_small margin-bottom_10">{cessionName}</div>
     {
      info.loading ? <Loading size='90' bold='9' addStyles={{padding: '120px'}} /> : <>

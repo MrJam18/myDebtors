@@ -8,7 +8,7 @@ use App\Models\MoneySum;
 use App\Services\Counters\Base\Limited;
 use Carbon\Carbon;
 
-class IgnorePaymentsLoanCountService extends CountService
+class IgnorePaymentsLoanCountService extends LoanCountService
 {
     protected Limited $limited;
 

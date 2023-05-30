@@ -12,6 +12,7 @@ use App\Models\CourtClaim\CourtClaim;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\Debtor;
+use App\Models\Subject\Name;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -30,6 +31,8 @@ use Illuminate\Support\Collection;
  * @property float $penalty;
  * @property Carbon $status_changed_at;
  * @property boolean $is_contract_jurisdiction;
+ * @property integer $month_due_date;
+ * @property float $month_due_sum;
  * @property ContractStatus $status;
  * @property ContractType $type;
  * @property User $user;
@@ -51,14 +54,17 @@ class Contract extends BaseModel
         'percent',
         'penalty',
         'status_changed_at',
-        'is_contract_jurisdiction'
+        'is_contract_jurisdiction',
+        'month_due_date',
+        'month_due_sum'
     ];
     protected $casts = [
         'issued_date' => RUS_DATE_CAST,
         'due_date' => RUS_DATE_CAST,
         'percent' => Money::class,
         'penalty' => Money::class,
-        'issued_sum' => Money::class
+        'issued_sum' => Money::class,
+        'month_due_sum' => Money::class
     ];
     public $timestamps = true;
 
@@ -84,7 +90,7 @@ class Contract extends BaseModel
     }
     function debtor(): BelongsTo
     {
-        return $this->belongsTo(Debtor::class);
+        return $this->belongsTo(Debtor::class, 'debtor_id');
     }
     function executiveDocument(): HasOne
     {

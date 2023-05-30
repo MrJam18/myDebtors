@@ -12,5 +12,5 @@ function toConsole(mixed $data): void
 //        return true;
 //    }
 //    else return error_log('null');
-    fwrite(STDERR, print_r($data, TRUE));
+    error_log(print_r($data, TRUE));
 }

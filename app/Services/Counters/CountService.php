@@ -31,22 +31,6 @@ abstract class CountService
     ];
     protected float $fee;
 
-//    public function __construct()
-//    {
-//        $this->percent = $contract->percent;
-//        $this->penalty = $contract->penalty;
-//        $this->startDate = $contract->issued_date;
-//        $this->endDate = $endDate;
-//        $this->dueDate = $contract->due_date;
-//        $this->issued = $contract->issued_sum;
-//        $this->sum = new MoneySum();
-//        $this->breaks = new Collection();
-//        $this->sum->main = $contract->issued_sum;
-//        $this->sum->percents = 0;
-//        $this->sum->penalties = 0;
-//        $this->years = new Years($this->startDate, $this->endDate, $contract->payments);
-//    }
-
     function count(Contract $contract, Carbon $endDate): MoneySum
     {
         $this->percent = $contract->percent;
@@ -93,44 +77,13 @@ abstract class CountService
         $this->breaks->push(new CountBreak($date, $this->sum->replicate(), $payment));
     }
 
-    protected function countPercents(Carbon $startDate, Carbon $endDate): float
-    {
-        $counted = $this->getPercents($startDate, $endDate, $this->percent);
-        $this->sum->percents += $counted;
-        return $counted;
-    }
+//    protected function countPercents(Carbon $startDate, Carbon $endDate): float
+//    {
+//        $counted = $this->getPercents($startDate, $endDate, $this->percent);
+//        $this->sum->percents += $counted;
+//        return $counted;
+//    }
 
-    protected function getPercents(Carbon $startDate, Carbon $endDate, float $percent): float
-    {
-        $days = $startDate->diffInDays($endDate);
-        if($endDate->isLeapYear()) $daysInYear = 366;
-        else $daysInYear = 365;
-        return $this->sum->main * $days / $daysInYear * $percent / 100;
-    }
-
-    protected function countYear(Carbon $startDate, Carbon $endDate, Year $year): void
-    {
-        if(!$year->payments->isEmpty()) $this->countPeriod($startDate, $year->payments->first()->date);
-        else $this->countPeriod($startDate, $endDate);
-        $year->payments->each(function (Payment $payment, int $index) use ($year, $endDate) {
-            $this->addBreak($payment->date, $payment);
-            $snapshot = $this->sum->replicate();
-            $this->sum->percents -= $payment->money_sum->sum;
-            if ($this->sum->percents < 0) {
-                $this->sum->main += $this->sum->percents;
-                $this->sum->percents = 0;
-                if($this->sum->main < 0) {
-                    $this->sum->penalties += $this->sum->main;
-                    $this->sum->main = 0;
-                }
-            }
-            $payment->money_sum->percents = $snapshot->percents - $this->sum->percents;
-            $payment->money_sum->penalties = $snapshot->penalties - $this->sum->penalties;
-            $payment->money_sum->main = $snapshot->main - $this->sum->main;
-            if (isset($year->payments[$index + 1])) $this->countPeriod($payment->date, $year->payments[$index + 1]->date);
-            else $this->countPeriod($payment->date, $endDate);
-        });
-    }
 
     protected function getLastYearDate(int $year): Carbon
     {
@@ -165,26 +118,47 @@ abstract class CountService
         $this->fee = $fee;
         return $this->fee;
     }
-    protected function countPenalties(Carbon $startDate, Carbon $endDate): float
-    {
-        $counted = $this->getPercents($startDate, $endDate, $this->penalty);
-        $this->sum->penalties += $counted;
-        return $counted;
-    }
-    protected function countPenaltiesPeriod($startDate, $endDate): float {
-        $counted = 0;
-        if ($this->isPenaltiesCounted['started']) {
-            $counted = $this->countPenalties($startDate, $endDate);
-        } elseif ($endDate > $this->dueDate) {
-            $this->isPenaltiesCounted['started'] = true;
-            $counted = $this->countPenalties($this->dueDate, $endDate);
-        }
-        return $counted;
-    }
-    abstract protected function countPeriod(Carbon $startDate, Carbon $endDate): void;
+//    protected function countPenalties(Carbon $startDate, Carbon $endDate): float
+//    {
+//        $counted = $this->getPercents($startDate, $endDate, $this->penalty);
+//        $this->sum->penalties += $counted;
+//        return $counted;
+//    }
+//    protected function countPenaltiesPeriod($startDate, $endDate): float {
+//        $counted = 0;
+//        if ($this->isPenaltiesCounted['started']) {
+//            $counted = $this->countPenalties($startDate, $endDate);
+//        } elseif ($endDate > $this->dueDate) {
+//            $this->isPenaltiesCounted['started'] = true;
+//            $counted = $this->countPenalties($this->dueDate, $endDate);
+//        }
+//        return $counted;
+//    }
 
     static function getResult(Contract $contract, Carbon $endDate): MoneySum
     {
         return (new static())->count($contract, $endDate);
     }
+
+    protected function countYear(Carbon $startDate, Carbon $endDate, Year $year): void
+    {
+        if(!$year->payments->isEmpty()) $this->countPeriod($startDate, $year->payments->first()->date);
+        else $this->countPeriod($startDate, $endDate);
+        $year->payments->each(function (Payment $payment, int $index) use ($year, $endDate) {
+            $this->addBreak($payment->date, $payment);
+            $this->countPayment($payment);
+            if (isset($year->payments[$index + 1])) $this->countPeriod($payment->date, $year->payments[$index + 1]->date);
+            else $this->countPeriod($payment->date, $endDate);
+        });
+    }
+    public function getBreaks(): Collection
+    {
+        return $this->breaks;
+    }
+    abstract protected function countPercents(Carbon $startDate, Carbon $endDate): float;
+    abstract protected function countPenalties(Carbon $startDate, Carbon $endDate): float;
+//    abstract protected function countPenaltiesPeriod(Carbon $startDate, Carbon $endDate): float;
+    abstract protected function countPeriod(Carbon $startDate, Carbon $endDate): void;
+    abstract protected function countPayment(Payment $payment): void;
+
 }

@@ -8,7 +8,7 @@ use App\Models\MoneySum;
 use App\Services\Counters\IgnorePaymentsLoanCountService;
 use Carbon\Carbon;
 
-class IgnorePaymentLoanCountServiceTest extends LoanCounterTest
+class IgnorePaymentCountServiceTest extends CounterTest
 {
 
     public function __construct(string $name)

@@ -5,8 +5,7 @@ namespace App\Providers\Database;
 
 use App\Http\Requests\Base\ListRequestData;
 use App\Models\Base\CustomPaginator;
-use App\Models\Subject\Debtor;
-use App\Models\Subject\Name;
+use App\Models\Subject\People\Debtor;
 
 class DebtorsProvider extends AbstractProviders\AbstractProvider
 {

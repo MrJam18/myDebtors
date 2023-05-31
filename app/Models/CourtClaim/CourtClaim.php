@@ -6,8 +6,8 @@ namespace App\Models\CourtClaim;
 use App\Models\Base\BaseModel;
 use App\Models\Contract\Contract;
 use App\Models\MoneySum;
-use App\Models\Subject\Agent;
 use App\Models\Subject\Court\Court;
+use App\Models\Subject\People\Agent;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

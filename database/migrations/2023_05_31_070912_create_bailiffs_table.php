@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('bailiffs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('name_id')->constrained();
+            $table->foreignId('position_id')->constrained('bailiff_positions');
+            $table->foreignId('department_id')->constrained('bailiff_departments');
         });
     }
 

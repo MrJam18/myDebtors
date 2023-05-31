@@ -3,15 +3,18 @@ declare(strict_types=1);
 
 namespace App\Models\Subject\Bailiff;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\BaseModel;
+use App\Models\Subject\People\Name;
+use App\Models\Base\BaseModel;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id;
  * @property Carbon $created_at;
  * @property Carbon $updated_at;
- * @property $END$
+ * @property Name $name;
+ * @property BailiffPosition $position;
+ * @property BailiffDepartment $department;
  */
 class Bailiff extends BaseModel
 {
@@ -19,4 +22,17 @@ class Bailiff extends BaseModel
 
     ];
     public $timestamps = true;
+
+    function name(): BelongsTo
+    {
+        return $this->belongsTo(Name::class);
+    }
+    function position(): BelongsTo
+    {
+        return $this->belongsTo(BailiffPosition::class);
+    }
+    function department(): BelongsTo
+    {
+        return $this->belongsTo(BailiffDepartment::class);
+    }
 }

@@ -18,8 +18,7 @@ use App\Models\Passport\PassportType;
 use App\Models\Subject\Court\CourtLevel;
 use App\Models\Subject\Court\CourtType;
 use App\Models\Subject\Creditor\CreditorType;
-use App\Models\Subject\Name;
-use Carbon\Carbon;
+use App\Models\Subject\People\Name;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 

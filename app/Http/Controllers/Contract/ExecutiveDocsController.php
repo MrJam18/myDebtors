@@ -7,7 +7,7 @@ use App\Models\Contract\Contract;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
 use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\MoneySum;
-use App\Models\Subject\Bailiff;
+use App\Models\Subject\Bailiff\BailiffDepartment;
 use App\Models\Subject\Court\Court;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -32,7 +32,7 @@ class ExecutiveDocsController extends Controller
         $exDoc->fee = $data['fee'];
         $court = Court::find($data['courtId']);
         $exDoc->court()->associate($court);
-        $bailiff = Bailiff::find($data['bailiffId']);
+        $bailiff = BailiffDepartment::find($data['bailiffId']);
         $exDoc->bailiff()->associate($bailiff);
         $contract = Contract::find($data['contractId']);
         $exDoc->contract()->associate($contract);

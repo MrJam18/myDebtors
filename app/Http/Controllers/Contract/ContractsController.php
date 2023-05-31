@@ -9,7 +9,7 @@ use App\Models\Contract\Contract;
 use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
 use App\Models\Subject\Creditor\Creditor;
-use App\Models\Subject\Debtor;
+use App\Models\Subject\People\Debtor;
 use App\Providers\Database\ContractsProvider;
 use App\Services\Counters\LimitedLoanCountService;
 use Carbon\Carbon;

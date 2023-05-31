@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('number');
             $table->date('begin_date');
             $table->date('end_date')->nullable();
-            $table->foreignId('status_id')->constrained();
+            $table->foreignId('status_id')->constrained('enforcement_proceeding_statuses');
             $table->date('status_date');
             $table->foreignId('bailiff_id')->constrained();
             $table->foreignId('bailiff_department_id')->constrained();

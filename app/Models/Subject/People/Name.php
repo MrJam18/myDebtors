@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Models\Subject;
+namespace App\Models\Subject\People;
 
 use App\Models\Base\BaseModel;
 use Carbon\Carbon;

@@ -6,7 +6,7 @@ namespace App\Models\ExecutiveDocument;
 use App\Models\Base\BaseModel;
 use App\Models\Contract\Contract;
 use App\Models\MoneySum;
-use App\Models\Subject\Bailiff;
+use App\Models\Subject\Bailiff\BailiffDepartment;
 use App\Models\Subject\Court\Court;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $resolution_date;
  * @property Contract $contract;
  * @property ExecutiveDocumentType $type;
- * @property Bailiff $bailiff;
+ * @property BailiffDepartment $bailiff;
  * @property Court $court;
  * @property MoneySum $moneySum;
  */
@@ -47,7 +47,7 @@ class ExecutiveDocument extends BaseModel
     }
     function bailiff(): BelongsTo
     {
-        return $this->belongsTo(Bailiff::class);
+        return $this->belongsTo(BailiffDepartment::class);
     }
     function court(): BelongsTo
     {

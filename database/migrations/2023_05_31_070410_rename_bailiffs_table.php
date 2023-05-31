@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::table('bailiffs', function (Blueprint $table) {
+            $table->rename('bailiff_departments');
+        });
     }
 
     /**
@@ -19,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('bailiff_departments', function (Blueprint $table) {
+            $table->rename('bailiffs');
+        });
     }
 };

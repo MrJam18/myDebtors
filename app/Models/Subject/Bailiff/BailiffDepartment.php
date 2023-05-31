@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Models\Subject;
+namespace App\Models\Subject\Bailiff;
 
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
@@ -18,6 +18,7 @@ use Ramsey\Collection\Collection;
  * @property string $name;
  * @property Address $address;
  * @property Collection $executiveDocuments;
+ * @property Collection $bailiffs;
  */
 class BailiffDepartment extends BaseModel
 {
@@ -33,5 +34,9 @@ class BailiffDepartment extends BaseModel
     function executiveDocuments(): HasMany
     {
         return $this->hasMany(ExecutiveDocument::class);
+    }
+    function bailiffs(): HasMany
+    {
+        return $this->hasMany(Bailiff::class);
     }
 }

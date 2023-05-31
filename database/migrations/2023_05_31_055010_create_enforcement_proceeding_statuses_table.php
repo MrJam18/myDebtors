@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('enforcement_proceeding_statuses', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('name');
         });
     }
 

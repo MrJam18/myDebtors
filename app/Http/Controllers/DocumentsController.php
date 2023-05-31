@@ -8,8 +8,8 @@ use App\Models\Contract\Contract;
 use App\Models\CourtClaim\CourtClaim;
 use App\Models\CourtClaim\CourtClaimStatus;
 use App\Models\CourtClaim\CourtClaimType;
-use App\Models\Subject\Agent;
 use App\Models\Subject\Court\Court;
+use App\Models\Subject\People\Agent;
 use Illuminate\Http\Request;
 
 class DocumentsController extends AbstractController

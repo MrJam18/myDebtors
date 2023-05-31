@@ -11,7 +11,7 @@ use App\Models\Contract\ContractType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\Debtor;
 use App\Providers\Database\ContractsProvider;
-use App\Services\Counters\LoanCountService;
+use App\Services\Counters\LimitedLoanCountService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -28,8 +28,8 @@ class ContractsController
             return [
                 'debtor' => $contract->debtor->name->getFull(),
                 'creditor' => $contract->creditor->shortOrName(),
-                'limitation' => $contract->due_date->addYears(3),
-                'date_issue' => $contract->issued_date,
+                'limitation' => $contract->due_date->addYears(3)->format(RUS_DATE_FORMAT),
+                'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
                 'id' => $contract->id
             ];
         });
@@ -86,8 +86,8 @@ class ContractsController
         $contract = Contract::findWithGroupId($contractId);
         if (!$contract) throw new Exception('cant find contract by id');
         $now  = Carbon::now();
-        $countService = new LoanCountService($contract, $now);
-        $result = $countService->count();
+        $countService = new LimitedLoanCountService();
+        $result = $countService->count($contract, $now);
         $delayDays = $now->diffInDays($contract->due_date);
         return [ 'contract' => [
             'name'=>$contract->type->name,
@@ -107,7 +107,7 @@ class ContractsController
             'percentToday'=> $result->percents,
             'penalty' => $contract->penalty,
             'penaltyToday' => $result->penalties,
-            'paymentsCount' => 1,
+            'paymentsCount' => $contract->payments->count(),
             'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
             'executiveDocName' => $contract->executiveDocument->type->name
         ]];

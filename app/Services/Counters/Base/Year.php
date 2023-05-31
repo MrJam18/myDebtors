@@ -21,7 +21,7 @@ class Year
 
     function getLastDate(): Carbon
     {
-        return Carbon::createFromFormat(ISO_DATE_FORMAT, $this->number . '-12-31');
+        return new Carbon($this->number . '-12-31');
     }
 
 }

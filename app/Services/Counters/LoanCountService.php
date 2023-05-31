@@ -3,91 +3,56 @@ declare(strict_types=1);
 
 namespace App\Services\Counters;
 
-use App\Models\Contract\Contract;
 use App\Models\Contract\Payment;
-use App\Services\Counters\Base\CountBreak;
-use App\Services\Counters\Base\Limited;
 use Carbon\Carbon;
 
-class LoanCountService extends CountService
+abstract class LoanCountService extends CountService
 {
-    protected Limited $limited;
-    protected Carbon $limitedDate;
-    protected bool $isPercentsCounted = true;
-    protected bool $endFlag = false;
 
-    public function __construct(Contract $contract, Carbon $endDate)
+    protected function countPayment(Payment $payment): void
     {
-        parent::__construct($contract, $endDate);
-        $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
-    }
-
-    protected function countLimitedDate(Carbon $currentDate): void
-    {
-        if ($this->sum->main == 0) {
-            $this->limitedDate = $this->endDate;
-            $this->limited->isLimited = false;
-            return;
-        }
-        if ($this->limited->limit <= 0) {
-            $this->limited->limit = 0;
-            $this->limitedDate = $currentDate;
-            return;
-        }
-        $countedDay = $this->sum->main / 365 * $this->percent / 100;
-        if ($this->limited->isLimitedPenalty) {
-            $countedDay += $this->sum->main / 365 * $this->penalty / 100;
-        }
-        $days = $this->limited->limit / $countedDay + 1;
-        $this->limitedDate = $currentDate->clone()->addDays($days);
-    }
-
-    protected function countPeriod(Carbon $startDate, Carbon $endDate): void
-    {
-        if($this->limited->isLimited) {
-            if($this->isPercentsCounted) {
-                $this->countLimitedDate($startDate);
-                $lastPercentsDate = $endDate;
-                if ($endDate > $this->limitedDate) {
-                    $lastPercentsDate = $this->limitedDate;
-                    $this->endFlag = true;
-                }
-                $this->limited->limit -= $this->countPercents($startDate, $lastPercentsDate);
-            }
-            if (!$this->isPenaltiesCounted['ended']) {
-                $endPenaltyDate = $this->endFlag ? $this->limitedDate : $endDate;
-                $countedPenalties = $this->countPenaltiesPeriod($startDate, $endPenaltyDate);
-                if ($this->limited->isLimitedPenalty) {
-                    $this->limited->limit -= $countedPenalties;
-                }
-            }
-            if ($this->endFlag) {
-                $this->isPercentsCounted = false;
-                if ($this->limited->isLimitedPenalty) {
-                    $this->isPenaltiesCounted['ended'] = true;
-                    $this->sum->percents = $this->limited->limitSum - $this->sum->penalties;
-                    $this->addBreak($this->limitedDate);
-                } else {
-                    $this->sum->percents = $this->limited->limitSum;
-                    $this->addBreak($this->limitedDate, null, true);
-                    $this->countPenaltiesPeriod($this->limitedDate, $endDate);
-                }
-                $this->endFlag = false;
-            }
-        } else {
-            $this->countPercents($startDate, $endDate);
-            if ($this->isPenaltiesCounted['started']) {
-                $this->countPenalties($startDate, $endDate);
-            } else if ($endDate > $this->dueDate) {
-                $this->countPenalties($this->dueDate, $endDate);
-                $this->isPenaltiesCounted['started'] = true;
+        $snapshot = $this->sum->replicate();
+        $this->sum->percents -= $payment->money_sum->sum;
+        if ($this->sum->percents < 0) {
+            $this->sum->main += $this->sum->percents;
+            $this->sum->percents = 0;
+            if ($this->sum->main < 0) {
+                $this->sum->penalties += $this->sum->main;
+                $this->sum->main = 0;
             }
         }
+        $payment->money_sum->percents = $snapshot->percents - $this->sum->percents;
+        $payment->money_sum->penalties = $snapshot->penalties - $this->sum->penalties;
+        $payment->money_sum->main = $snapshot->main - $this->sum->main;
     }
 
-    protected function addBreak(Carbon $date, Payment $payment = null, bool $noPenalty = false): void
+    protected function countPercents(Carbon $startDate, Carbon $endDate): float
     {
-        $this->breaks->push(new CountBreak($date, $this->sum, $payment, $this->isPercentsCounted, $this->isPenaltiesCounted['ended'], $noPenalty));
+        $counted = $this->getPercents($startDate, $endDate, $this->percent);
+        $this->sum->percents += $counted;
+        return $counted;
     }
-
+    protected function countPenalties(Carbon $startDate, Carbon $endDate): float
+    {
+        $counted = $this->getPercents($startDate, $endDate, $this->penalty);
+        $this->sum->penalties += $counted;
+        return $counted;
+    }
+    protected function countPenaltiesPeriod($startDate, $endDate): float {
+        $counted = 0;
+        if ($this->isPenaltiesCounted['started']) {
+            $counted = $this->countPenalties($startDate, $endDate);
+        } elseif ($endDate > $this->dueDate) {
+            $this->isPenaltiesCounted['started'] = true;
+            $counted = $this->countPenalties($this->dueDate, $endDate);
+        }
+        return $counted;
+    }
+    protected function getPercents(Carbon $startDate, Carbon $endDate, float $percent): float
+    {
+        $days = $startDate->diffInDays($endDate);
+        if($endDate->isLeapYear()) $daysInYear = 366;
+        else $daysInYear = 365;
+        return $this->sum->main * $days / $daysInYear * $percent / 100;
+    }
 }

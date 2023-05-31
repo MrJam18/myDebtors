@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "es2017",
+    "sourceMap": false,
+    "moduleResolution": "Node",
+    "jsx": "preserve",
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+  },
+  "exclude": [
+    "node_modules",
+    "vendor"
+  ],
+}

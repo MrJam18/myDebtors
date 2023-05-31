@@ -1,0 +1,1 @@
+export type MUITextFieldVariant = 'filled' | 'outlined' | 'standard';

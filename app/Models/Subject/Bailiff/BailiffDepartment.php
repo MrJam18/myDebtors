@@ -19,7 +19,7 @@ use Ramsey\Collection\Collection;
  * @property Address $address;
  * @property Collection $executiveDocuments;
  */
-class Bailiff extends BaseModel
+class BailiffDepartment extends BaseModel
 {
     protected $fillable = [
         'name'

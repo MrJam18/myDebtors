@@ -38,7 +38,7 @@ const ExecutiveDocChanger = ({setShow}) => {
     const onSubmit = async (ev) => {
         ev.preventDefault();
         setLoading(true);
-        const formData = formDataConverter(formRef);
+        const formData = formDataConverter(formRef.current);
         try {
         await dispatch(setExecutiveDoc(formData, court, bailiff, typeId, contractId, executiveDoc.id));
         setShow(false);

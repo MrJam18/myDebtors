@@ -31,8 +31,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = new User();
-        $user->email = 'mr.jam18@yandex.ru';
-        $user->password = '7262dD4600';
+        $user->email = 'amd@ya.ru';
+        $user->password = '123';
         $user->phone = '89821174497';
         $username = new Name();
         $username->name = 'Джамиль';

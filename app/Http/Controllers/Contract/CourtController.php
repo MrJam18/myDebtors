@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Contract;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SearchRequest;
+use App\Models\Requisites\BankRequisites;
+use App\Models\Requisites\Requisites;
 use App\Models\Subject\Court\Court;
 use App\Models\Subject\Court\CourtLevel;
 use App\Models\Subject\Court\CourtType;
 use App\Services\AddressService;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class CourtController extends Controller
@@ -21,16 +24,32 @@ class CourtController extends Controller
      */
     public function create(Request $request): void
     {
+        /**
+         * @param Court $court
+         */
+        $user = Auth::user();
         $court = new Court();
         $data = $request->all();
-        //Log::info(print_r($data, true));
+       //Log::info(print_r($data, true));
         $court->name = $data['court']['name'];
         $court->type_id = $data['court']['courtTypeId'];
         $court->level_id = $data['court']['courtLevelId'];
         $addressService = new AddressService();
         $address = $addressService->addAddress($data['address']);
         $court->address()->associate($address);
-        $court->save();
+        $requisites = new Requisites();
+        $bankRequisites = BankRequisites::find($data['court']['bankId']['id']);
+        $fields = ['inn', 'kbk', 'kpp', 'recipient', 'correspondent_account', 'checking_account'];
+        foreach ($fields as $field) {
+            if (isset($data['court'][$field])) {
+                $requisites->$field = $data['court'][$field];
+            }
+        }
+             $requisites->bank()->associate($bankRequisites);
+             $requisites->user()->associate($user);
+             $requisites->save();
+             $court->requisites()->associate($requisites);
+             $court->save();
     }
 
     public function getLevels(): Collection|array
@@ -50,6 +69,20 @@ class CourtController extends Controller
             return [
                 'name'=> $court->name,
                 'id' => $court->id
+            ];
+        });
+    }
+
+    function searchBankRequisites(SearchRequest $request): array | Collection
+    {
+        $data = BankRequisites::query()->search([
+            'name' => $request->validated(),
+            'BIK' => $request->validated()
+        ])->get();
+        return $data->map(function(BankRequisites $requisites){
+            return [
+                'id' => $requisites->id,
+                'name' => $requisites->name . ' ' . $requisites->BIK
             ];
         });
     }

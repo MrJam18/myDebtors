@@ -47,7 +47,11 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
 
     useEffect(getNecessary, []);
     const onSubmit = async () => {
-        const data = formDataConverter(form.current.elements);
+        let data = formDataConverter(form.current.elements);
+        data = {
+            ...data,
+            bankId: selectedBank.id,
+        };
         if (!address) setError('Заполните адрес!');
         else {
             setLoading(true);
@@ -106,11 +110,13 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
                         <div className="margin-bottom_10">
                             <SearchAndAddButton
                                 label='Банк получателя'
-                                serverAddress='creditors/search-bank-requisites'
+                                serverAddress='courts/search-bank-requisites'
                                 onClickAddButton={()=>setShowAddBanksRequisites(true)}
                                 required={false}
                                 value={selectedBank} // Здесь мы передаем значение selectedBank
-                                setValue={setSelectedBank} // Здесь мы передаем setSelectedBank как setValue
+                                setValue={(bank) => {
+                                    setSelectedBank(bank);
+                                }} // Здесь мы передаем setSelectedBank как setValue
                             />
                         </div>
                         <div className={styles.courtCreator__inputMargin}>

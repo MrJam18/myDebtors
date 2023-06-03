@@ -101,7 +101,11 @@ class CessionsController extends AbstractController
         return [
             'name' => $cessionGroup->name,
             'id' => $cessionGroup->id,
-            'cessions' => $cessionGroup->cessions()->with(['assignor:id,name,short', 'assignee:id,name,short', 'enclosures'])->get()->map(function (Cession $cession) {
+            'cessions' => $cessionGroup
+                ->cessions()
+                ->with(['assignor:id,name,short', 'assignee:id,name,short', 'enclosures'])
+                ->get()
+                ->map(function (Cession $cession) {
                 return [
                     'assignor' => $cession->assignor,
                     'assignee' => $cession->assignee,

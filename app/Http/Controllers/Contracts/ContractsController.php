@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Contract;
+namespace App\Http\Controllers\Contracts;
 
 use App\Enums\Database\ActionObjectEnum;
 use App\Enums\Database\ActionTypeEnum;
@@ -52,6 +52,9 @@ class ContractsController
         return ContractStatus::all()->toArray();
     }
 
+    /**
+     * @throws Exception
+     */
     function createOne(Request $request): void
     {
         $data = $request->all();

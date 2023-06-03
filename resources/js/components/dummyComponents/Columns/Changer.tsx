@@ -39,7 +39,7 @@ const Changer = ({data, setModal, setReqData}) => {
             await setReqData(column, value);
             setModal(false);
         } catch (e) {
-            console.log(e);
+            console.dir(e);
             setError(e.message);
         } finally {
             setLoading(false);

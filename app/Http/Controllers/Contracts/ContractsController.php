@@ -11,13 +11,12 @@ use App\Models\Contract\ContractType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\Debtor;
 use App\Providers\Database\Contracts\ContractsProvider;
-use App\Services\CountService;
+use App\Services\Counters\LimitedLoanCountService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-
 
 class ContractsController
 {
@@ -29,8 +28,8 @@ class ContractsController
             return [
                 'debtor' => $contract->debtor->name->getFull(),
                 'creditor' => $contract->creditor->shortOrName(),
-                'limitation' => $contract->due_date->addYears(3),
-                'date_issue' => $contract->issued_date,
+                'limitation' => $contract->due_date->addYears(3)->format(RUS_DATE_FORMAT),
+                'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
                 'id' => $contract->id
             ];
         });
@@ -42,9 +41,6 @@ class ContractsController
         return ContractStatus::all()->toArray();
     }
 
-    /**
-     * @throws Exception
-     */
     function createOne(Request $request): void
     {
         $data = $request->all();
@@ -78,21 +74,21 @@ class ContractsController
         $contract->user()->associate(Auth::user());
         $contract->save();
     }
-
-
     /**
      * @throws Exception
      */
-    public function getOne($id){
+    public function getOne($id): array
+    {
         $contractId = (int)$id;
         /**
          * @var Contract $contract
          */
-        $contract = Contract::query()->findOrFail($contractId);
-        Log::info($contract->cession->name);
+        $contract = Contract::findWithGroupId($contractId);
         if (!$contract) throw new Exception('cant find contract by id');
-        $countServiсe = new CountService();
-
+        $now  = Carbon::now();
+        $countService = new LimitedLoanCountService();
+        $result = $countService->count($contract, $now);
+        $delayDays = $now->diffInDays($contract->due_date);
         return [ 'contract' => [
             'name'=>$contract->type->name,
             'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
@@ -105,18 +101,20 @@ class ContractsController
             'number' => $contract->number,
             'sum_issue' => $contract->issued_sum,
             'due_date' => $contract->due_date->format(RUS_DATE_FORMAT),
-            'delayDays' => $countServiсe->countDelay($contract->due_date, now()), //CountService
-            'mainToday' => 1,
+            'delayDays' => $delayDays,
+            'mainToday' => $result->main,
             'percent' => $contract->percent,
-            'percentToday'=> 1,
+            'percentToday'=> $result->percents,
             'penalty' => $contract->penalty,
-            'penaltyToday' => 10, //CountService
-            'paymentsCount' => 1, //CountService
+            'penaltyToday' => $result->penalties,
+            'paymentsCount' => $contract->payments->count(),
             'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
-            'executiveDocName' => 'dummy'
+            'executiveDocName' => $contract->executiveDocument->type->name
         ]];
     }
-    public function changeContract(Request $request){
+
+    public function changeContract(Request $request): void
+    {
         /**
          * @var Contract $contract
          */
@@ -126,7 +124,7 @@ class ContractsController
         switch ($data['column']) {
             case 'statusId':
                 $contract->status()->associate($data['value']);
-               break;
+                break;
 
             case 'penalty':
                 $contract->penalty = $data['value'];
@@ -137,13 +135,13 @@ class ContractsController
             case 'sum_issue':
                 $contract->issued_sum = $data['value'];
                 break;
-            case 'mainToday':
-                return 'in process';
+            // case 'mainToday':
+            //     return 'in process';
             case 'number':
                 $contract->number = $data['value'];
         }
-      Log::info(print_r($data, true));
+        Log::info(print_r($data, true));
 ////
-           $contract->save();
+        $contract->save();
     }
 }

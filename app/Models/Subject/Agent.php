@@ -35,6 +35,11 @@ class Agent extends BaseModel
     ];
     public $timestamps = true;
 
+    protected $casts = [
+        'is_default' => 'boolean',
+        'no_show_group' => 'boolean',
+    ];
+
     function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

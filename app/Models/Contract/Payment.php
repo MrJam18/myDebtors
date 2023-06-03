@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $updated_at;
  * @property Carbon $date;
  * @property Contract $contract;
- * @property MoneySum $moneySum;
+ * @property MoneySum $money_sum;
  */
 class Payment extends BaseModel
 {

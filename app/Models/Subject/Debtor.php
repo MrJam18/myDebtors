@@ -30,7 +30,6 @@ class Debtor extends BaseModel
     protected $fillable = [
         'birth_date',
         'birth_place',
-        'name_id'
     ];
     protected $casts = [
         'birth_date' => 'datetime:d.m.Y'

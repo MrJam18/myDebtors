@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $created_at;
  * @property Carbon $updated_at;
  * @property float $fee;
- * @property Carbon $sending_date;
+ * @property Carbon $count_date;
  * @property Carbon $status_date;
  * @property CourtClaimStatus $status;
  * @property CourtClaimType $type;
@@ -24,12 +24,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Contract $contract;
  * @property Agent $agent;
  * @property MoneySum $moneySum;
+ *
  */
 class CourtClaim extends BaseModel
 {
     protected $fillable = [
         'fee',
-        'sending_date',
+        'count_date',
         'status_date'
     ];
     public $timestamps = true;

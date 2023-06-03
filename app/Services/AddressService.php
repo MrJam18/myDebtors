@@ -54,7 +54,6 @@ class AddressService extends BaseService
 
         $country = Country::updateOrCreate($this->getNameArr($currentAddress->country->name), $this->getNameArr($addressData->country));
         $currentAddress->country()->associate($country);
-
         $regionData = array_merge($this->getNameArr($currentAddress->region->name), ['country_id' => $currentAddress->country->id]);
         $region = Region::updateOrCreate($regionData, $this->getNameArr($addressData->region));
         $currentAddress->region()->associate($region);

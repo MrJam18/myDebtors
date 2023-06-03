@@ -1,3 +1,4 @@
+import {Alert} from "../../classes/Alert";
 import api from "../../http";
 
 
@@ -37,7 +38,7 @@ export const recieveCourtTypes = () => async dispatch => {
         dispatch(setCourtTypes(data));
     }
     catch(e){
-        throw new Error(e.message);
+        Alert.setError('Ошибка при получении типов судов', e);
     }
 }
 
@@ -47,7 +48,7 @@ export const recieveCourtLevels = () => async dispatch => {
         dispatch(setCourtLevels(data));
     }
     catch(e){
-        throw new Error(e.message);
+        Alert.setError('Ошибка при получении уровней судов', e);
     }
 }
 export const createCourt = (court, address) => async () => {

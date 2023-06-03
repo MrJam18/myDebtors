@@ -12,4 +12,5 @@
     border: none;
     background-color: #6a6868;
     border-radius: 50%;
+    z-index: 0;
 }

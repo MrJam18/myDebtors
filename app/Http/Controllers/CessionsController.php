@@ -126,7 +126,6 @@ class CessionsController extends AbstractController
 
     function deleteOne(CessionGroup $cessionGroup): void
     {
-        $this->throwExceptionIfGroupDontCompared($cessionGroup);
         DB::transaction(function () use ($cessionGroup) {
             $cessionGroup->cessions->each(function(Cession $cession){
                 $cession->enclosures->each(fn(CessionEnclosure $enclosure)=> $enclosure->delete());

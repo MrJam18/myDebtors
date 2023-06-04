@@ -1,29 +1,19 @@
 import React from 'react';
+import {saveFile} from "../http";
 
-/**
- *
- * @param shit fdsfdszfdzsf f dszf dsz fz fzd  f zs dzdsf
- * @param fuck fz zdf zdf zd d zdf z zd
- * @param ass fzds f zdf zdf dz  zfd dzf
- * @returns {JSX.Element}
- * @constructor
- */
-const Test = ({shit, fuck, ass}) => {
+const Test = ({}) => {
+    const onClick = ()=> {
+        saveFile('/test', 'test.docx');
+    }
+
     return (
         <div>
             <div>1234</div>
             <div tabIndex={2}>1234</div>
             <div tabIndex={3}>1234</div>
-            <div tabIndex={1}>dasdadsasda</div>
+            <button onClick={onClick}>download</button>
         </div>
     );
 };
 
 export default Test;
-
-Test(123, 321)
-
-
-function test2({param1, param2}) {
-    return param1 + param2
-}

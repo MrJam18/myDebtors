@@ -118,18 +118,22 @@ class DatabaseSeeder extends Seeder
         $model = $this->setNameAndSave($model, 'ИП возбуждено');
         $this->setNameAndSave($model, 'ИП окончено');
         $model = new ContractType();
-        $model = $this->setNameAndSave($model, 'займ');
-        $this->setNameAndSave($model, "Кредит");
+        $model = $this->setNameAndSave($model, 'Договор займа');
+        $this->setNameAndSave($model, "Кредитный договор");
         $model = new Country();
         $this->setNameAndSave($model, 'Россия');
         $model = new CourtClaimType();
-        $model = $this->setNameAndSave($model, 'Судебный приказ');
+        $model = $this->setNameAndSave($model, 'Заявление о выдаче судебного приказа');
         $this->setNameAndSave($model, 'Исковое заявление');
         $model = new CourtClaimStatus();
         $model = $this->setNameAndSave($model, 'Не готов');
         $model = $this->setNameAndSave($model, "Отправлен");
         $model = $this->setNameAndSave($model, 'Получено решение');
         $model = $this->setNameAndSave($model, 'Получен исполнительный документ');
+        $otherSeeder = new BailiffPositionsSeeder();
+        $otherSeeder->run();
+        $otherSeeder = new HolidaysSeeder();
+        $otherSeeder->run();
 
     }
 

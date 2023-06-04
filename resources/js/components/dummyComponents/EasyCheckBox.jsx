@@ -1,7 +1,9 @@
 import { Checkbox, FormControlLabel } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { standardFontSize } from "../../utils/standardFontSize";
-const EasyCheckBox = ({ name, onChange, defaultValue = false, className = null, size = 'small', rootStyles = standardFontSize, tabIndex = null, label }) => {
+const standardFontSize = {
+    fontSize: '16px'
+};
+const EasyCheckBox = ({ name, onChange, defaultValue = false, className = null, size = 'medium', rootStyles = standardFontSize, tabIndex = null, label }) => {
     const [value, setValue] = useState('f');
     const [checked, setChecked] = useState(defaultValue);
     const onChangeChecked = (ev) => {

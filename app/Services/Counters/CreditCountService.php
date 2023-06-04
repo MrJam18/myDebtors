@@ -24,6 +24,7 @@ class CreditCountService extends CountService
         $result->main += $this->penaltyMain;
         $result->percents += $this->penaltyPercents;
         $result->percents = floor($result->percents);
+        $result->countSum();
         return $result;
     }
 

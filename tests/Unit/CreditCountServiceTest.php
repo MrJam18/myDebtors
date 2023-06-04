@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Models\Contract\Contract;
+use App\Models\Contract\ContractType;
 use App\Services\Counters\CreditCountService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -58,6 +59,8 @@ class CreditCountServiceTest extends CounterTest
         $contract->payments = new Collection($payments);
         $contract->month_due_sum = $monthDueSum;
         $contract->month_due_date = $monthDueDate;
+        $contract->type()->associate(ContractType::find(2));
+
         return $contract;
     }
 

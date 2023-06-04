@@ -70,6 +70,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'phone',
         'remember_token',
     ];
+    public function newEloquentBuilder($query): CustomBuilder
+    {
+        return new CustomBuilder($query);
+    }
 
     function role(): BelongsTo
     {

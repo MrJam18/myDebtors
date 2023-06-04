@@ -7,13 +7,13 @@ import {contractsSlice} from "../../../store/contracts/reducer";
 import {contractsSelectors} from "../../../store/contracts/selectors";
 import EasySearch from "../../dummyComponents/search/EasySearch";
 import api from "../../../http";
-import ExecutiveDocChanger from "./ExecutiveDocChanger";
+import ExecutiveDocChanger from "../contractData/ExecutiveDocChanger";
 import {createIPInitDoc} from "../../../store/contracts/actions";
 // import {CreateIPInitController} from "../../../controllers/CreateIPInitController";
 
 const actions = contractsSlice.actions;
 
-const ExecutiveChooses = ({setShow, setError, setLoading, setFixedStyles}) => {
+const ExecutiveChooses = () => {
     const {contractId} = useParams();
     const formRef = useRef();
     const executiveDocName = useSelector(contractsSelectors.getExecutiveDocName);

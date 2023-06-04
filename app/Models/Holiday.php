@@ -18,6 +18,6 @@ class Holiday extends BaseModel
         'date',
         'name'
     ];
-    public $timestamps = true;
+    public $timestamps = false;
 
 }

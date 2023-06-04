@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Contract $contract;
  * @property Agent $agent;
  * @property MoneySum $moneySum;
+ * @property boolean $is_contract_jurisdiction;
+ * @property boolean $is_ignored_payments;
  *
  */
 class CourtClaim extends BaseModel
@@ -31,7 +33,9 @@ class CourtClaim extends BaseModel
     protected $fillable = [
         'fee',
         'count_date',
-        'status_date'
+        'status_date',
+        'is_contract_jurisdiction',
+        'is_ignored_payments'
     ];
     public $timestamps = true;
 

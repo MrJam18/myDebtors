@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Models\Contract;
 
-use App\Casts\Money;
 use App\Models\Action\Action;
 use App\Models\Auth\User;
 use App\Models\Base\BaseModel;
+use App\Models\Casts\Money;
 use App\Models\Cession\CessionGroup;
 use App\Models\CourtClaim\CourtClaim;
 use App\Models\ExecutiveDocument\ExecutiveDocument;

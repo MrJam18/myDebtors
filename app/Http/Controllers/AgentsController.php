@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaginateRequest;
+use App\Http\Requests\SearchRequest;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
+use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\People\Agent;
 use App\Models\Subject\People\Name;
 use App\Providers\Database\AgentsProvider;
@@ -12,6 +14,7 @@ use App\Services\AddressService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -156,9 +159,33 @@ class AgentsController extends Controller
         $agent->delete();
         $agent->address?->delete();
         $agent->passport?->delete();
-        return response()->json(['success' => 'Agent deleted'], 200);
-
+        $agent->name->delete();
+        return response()->json(['success' => 'Agent deleted']);
     }
+    public function getDefault(): ?array
+    {
+        /**
+         * @var Agent $agent
+         */
+        $agent = Agent::query()->where('user_id', Auth::id())->where('is_default', true)->first();
+        if($agent) return [
+            'name' => $agent->name->getFull(),
+            'id' => $agent->id
+        ];
+        else return null;
+    }
+    function getSearchList(SearchRequest $request): Collection
+    {
+        $list = Agent::query()->byGroupId(getGroupId())->searchByFullName($request->validated())->limit(5)->get();
+        toConsole(Agent::query()->byGroupId(getGroupId())->searchByFullName($request->validated())->limit(5)->toSql());
+        return $list->map(function (Agent $agent) {
+            return [
+              'id' => $agent->id,
+              'name' => $agent->name->getFull()
+            ];
+        });
+    }
+
 
 
 }

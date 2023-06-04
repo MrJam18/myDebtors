@@ -97,7 +97,7 @@ class ContractsController
             'status' => $this->getStatusList(),
             'creditor' => $contract->creditor->short,
             'firstCreditor' => $contract->creditor->short,
-            'cession' => $contract->cession->name,
+            'cession' => $contract->cession? $contract->cession->name : 'Принадлежит выдавшей организации' ,
             'number' => $contract->number,
             'sum_issue' => $contract->issued_sum,
             'due_date' => $contract->due_date->format(RUS_DATE_FORMAT),
@@ -109,7 +109,7 @@ class ContractsController
             'penaltyToday' => $result->penalties,
             'paymentsCount' => $contract->payments->count(),
             'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
-            'executiveDocName' => $contract->executiveDocument->type->name
+            'executiveDocName' => $contract->executiveDocument?->type->name ?? 'Отсутствует'
         ]];
     }
 

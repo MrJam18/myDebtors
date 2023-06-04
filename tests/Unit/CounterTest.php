@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Models\Contract\Contract;
+use App\Models\Contract\ContractType;
 use App\Models\Contract\Payment;
 use App\Models\MoneySum;
 use App\Services\Counters\CountService;
@@ -52,6 +53,12 @@ abstract class CounterTest extends TestCase
         $result = $this->countByService($contract, new Carbon('2021-12-31'));
         $this->assertEquals(100000, $result->penalties);
     }
+    function test_penalties_in_several_years()
+    {
+        $contract = $this->createTestContract(new Carbon('2015-12-31'), 100000, 100, 100, new Carbon('2017-12-31'));
+        $result = $this->countByService($contract, new Carbon('2020-12-31'));
+        $this->assertEquals(300000, $result->penalties);
+    }
     function test_percents_with_payment()
     {
         $payment = new Payment();
@@ -97,6 +104,7 @@ abstract class CounterTest extends TestCase
         $contract->issued_sum = $issuedSum;
         $contract->number = 'test';
         $contract->payments = new Collection($payments);
+        $contract->type()->associate(ContractType::find(1));
         return $contract;
     }
 

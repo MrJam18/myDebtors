@@ -1,7 +1,7 @@
 .main {
     width: 60%;
     min-width: 650px;
-    max-width: 920px;
+    max-width: 900px;
     padding: 0;
     display: flex;
 }
@@ -152,6 +152,8 @@
 }
 .selectedDoc__noParams {
     margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
 }
 .selectDocument__button {
     margin-top: 8px;
@@ -191,15 +193,27 @@
 }
 .documents {
     width: 100%;
-    padding: 20px 30px 20px 20px;
+    padding: 20px 60px 20px 50px;
+}
+.documents__checkboxesContainer {
+    margin-top: 20px;
+}
+.documents__selector {
+    width: 65%;
 }
 .documents__header {
     display: block;
     font-weight: 600;
     font-family: 'Roboto_slab', serif;
-    margin: 0 auto 2px;
-    font-size: 17px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    font-size: 20px;
     text-align: center;
+}
+.documents__selectorHolder {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 .documents__fileHandler {
     margin-bottom: 10px;

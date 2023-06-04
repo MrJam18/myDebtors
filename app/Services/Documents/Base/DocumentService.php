@@ -19,7 +19,7 @@ abstract class DocumentService
     function getFileResponse(string $name = 'Документ'): StreamedResponse
     {
         $headers = [
-            'Content-Type' => 'application/msword',
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'Content-Transfer-Encoding' => 'binary',
         ];
         $objWriter = IOFactory::createWriter($this->view->getDocument());

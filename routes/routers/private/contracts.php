@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 
-use App\Http\Controllers\Contracts\ContractCommentController;
+use App\Http\Controllers\Contracts\ContractCommentsController;
 use App\Http\Controllers\Contracts\ContractsController;
 use Illuminate\Support\Facades\Route;
 

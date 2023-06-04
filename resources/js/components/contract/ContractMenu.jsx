@@ -23,7 +23,7 @@ const ContractMenu = ({menuValue, setMenuValue}) => {
     }
     return (
         <div className={styles.menu}>
-            <Tabs value={menuValue} onChange={handleChangeMenu} className={classes.menu} centered variant='fullWidth'  aria-label="basic tabs example" orientation='vertical'>     
+            <Tabs value={menuValue} onChange={handleChangeMenu} className={classes.menu} centered variant='fullWidth'  aria-label="basic tabs example" orientation='vertical'>
           <Tab value='data' label="Договор" ></Tab>
           <hr className={styles.divider} />
           <Tab value='actions'   label="Действия" ></Tab>
@@ -31,6 +31,8 @@ const ContractMenu = ({menuValue, setMenuValue}) => {
           <Tab  value={'payments'} label="Платежи" ></Tab>
           <hr className={styles.divider} />
           <Tab  value={'files'} label="Файлы" ></Tab>
+          <hr className={styles.divider} />
+          <Tab  value={'comments'} label="Комментарии" ></Tab>
           <hr className={styles.divider} />
         </Tabs>
         </div>

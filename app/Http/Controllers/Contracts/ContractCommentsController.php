@@ -16,18 +16,44 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
-class ContractCommentController extends AbstractController
+class ContractCommentsController extends AbstractController
 {
+    /**
+     * @throws Exception
+     */
+    public function index(PaginateRequest $request, ContractCommentsProvider $provider): array | JsonResponse
+    {
+        $data = $request->validated();
+        $paginator = $provider->getList($data);
+
+        $list = $paginator->items()->map(function (ContractComment $comment) {
+            return [
+                'id' => $comment->id,
+                'comment' => $comment->comment,
+                'contractId' => $comment->contract,
+                'userId' => $comment->user,
+                'fileId'=> $comment->file,
+                'createdAt'=>$comment->created_at->format(RUS_DATE_FORMAT),
+                'updatedAT'=>$comment->updated_at->format(RUS_DATE_FORMAT),
+            ];
+        });
+        return $paginator->jsonResponse($list);
+    }
 
     public function create(Request $request): JsonResponse
     {
         $data = $request->all();
+
         DB::transaction(function () use (&$data){
+            $groupId = getGroupId();
             $comment = new ContractComment();
             $comment->comment = $data['comment'];
             $comment->user()->associate(Auth::user());
-            $comment->contract()->associate(new Contract(['id' => $data['contractId']]));
-            $comment->file()->associate(new File(['id' => $data['fileId']]));
+            $contract = Contract::query()->byGroupId($groupId)->find(['contractId'], ['id']);
+            if(!$contract) throw new Exception('cant find contract');
+            $comment->contract()->associate($contract);
+            $file = File::query()->byGroupId($groupId)->find($data['fileId'], ['id']);
+            $comment->file()->associate(optional($file));
             $comment->save();
         });
         return response()->json(['success' => 'Comment created'], 200);
@@ -51,14 +77,18 @@ class ContractCommentController extends AbstractController
         });
     }
 
+    /**
+     * @throws Exception
+     */
     public function update(Request $request): JsonResponse
     {
         $data = $request->all();
         DB::transaction(function () use (&$data) {
-            $comment = ContractComment::find($data['id']);
+            $comment = ContractComment::query()->find(['id']);
+            if(!$comment) throw new Exception('cant find contractComment');
             $comment->comment = $data['comment'];
-            $comment->contract = $data['contract_id'];
-            $comment->file = $data['file_id'];
+            $comment->contract = Contract::query()->find($data['contract_id'], ['id']);
+            $comment->file = optional(File::query()->find($data['file_id'], ['id']));
             $comment->update();
         });
         return response()->json(['success' => 'Comment updated'], 200);
@@ -67,11 +97,10 @@ class ContractCommentController extends AbstractController
     /**
      * @throws Exception
      */
-    public function destroy($id): JsonResponse
+    public function destroy(ContractComment $comment): JsonResponse
     {
-        $comment = ContractComment::query()->find($id);
-        if(!$comment) throw new Exception('cant find comment by id ' . $id);
         $comment->delete();
+        $comment->file?->delete();
         return response()->json(['success' => 'Comment deleted'], 200);
     }
 }

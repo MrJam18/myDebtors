@@ -21,3 +21,5 @@ yarn-error.log
 .DS_Store
 envReserv.txt
 public/dist/js/app.js
+debtors_app
+mydeb.sqlite

@@ -43,7 +43,7 @@ const CreateBailiff = ({setShow, setNewValue}) => {
              <TextField label='Название Отдела'  variant='standard' inputRef={nameRef} required fullWidth />
              </div>
              <div className={styles.courtCreator__inputMargin}>
-             <Address setAdressForDB={setAddress} />
+             <Address setAddressForDB={setAddress} />
              </div>
                 <CustomLoadingButton onClick={onSubmit} loading={loading} />
              {error && <div className='error'>{error}</div>}

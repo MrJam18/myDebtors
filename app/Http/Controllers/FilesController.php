@@ -4,22 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AbstractControllers\AbstractController;
 use App\Http\Requests\PaginateRequest;
+use App\Models\Contract\ContractComment;
+use App\Models\File;
+use App\Providers\Database\FilesProvider;
 use Illuminate\Http\Request;
 
 class FilesController extends AbstractController
 {
-    public function show(PaginateRequest $request, FilesP $controller) {
+    /**
+     * @throws \Exception
+     */
+    public function show(PaginateRequest $request, FilesProvider $provider) {
 
         $data = $request->validated();
         $paginator = $provider->getList($data);
-        return $paginator->items()->map(function (ContractComment $comment) {
+        return $paginator->items()->map(function (File $file) {
             return [
-                'id' => $comment->id,
-                'comment' => $comment->comment,
-                'user' => $comment->user,
-                'contract' => $comment->contract,
-                'file' => $comment->file,
-            ];
+                'id' => $file->id,
+                'comment' => $file->url,
+                ];
         });
     }
 

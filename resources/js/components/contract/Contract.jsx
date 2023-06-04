@@ -42,7 +42,7 @@ const Contract = () => {
         await dispatch(getCurrentContract(contractId));
         }
         catch(e){
-          //  console.log(e.response.data.message);
+           console.log(e.response.data);
             setError(e.response.data.message);
             setAlert('Ошибка!', "Ошибка при получении данных контракта!", 'error');
         }

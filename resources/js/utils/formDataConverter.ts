@@ -24,7 +24,9 @@ export const formDataConverter = (formRef, exceptions: Array<string> = null): Re
             const name = data[el].name;
             if(name) {
                 if(data[name].value === '') return;
-                returned[name] = data[name].value;
+                if(data[name].value === 'f') returned[name] = false;
+                else if((data[name].value === 't')) returned[name] = true;
+                else returned[name] = data[name].value;
             }
         }
     return returned;

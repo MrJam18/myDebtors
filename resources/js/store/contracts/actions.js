@@ -30,6 +30,7 @@ export const changeContract = (column, value, contractId) => async (dispatch) =>
         await dispatch(getCurrentContract(contractId));
     }
     catch (e) {
+        console.dir(e);
         dispatch(actions.fetchError(e.message));
         dispatch(setAlert('Ошибка запроса на сервер!', e.message, 'error'));
         throw new Error('Ошибка запроса на сервер!' + e.message);

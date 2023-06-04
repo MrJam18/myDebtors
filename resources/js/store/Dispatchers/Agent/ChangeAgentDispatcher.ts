@@ -6,7 +6,7 @@ export class ChangeAgentDispatcher extends Dispatcher
     protected async _handler(data)
     {
         if(!data.address) throw new Error('Укажите адрес');
-        await this._api.post('agents/change-one/' , data);
+        await this._api.post('agents/change-one', data);
         Alert.set('Успешно', "Представитель успешно изменен");
     }
 }

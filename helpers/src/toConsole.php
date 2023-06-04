@@ -2,18 +2,15 @@
 declare(strict_types=1);
 
 
-function toConsole(array | string | int | null $data): bool
+function toConsole(mixed $data): void
 {
-    $type = gettype($data);
-    if($type === 'string') return error_log($data);
-    if($type === 'integer') return error_log((string)$data);
-    if($type === 'array') {
-        $output = '';
-        foreach ($data as $key => $value)
-        {
-            $output .= "$key => $value\n";
-        }
-        return error_log($output);
-    }
-    else return error_log('null');
+//    $type = gettype($data);
+//    if($type === 'string') return error_log($data);
+//    if($type === 'integer' || $type === 'double') return error_log((string)$data);
+//    if($type === 'array') {
+//        fwrite(STDERR, print_r($data, TRUE));
+//        return true;
+//    }
+//    else return error_log('null');
+    error_log(print_r($data, TRUE));
 }

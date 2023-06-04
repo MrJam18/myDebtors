@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace App\Models\Base;
 
+use App\Exceptions\ShowableException;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @mixin Builder
@@ -42,5 +44,15 @@ class BaseModel extends Model
             $this->$column = $value;
             $this->save();
         }
+    }
+
+    /**
+     * @throws ShowableException
+     */
+    static function findWithGroupId(int $id, $columns = ['*']): static | Collection | null
+    {
+        $result = static::query()->find($id, $columns);
+        if($result && $result->user->group->id !== getGroupId()) throw new ShowableException('Вы не имеете права на изменение/получение данной сущности');
+        return $result;
     }
 }

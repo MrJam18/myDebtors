@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Contract;
+namespace App\Http\Controllers\Contracts;
 
 use App\Http\Requests\PaginateRequest;
 use App\Models\Cession\CessionGroup;
@@ -42,6 +42,9 @@ class ContractsController
         return ContractStatus::all()->toArray();
     }
 
+    /**
+     * @throws Exception
+     */
     function createOne(Request $request): void
     {
         $data = $request->all();

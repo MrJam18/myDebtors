@@ -23,18 +23,18 @@ const ContractMenu = ({menuValue, setMenuValue}) => {
     }
     return (
         <div className={styles.menu}>
-            <Tabs value={menuValue} onChange={handleChangeMenu} className={classes.menu} centered variant='fullWidth'  aria-label="basic tabs example" orientation='vertical'>     
-                <Tab value='data' label="Договор" ></Tab>
-                <hr className={styles.divider} />
-                <Tab value='actions'   label="Действия"></Tab>
-                <hr className={styles.divider} />
-                <Tab  value={'payments'} label="Платежи" ></Tab>
-                <hr className={styles.divider} />
-                <Tab  value={'files'} label="Файлы" ></Tab>
-                <hr className={styles.divider} />
-                <Tab value={'documents'} label={'Документы'} ></Tab>
-                <hr className={styles.divider} />
-            </Tabs>
+            <Tabs value={menuValue} onChange={handleChangeMenu} className={classes.menu} centered variant='fullWidth'  aria-label="basic tabs example" orientation='vertical'>
+          <Tab value='data' label="Договор" ></Tab>
+          <hr className={styles.divider} />
+          <Tab value='actions'   label="Действия" ></Tab>
+          <hr className={styles.divider} />
+          <Tab  value={'payments'} label="Платежи" ></Tab>
+          <hr className={styles.divider} />
+          <Tab  value={'files'} label="Файлы" ></Tab>
+          <hr className={styles.divider} />
+          <Tab  value={'comments'} label="Комментарии" ></Tab>
+          <hr className={styles.divider} />
+        </Tabs>
         </div>
     );
 };

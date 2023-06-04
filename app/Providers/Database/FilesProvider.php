@@ -25,20 +25,4 @@ class FilesProvider extends AbstractProvider
         return $this->byGroupId(getGroupId(), $data->orderBy)
             ->paginate($data->perPage, page: $data->page);
     }
-
-    /**
-     * Register services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
-    {
-        //
-    }
 }

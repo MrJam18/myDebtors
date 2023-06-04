@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Providers\Database;
+namespace App\Providers\Database\Contracts;
 
 use App\Http\Requests\Base\ListRequestData;
 use App\Models\Base\CustomPaginator;

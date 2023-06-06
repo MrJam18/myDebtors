@@ -63,6 +63,7 @@ export const createCourt = (court, address) => async () => {
         return data;
     }
     catch(e){
+        console.dir(e);
         throw new Error(e.message);
     }
 }

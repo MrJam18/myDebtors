@@ -28,6 +28,7 @@ const CreateBailiff = ({setShow, setNewValue}) => {
             setShow(false);
         }
         catch (e) {
+            console.dir(e);
             if(e.message === "SequelizeUniqueConstraintError") setError('Данный отдел уже существует!')
             else setError(e.message);
         }

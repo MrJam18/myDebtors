@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import CustomModal from '../../dummyComponents/CustomModal';
 import styles from '../../../css/contract.module.css'
-import {Button, TextField} from '@mui/material';
+import {TextField} from '@mui/material';
 import Address from '../../dummyComponents/Address/Address';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCourtsLevels, getCourtsTypes } from '../../../store/courts/selectors';
@@ -11,27 +11,15 @@ import {formDataConverter} from '../../../utils/formDataConverter'
 import { setAlert } from '../../../store/alert/actions';
 import ButtonInForm from '../../dummyComponents/ButtonInForm'
 import AddBanksRequisites from "../../AddBanksRequisites";
-import {makeStyles} from "@mui/styles";
 import CustomInput from "../../dummyComponents/CustomInput";
 import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
+import {useError} from "../../../hooks/useError";
 
-const useStyles = makeStyles({
-    fullInput: {
-        marginBottom: '5px'
-    },
-    smallInput: {
-        width: '46%'
-    },
-    banksRequisitesButton: {
-        width: '55%',
-        height: '35px'
-    }
-})
 
 const CourtCreator = ({show, setShow, setValue = null}) => {
     const dispatch = useDispatch();
     const form = useRef();
-    const [error, setError] = useState(false);
+    const error = useError();
     const [loading, setLoading] = useState(false);
     const [address, setAddress] = useState();
     const [addressError, setAddressError] = useState(false);
@@ -43,7 +31,6 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
         dispatch(recieveCourtTypes());
         dispatch(recieveCourtLevels());
     }
-    const classes = useStyles();
 
     useEffect(getNecessary, []);
     const onSubmit = async () => {
@@ -52,10 +39,10 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
             ...data,
             bankId: selectedBank.id,
         };
-        if (!address) setError('Заполните адрес!');
+        if (!address) error.setError('Заполните адрес!');
         else {
             setLoading(true);
-            setError(false);
+            error.setError(false);
             try{
                 const court = await dispatch(createCourt(data, address));
                 setValue({
@@ -66,8 +53,8 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
                 setShow(false);
             }
             catch(e){
-                if(e?.response?.data?.message) setError(e.response.data.message);
-                else setError(e.message);
+                if(e?.response?.data?.message) error.setError(e.response.data.message);
+                else error.setError(e.message);
             }
             setLoading(false)
 
@@ -79,7 +66,7 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
 
     return (
         <div>
-            <CustomModal show={show} setShow={setShow} customStyles={{width: 600}}>
+            <CustomModal show={show} setShow={setShow} customStyles={{width: 450}}>
                 <div className={styles.courtCreator}>
                     <div className='header_small'>Создание суда.</div>
                     <form ref={form} >
@@ -107,26 +94,22 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
                             <CustomInput  className={styles.smallInput}  required={false} size='small' name='recipient' label={'Получатель'} variant='standard' />
                             <CustomInput customValidity='КБК должен состоять из 20 цифр!' pattern='^\d{20}$' className={styles.smallInput}  required={false} size='small' name='kbk' label={'КБК'} variant='standard' />
                         </div>
-                        <div className="margin-bottom_10">
+                        <div className={styles.courtCreator__inputMargin}>
                             <SearchAndAddButton
                                 label='Банк получателя'
                                 serverAddress='courts/search-bank-requisites'
                                 onClickAddButton={()=>setShowAddBanksRequisites(true)}
                                 required={false}
                                 value={selectedBank} // Здесь мы передаем значение selectedBank
-                                setValue={(bank) => {
-                                    setSelectedBank(bank);
-                                }} // Здесь мы передаем setSelectedBank как setValue
+                                setValue={setSelectedBank} // Здесь мы передаем setSelectedBank как setValue
                             />
                         </div>
                         <div className={styles.courtCreator__inputMargin}>
                             <Address error={addressError} setError={setAddressError} setAddressForDB={setAddress} />
                         </div>
-
                         <ButtonInForm type='button' loading={loading} onClick={onSubmit} />
-
                     </form>
-                    {error && <div className='error'>{error}</div>}
+                    {error.Comp()}
                 </div>
             </CustomModal>
             {showAddBanksRequisites && <AddBanksRequisites setShow={setShowAddBanksRequisites} />}

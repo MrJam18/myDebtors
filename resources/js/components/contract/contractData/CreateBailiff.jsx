@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { setAlert } from '../../../store/alert/actions';
 import { createBailiff } from '../../../store/bailiffs/actions';
 import CustomLoadingButton from "../../dummyComponents/CustomLoadingButton";
+import api from "../../../http";
 
 const CreateBailiff = ({setShow, setNewValue}) => {
     const dispatch = useDispatch();
@@ -22,12 +23,13 @@ const CreateBailiff = ({setShow, setNewValue}) => {
             const name = nameRef.current.value;
             if(!name) throw new Error('Укажите имя отдела судебных приставов!');
             if (!address) throw new Error('Заполните адрес!');
-            const newBailiff = await dispatch(createBailiff({name, address}));
+            const {data} = await api.post('bailiffs/createOne', {name, address});
             dispatch(setAlert('Успешно!', "ОСП успешно добавлен!"));
-            setNewValue(newBailiff);
+            setNewValue(data);
             setShow(false);
         }
         catch (e) {
+            console.dir(e);
             if(e.message === "SequelizeUniqueConstraintError") setError('Данный отдел уже существует!')
             else setError(e.message);
         }

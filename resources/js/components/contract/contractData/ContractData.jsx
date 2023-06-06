@@ -10,7 +10,7 @@ import {changeContract} from "../../../store/contracts/actions";
 
 
 
-const ContractData = ({contractId}) => {
+const ContractData = ({contractId, update}) => {
     const contract = useSelector(contractsSelectors.getCurrent);
     const dispatch = useDispatch();
     const [showExecutiveDocChanger, setShowExecutiveDocChanger] = useState(false);
@@ -26,7 +26,7 @@ const ContractData = ({contractId}) => {
     }];
     return (
         <div className={styles.content}>
-            {showExecutiveDocChanger && <ExecutiveDocChanger  setShow={setShowExecutiveDocChanger}/>}
+            {showExecutiveDocChanger && <ExecutiveDocChanger update={update} setShow={setShowExecutiveDocChanger}/>}
                 <div className={styles.header_small}>Информация о договоре.</div>
                 <Toolbar />
                 <div className={styles.content__text}>

@@ -89,6 +89,10 @@ class ContractsController
         $countService = new LimitedLoanCountService();
         $result = $countService->count($contract, $now);
         $delayDays = $now->diffInDays($contract->due_date);
+        if($contract->executiveDocument) {
+            $executiveDocName = $contract->executiveDocument->type->name . ' №' . $contract->executiveDocument->number . ' от ' . $contract->executiveDocument->issued_date->format(RUS_DATE_FORMAT) . ' г.';
+        }
+        else $executiveDocName = 'Отсутствует';
         return [
             'contract' => [
                 'name'=>$contract->type->name,
@@ -110,7 +114,7 @@ class ContractsController
                 'penaltyToday' => $result->penalties,
                 'paymentsCount' => $contract->payments->count(),
                 'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
-                'executiveDocName' => $contract->executiveDocument?->type->name ?? 'Отсутствует'
+                'executiveDocName' => $executiveDocName
             ]
         ];
     }

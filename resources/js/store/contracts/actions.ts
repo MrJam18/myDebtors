@@ -43,7 +43,7 @@ export const changeContract = (column, value, contractId) => async (dispatch) =>
 }
 
 export const createCourtClaim = (data) => async (dispatch) => {
-    await saveFilePost(`documents/createCourtClaim`, data, `${data.type + data.contractId}.docx`);
+    await saveFilePost(`documents/createCourtClaim`, data,);
     dispatch(setAlert('Успешно', "Заявление успешно создано."));
 }
 
@@ -64,35 +64,10 @@ export const recieveLimitationsList = (limit, page, order) => async dispatch => 
 }
 
 export const createIPInitDoc = (contractId, agentId) => async (dispatch, getState) => {
-    if(!getState().contracts.executiveDoc.id) throw new Error('Укажите данные исполнительного документа!');
-    await saveFilePost('documents/createIPInit', {contractId, agentId}, `ЗВИП по договору ${contractId}.docx`);
-    dispatch(setAlert('Успешно', "Заявление успешно создано."));
-}
-
-export const setExecutiveDoc = (formData, court, bailiff, typeId, contractId, executiveDocId) => async dispatch => {
-    if(!court) throw new Error('укажите суд, вынесший решение!');
-    if(!bailiff) throw new Error('Укажите отдел судебных приставов!');
-    if(!typeId) throw new Error('Укажите тип исполнительного документа!');
-    const sendingExecutiveDoc = {
-        ...formData,
-        courtId: court.id,
-        bailiffId: bailiff.id,
-        typeId,
-        contractId,
-        id: executiveDocId || null
-    }
-    console.log(sendingExecutiveDoc)
-    const {data} = await api.post('executiveDocs/setExecutiveDoc', sendingExecutiveDoc);
-    const executiveDocForStore = {
-        ...formData,
-        court,
-        bailiff,
-        typeId,
-        id: data.id
-    }
-    dispatch(actions.setExecutiveDoc(executiveDocForStore));
-    dispatch(actions.setExecutiveDocName(data.executiveDocName));
-    dispatch(setAlert('Успешно', 'Исполнительный документ успешно изменен/установлен'));
+    // if(!getState().contracts.executiveDoc.id) throw new Error('Укажите данные исполнительного документа!');
+    // await saveFilePost('documents/createIPInit', {contractId, agentId}, `ЗВИП по договору ${contractId}.docx`);
+    // dispatch(setAlert('Успешно', "Заявление успешно создано."));
+    throw new Error('no implemented');
 }
 
 export const deleteContract = id => async dispatch => {

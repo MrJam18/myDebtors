@@ -37,6 +37,11 @@ class ExecutiveDocument extends BaseModel
     ];
     public $timestamps = true;
 
+    protected $casts = [
+        'issued_date' => 'date:' . ISO_DATE_FORMAT,
+        'resolution_date' => 'date:' . ISO_DATE_FORMAT,
+    ];
+
     function type(): BelongsTo
     {
         return $this->belongsTo(ExecutiveDocumentType::class);

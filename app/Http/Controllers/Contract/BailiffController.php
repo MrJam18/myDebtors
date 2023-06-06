@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 
 class BailiffController extends Controller
 {
-    public function create(Request $request): void
+    public function create(Request $request): array
     {
         $bailiff = new BailiffDepartment();
         $data = $request->all();
@@ -21,6 +21,10 @@ class BailiffController extends Controller
         $address = $addressService->addAddress($data['address']);
         $bailiff->address()->associate($address);
         $bailiff->save();
+        return [
+            'name'=> $bailiff->name,
+            'id' => $bailiff->id
+        ];
     }
 
     public function findByName(SearchRequest $request): array | Collection

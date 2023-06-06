@@ -80,7 +80,7 @@ class AgentsController extends Controller
      */
     function getOne(Agent $agent): array
     {
-        toConsole($agent->no_show_group);
+
         return [
             'name' => $agent->name->name,
             'surname' => $agent->name->surname,

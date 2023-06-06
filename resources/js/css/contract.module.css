@@ -51,7 +51,7 @@
     text-transform: capitalize;
 }
 .content_header {
-    font-weight: bolder; 
+    font-weight: bolder;
 }
 .content__link {
     color: #343434;
@@ -63,12 +63,12 @@
 }
 .content__link:hover {
     border-bottom: 1px solid #000;
-    padding-bottom: 0;   
+    padding-bottom: 0;
 }
 .paddingBox__left {
     padding-top: 20px
 }
-.content__button { 
+.content__button {
     color: #343434;
     font-size: 18px;
     margin: 0;
@@ -88,7 +88,7 @@
 .payments__add {
     display: flex;
     text-transform: uppercase;
-    
+
 }
 .payments__toolbar {
     display: flex;
@@ -270,4 +270,16 @@
 }
 .executiveChooses__ExecutiveDocName:hover {
     text-decoration: underline;
+}
+.smallInputsHolder {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.blockHeader {
+    font-family: 'Roboto_slab', serif;
+    font-size: 19px;
+    text-align: center;
+    margin-bottom: 5px;
 }

@@ -1,10 +1,10 @@
 import React, {useRef, useState} from 'react';
-import CustomModal from "../dummyComponents/CustomModal";
-import CustomInput from "../dummyComponents/CustomInput";
-import styles from "../../css/orgs.module.css";
-import {useError} from "../../hooks/useError";
-import ButtonInForm from "../dummyComponents/ButtonInForm";
-import {AddBankRequisitesDispatcher} from "../../store/Dispatchers/Creditor/AddBankRequisitesDispatcher";
+import CustomModal from "./dummyComponents/CustomModal";
+import CustomInput from "./dummyComponents/CustomInput";
+import styles from "../css/orgs.module.css";
+import {useError} from "../hooks/useError";
+import ButtonInForm from "./dummyComponents/ButtonInForm";
+import {AddBankRequisitesDispatcher} from "../store/Dispatchers/Creditor/AddBankRequisitesDispatcher";
 // import {AddBanksRequisitesController} from "../../controllers/AddBanksRequisitesController";
 
 const AddBanksRequisites = ({setShow}) => {

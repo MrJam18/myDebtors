@@ -1,56 +1,65 @@
-import React, { useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {contractsSelectors} from '../../../store/contracts/selectors';
+import React, {useEffect, useRef, useState} from 'react';
 import CustomModal from '../../dummyComponents/CustomModal';
 import EasySelect from '../../dummyComponents/EasySelect';
 import styles from '../../../css/contract.module.css';
 import ButtonInForm from '../../dummyComponents/ButtonInForm';
 import { useParams } from 'react-router';
-import { formDataConverter } from '../../../utils/formDataConverter';
-import {setExecutiveDoc} from '../../../store/contracts/actions';
 import CreateBailiff from "./CreateBailiff";
 import CourtCreator from "./CourtCreator";
 import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
 import EasyInput from "../../dummyComponents/EasyInput";
 import CustomInput from "../../dummyComponents/CustomInput";
 import useModal from "../../../hooks/useModal";
+import api from "../../../http";
+import Loading from "../../dummyComponents/Loading";
+import {Alert} from "../../../classes/Alert";
+import {SetExecutiveDocumentDispatcher} from "../../../store/Dispatchers/Contracts/SetExecutiveDocumentDispatcher";
 
 const types = [{name: 'Судебный приказ', id: 1}, {name: 'Исполнительный лист', id: 2}]
 
 
-const ExecutiveDocChanger = ({setShow}) => {
-
-    const dispatch = useDispatch();
-    const executiveDoc = useSelector(contractsSelectors.getExecutiveDoc);
+const ExecutiveDocChanger = ({setShow, update}) => {
+    const [docLoading, setDocLoading] = useState(true);
+    const [executiveDoc, setExecutiveDoc] = useState({});
     const formRef = useRef();
     const {contractId} = useParams();
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [bailiff, setBailiff] = useState(executiveDoc.bailiff);
+    const [bailiff, setBailiff] = useState(null);
     const [showCreateBailiff, setShowCreateBailiff] = useState(false);
-    const [typeId, setTypeId] = useState(executiveDoc.typeId);
-    const courtFromStore = useSelector(contractsSelectors.getCourt);
-    const [court, setCourt] = useState(courtFromStore);
+    const [typeId, setTypeId] = useState(null);
+    const [court, setCourt] = useState(executiveDoc.court);
     const showCourtCreator = useModal();
     const onClickCreateBailiff = () => {
         setShowCreateBailiff(true);
     }
     const onSubmit = async (ev) => {
         ev.preventDefault();
-        setLoading(true);
-        const formData = formDataConverter(formRef.current);
-        try {
-        await dispatch(setExecutiveDoc(formData, court, bailiff, typeId, contractId, executiveDoc.id));
-        setShow(false);
-        } catch(e) {
-            setLoading(false);
-            setError(e.message);
-        }
-        setLoading(false);
-
+        const dispatcher = new SetExecutiveDocumentDispatcher(setError, setLoading, formRef, setShow);
+        dispatcher.addData('court', court);
+        dispatcher.addData('bailiff', bailiff);
+        dispatcher.addData('typeId', typeId);
+        dispatcher.addData('executiveDocId', executiveDoc.id);
+        dispatcher.addNoReqData('contractId', contractId);
+        dispatcher.addNoReqData('update', update);
+        await dispatcher.handle();
     }
+    useEffect(() => {
+        setDocLoading(true);
+        api.get(`contracts/${contractId}/executive-documents/get-one`)
+            .then(({data}) => {
+                setExecutiveDoc(data);
+                setCourt(data.court);
+                setBailiff(data.bailiff);
+                setTypeId(data.typeId)
+            })
+            .catch((error) => Alert.setError('Ошибка при получении исп. документа',error))
+            .finally(() => setDocLoading(false));
+    }, []);
     return (
         <CustomModal customStyles={{width: 500}} show setShow={setShow}>
+            {docLoading ? <Loading /> :
+                <>
         <div className={'header_small'}>Изменение исполнительного документа</div>
         <form ref={formRef} onSubmit={onSubmit} >
             <div className={styles.executiveChoises__main}>
@@ -63,7 +72,7 @@ const ExecutiveDocChanger = ({setShow}) => {
                     <SearchAndAddButton value={bailiff} serverAddress={'bailiffs/search'} required setValue={setBailiff} label='Отдел судебных приставов-исполнителей' onClickAddButton={onClickCreateBailiff} />
                 </div>
                 <div className={styles.contentBlock}>
-                    <EasyInput size={'small'}  className={styles.smallInput} pattern='lessThenNow' defaultValue={executiveDoc.dateIssue} type='date' name='dateIssue' required label='дата ИД' />
+                    <EasyInput size={'small'}  className={styles.smallInput} pattern='lessThenNow' defaultValue={executiveDoc.issued_date} type='date' name='issued_date' required label='дата ИД' />
                     <CustomInput size={'small'} customValidity={'номер в формате ББ№ЧЧЧЧЧЧЧЧ или Ч-ЧЧЧЧ/ЧЧЧЧ где Ч - это число, Б-это буква.'} className={styles.smallInput} pattern='(^[А-Яа-яЁё]{2}№\d+$)|^\d{1}-\d+\/\d{4}$'  defaultValue={executiveDoc.number} name='number' required label='Номер ИД' />
                 </div>
                 <div className={styles.contentBlock}>
@@ -88,6 +97,8 @@ const ExecutiveDocChanger = ({setShow}) => {
             {error && <div className="error">{error}</div>}
             <ButtonInForm loading={loading} />
             </form>
+                </>
+            }
         </CustomModal>
 
     );

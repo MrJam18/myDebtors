@@ -144,14 +144,16 @@ class AgentsController extends Controller
         }
         // Обработка адреса
         if ($input['address'] !== 'initial') {
-            $updatedAddress = $addressService->updateAddress($agent->address, $input['address']);
+            $updatedAddress = $addressService->addAddress($input['address']);
+            $oldAddress = $agent->address;
             $agent->address()->associate($updatedAddress);
         }
         // Обработка checkbox
             $agent->no_show_group=$formData['no_show_group'];
             $agent->is_default = $formData['is_default'];
-        if ($agent->save()) Log::info('saved'); // сохраняем обновленного агента
-        return response()->json($agent, 200);
+        $agent->save();
+        if(isset($oldAddress)) $oldAddress->delete();
+        return response()->json($agent);
     }
 
     public function delete(Agent $agent): JsonResponse

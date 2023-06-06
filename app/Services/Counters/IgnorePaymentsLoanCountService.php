@@ -12,12 +12,6 @@ class IgnorePaymentsLoanCountService extends LoanCountService
 {
     protected Limited $limited;
 
-//    public function __construct(Contract $contract, Carbon $endDate)
-//    {
-//        parent::__construct($contract, $endDate);
-//
-//    }
-
 
     protected function countPeriod(Carbon $startDate, Carbon $endDate): void
     {

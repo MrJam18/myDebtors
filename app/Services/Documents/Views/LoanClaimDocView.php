@@ -59,8 +59,7 @@ abstract class LoanClaimDocView extends BaseDocView
         $this->agent = $claim->agent;
         $this->cessionGroup = $this->contract->cession;
         if($this->cessionGroup) {
-            /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
-            $this->firstCreditor = $this->cessionGroup->cessions()->orderBy('transfer_date')->first();
+            $this->firstCreditor = $this->cessionGroup->cessions()->orderBy('transfer_date')->first()->assignor;
             $this->cessionGroup->cessions->each(function (Cession $cession) {
                 $this->lastText->push($cession->text);
                 $cession->enclosures->each(function (CessionEnclosure $enclosure) {
@@ -115,7 +114,7 @@ abstract class LoanClaimDocView extends BaseDocView
         else $builder->addRow('Паспорт: данные неизвестны');
         $result = $this->countService->getResult();
         $builder->addRow('Цена иска: ' . $result->sum . ' руб.');
-        $builder->addRow('Госпошлина: ' . $this->countService->getFee() . ' руб.');
+        $builder->addRow('Госпошлина: ' . $this->countService->getFee($this->claim->type) . ' руб.');
     }
 
     protected function buildBody(DocBodyBuilder $builder): void
@@ -138,6 +137,7 @@ abstract class LoanClaimDocView extends BaseDocView
              * @var Limited $limited;
              */
             $limited = $this->countService->getLimited();
+            if($limited->isLimited) $limited->setText();
         }
         else $limited = null;
         $builder->addIndentRow($this->contract->issued_date->format(RUS_DATE_FORMAT) . ' г. ' . $this->firstCreditor->name . ' (далее - "Заимодавец") и ' . $this->debtor->name->getFull() . ' (далее - "Должник") заключили договор займа № ' . $this->contract->number . ' (далее - "Договор"). В соответствии с условиями договора заимодавец передал должнику денежную сумму в размере ' . $this->contract->issued_sum . ' рублей сроком на ' . $this->inclineNumWord($this->contract->issued_date->diffInDays($this->contract->due_date), 'день', "дня", "дней") . ", а Должник обязался возвратить такую же сумму денег и уплатить проценты в размере " . $this->contract->percent . ' % годовых от суммы займа.');
@@ -149,7 +149,7 @@ abstract class LoanClaimDocView extends BaseDocView
         $builder->addIndentRow('Основной долг: ' . $result->main . ' руб.');
         $builder->addIndentRow('Проценты по договору: ' . $result->percents . ' руб.');
         $builder->addIndentRow('Неустойка по договору: ' . $result->penalties . ' руб.');
-        if($limited) $builder->addIndentRow($limited->text);
+        if($limited && isset($limited->text)) $builder->addIndentRow($limited->text);
         $builder->addIndentRow('В соответствии со ст. 309 ГК РФ, обязательства должны исполняться надлежащим образом в соответствии с условиями обязательства, односторонний отказ от исполнения обязательства не допускается (ст.310 ГК РФ), исполнение обязательства должно производится в сроки, установленные договором (ст. 314 ГК РФ).');
         $builder->addIndentRow('Согласно ст. 807 ГК РФ по договору займа одна сторона (займодавец) передает в собственность другой стороне (заемщику) деньги или другие вещи, определенные родовыми признаками, а заемщик обязуется возвратить займодавцу такую же сумму денег (сумму займа) или равное количество других полученных им вещей того же рода и качества. Договор займа считается заключенным с момента передачи денег или других вещей.');
         $builder->addIndentRow('Статья 810 ГК РФ предусматривает, что заемщик обязан возвратить займодавцу полученную сумму займа в срок и в порядке, которые предусмотрены договором займа.');
@@ -161,9 +161,9 @@ abstract class LoanClaimDocView extends BaseDocView
         $builder->addNoSpaceHeader($this->askHeader->last());
         $builder->addRow('1.  Взыскать с ' . $debtorGenitive . ' в пользу ' . ($creditorGenitive ?? $this->creditor->name) . ' задолженность на ' . $this->claim->count_date->format(RUS_DATE_FORMAT) . ' г. по договору займа № ' . $this->contract->number . ' от ' . $this->contract->issued_date->format(RUS_DATE_FORMAT) . ' г. в сумме ' . ($limited ? $result->sum - $result->percents + $limited->getPercents() : $result->sum) . ' руб., в том числе:');
         $builder->addRow('1.1.  Основной долг в размере ' . $result->main . ' руб.');
-        $builder->addRow('1.2.  Проценты за пользование займом в размере ' . ($limited ? $limited->getPercents() : $result->percents) . ' руб.');
+        $builder->addRow('1.2.  Проценты за пользование займом в размере ' . ($limited && $limited->getPercents() != 0 ? $limited->getPercents() : $result->percents) . ' руб.');
         $builder->addRow('1.3.  Неустойка за просрочку исполнения обязательств в размере ' . $result->penalties . ' руб.');
-        $builder->addRow('2.  Взыскать с ' . $debtorGenitive . ' в пользу ' . ($creditorGenitive ?? $this->creditor->name) . '  расходы по уплате государственной пошлины в размере ' . $this->countService->getFee() . ' руб.');
+        $builder->addRow('2.  Взыскать с ' . $debtorGenitive . ' в пользу ' . ($creditorGenitive ?? $this->creditor->name) . '  расходы по уплате государственной пошлины в размере ' . $this->countService->getFee($this->claim->type) . ' руб.');
     }
 
     protected function buildFooter(DocFooterBuilder $builder): void

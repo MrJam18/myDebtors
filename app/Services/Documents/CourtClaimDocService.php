@@ -28,7 +28,7 @@ class CourtClaimDocService extends DocumentService
         if($claim->type->id === 1) $this->view = new LoanCourtOrderDocView($claim, $this->countService);
         else $this->view = new LoanCourtClaimDocView($claim, $this->countService);
         $this->view->buildDocument();
-        return $this->getFileResponse($claim->type->name . ' по договору займа № ' . $claim->contract->number . ' от ' . $claim->contract->issued_date->format(RUS_DATE_FORMAT));
+        return $this->getFileResponse($claim->type->name . ' по договору № ' . $claim->contract->number . ' от ' . $claim->contract->issued_date->format(RUS_DATE_FORMAT) . '(' . $claim->contract->debtor->name->initials() . ')');
     }
 
     /**

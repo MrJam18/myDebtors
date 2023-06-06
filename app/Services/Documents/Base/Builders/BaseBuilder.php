@@ -16,12 +16,5 @@ abstract class BaseBuilder
         $this->section = $section;
     }
 
-    function addSignature(string $initials): Text
-    {
-        $now = now()->format(RUS_DATE_FORMAT);
-        return $this->section->addFooter()->addText("$now г.\t_____________ $initials", null, [
-            'tabs' => [new Tab('right', 9090)],
-        ]);
-    }
 
 }

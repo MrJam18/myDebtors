@@ -6,7 +6,7 @@ export const prepareDataForColWrapper = (column, data) => {
         element = {
             ...column,
             colName: column.colName + 'Id',
-            value: data.value,
+            value: data.value ?? data.name,
             id: data.id
         }
     }

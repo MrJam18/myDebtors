@@ -2,8 +2,7 @@ import React, {Fragment} from 'react';
 import ColumnsWrapper from "./ColumnsWrapper";
 
 const BaseColumner = ({columns, data, reqFunction, setters}) => {
-    let goodColumns = [...columns];
-    goodColumns = goodColumns.map((column)=> {
+    const goodColumns = columns.map((column)=> {
         if(column.refColName){
             column.ref = column.ref + '/' + data[column.refColName];
             delete column.refColName;

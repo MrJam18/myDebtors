@@ -89,28 +89,30 @@ class ContractsController
         $countService = new LimitedLoanCountService();
         $result = $countService->count($contract, $now);
         $delayDays = $now->diffInDays($contract->due_date);
-        return [ 'contract' => [
-            'name'=>$contract->type->name,
-            'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
-            'debtorId'=> $contract->debtor->id,
-            'debtorName' => $contract->debtor->name->getFull(),
-            'status' => $this->getStatusList(),
-            'creditor' => $contract->creditor->short,
-            'firstCreditor' => $contract->creditor->short,
-            'cession' => $contract->cession? $contract->cession->name : 'Принадлежит выдавшей организации' ,
-            'number' => $contract->number,
-            'sum_issue' => $contract->issued_sum,
-            'due_date' => $contract->due_date->format(RUS_DATE_FORMAT),
-            'delayDays' => $delayDays,
-            'mainToday' => $result->main,
-            'percent' => $contract->percent,
-            'percentToday'=> $result->percents,
-            'penalty' => $contract->penalty,
-            'penaltyToday' => $result->penalties,
-            'paymentsCount' => $contract->payments->count(),
-            'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
-            'executiveDocName' => $contract->executiveDocument?->type->name ?? 'Отсутствует'
-        ]];
+        return [
+            'contract' => [
+                'name'=>$contract->type->name,
+                'date_issue' => $contract->issued_date->format(RUS_DATE_FORMAT),
+                'debtorId'=> $contract->debtor->id,
+                'debtorName' => $contract->debtor->name->getFull(),
+                'status' => $contract->status,
+                'creditor' => $contract->creditor->short,
+                'firstCreditor' => $contract->creditor->short,
+                'cession' => $contract->cession?->name ?? 'Принадлежит выдавшей организации' ,
+                'number' => $contract->number,
+                'sum_issue' => $contract->issued_sum,
+                'due_date' => $contract->due_date->format(RUS_DATE_FORMAT),
+                'delayDays' => $delayDays,
+                'mainToday' => $result->main,
+                'percent' => $contract->percent,
+                'percentToday'=> $result->percents,
+                'penalty' => $contract->penalty,
+                'penaltyToday' => $result->penalties,
+                'paymentsCount' => $contract->payments->count(),
+                'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
+                'executiveDocName' => $contract->executiveDocument?->type->name ?? 'Отсутствует'
+            ]
+        ];
     }
 
     public function changeContract(Request $request): void
@@ -125,7 +127,6 @@ class ContractsController
             case 'statusId':
                 $contract->status()->associate($data['value']);
                 break;
-
             case 'penalty':
                 $contract->penalty = $data['value'];
                 break;
@@ -140,8 +141,6 @@ class ContractsController
             case 'number':
                 $contract->number = $data['value'];
         }
-        Log::info(print_r($data, true));
-////
         $contract->save();
     }
 }

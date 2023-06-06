@@ -22,6 +22,13 @@ class DocFooterBuilder extends BaseBuilder
     {
         return $this->section->addText($text, ['bold' => true], ['spaceBefore' => 300]);
     }
+    function addSignature(string $initials): Text
+    {
+        $now = now()->format(RUS_DATE_FORMAT);
+        return $this->section->addFooter()->addText("$now г.\t_____________ $initials", null, [
+            'tabs' => [new Tab('right', 9090)],
+        ]);
+    }
 
 
 }

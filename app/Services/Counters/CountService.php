@@ -6,6 +6,7 @@ namespace App\Services\Counters;
 use App\Models\Contract\Contract;
 use App\Models\Contract\ContractType;
 use App\Models\Contract\Payment;
+use App\Models\CourtClaim\CourtClaimType;
 use App\Models\MoneySum;
 use App\Services\Counters\Base\CountBreak;
 use App\Services\Counters\Base\Year;
@@ -89,7 +90,7 @@ abstract class CountService
         return  new Carbon($year . '-12-31');
     }
 
-    protected function countFee(): float
+    protected function countFee(CourtClaimType $claimType): float
     {
         $moneySum = $this->sum;
         if(!$this->sum->sum) $this->sum->countSum();
@@ -110,7 +111,7 @@ abstract class CountService
                 $fee = 60000;
             }
         }
-        if($this->contractType->name === "Судебный приказ") {
+        if($claimType->id === 1) {
             $fee = $fee / 2;
         }
         $this->fee = round($fee, 2);
@@ -120,8 +121,9 @@ abstract class CountService
     {
         return $this->sum->replicate();
     }
-    function getFee(): float {
-        if(!isset($this->fee)) return $this->countFee();
+
+    function getFee(CourtClaimType $claimType): float {
+        if(!isset($this->fee)) return $this->countFee($claimType);
         return $this->fee;
     }
 

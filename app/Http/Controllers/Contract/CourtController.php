@@ -38,7 +38,7 @@ class CourtController extends Controller
         $address = $addressService->addAddress($data['address']);
         $court->address()->associate($address);
         $requisites = new Requisites();
-        $bankRequisites = BankRequisites::find($data['court']['bankId']['id']);
+        $bankRequisites = BankRequisites::find($data['court']['bankId']);
         $fields = ['inn', 'kbk', 'kpp', 'recipient', 'correspondent_account', 'checking_account'];
         foreach ($fields as $field) {
             if (isset($data['court'][$field])) {

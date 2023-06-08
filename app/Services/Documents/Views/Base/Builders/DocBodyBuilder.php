@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Documents\Base\Builders;
+namespace App\Services\Documents\Views\Base\Builders;
 
 use PhpOffice\PhpWord\Element\Section;
 use PhpOffice\PhpWord\Element\Text;

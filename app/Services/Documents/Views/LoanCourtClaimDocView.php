@@ -5,7 +5,7 @@ namespace App\Services\Documents\Views;
 
 use App\Models\CourtClaim\CourtClaim;
 use App\Services\Counters\CountService;
-use App\Services\Documents\Base\Builders\DocBodyBuilder;
+use App\Services\Documents\Views\Base\Builders\DocBodyBuilder;
 
 class LoanCourtClaimDocView extends LoanClaimDocView
 {

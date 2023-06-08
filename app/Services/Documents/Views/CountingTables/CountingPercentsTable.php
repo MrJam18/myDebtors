@@ -5,7 +5,7 @@ namespace App\Services\Documents\Views\CountingTables;
 
 use App\Models\Contract\Contract;
 use App\Services\Counters\Base\CountBreak;
-use App\Services\Documents\Base\Builders\CountingTableBuilder;
+use App\Services\Documents\Views\Base\Builders\CountingTableBuilder;
 use App\Services\Documents\Views\Base\CountingTable;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Section;
@@ -41,8 +41,8 @@ class CountingPercentsTable extends CountingTable
                 $next = $this->countBreaks[$index + 1];
                 if($break->payment) {
                     $payment = $break->payment;
-                    $this->sums->main -= $payment->money_sum->main;
-                    $this->sums->percents -= $payment->money_sum->percents;
+                    $this->sums->main -= $payment->moneySum->main;
+                    $this->sums->percents -= $payment->moneySum->percents;
                     $builder->addPaymentRow($payment, $this->sums->percents);
                 }
                 $firstDate = ($break->date->clone())->addDay();

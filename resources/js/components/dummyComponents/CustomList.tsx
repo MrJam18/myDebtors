@@ -11,16 +11,18 @@ type Props = {
     serverAddress: string,
     onClickRow?: (id: number) => void,
     update: number,
-    search?: string
+    search?: string,
+    setElement?: (el: Record<string, any>) => void
 }
-export default function CustomList({headers, serverAddress, onClickRow = null, update, search=null}: Props) {
+export default function CustomList({headers, serverAddress, onClickRow = null, update, search=null, setElement = null}: Props) {
     const list = useList(serverAddress, {perPage: 25}, search);
     useEffect(() => {
         if(update) list.update();
     }, [update]);
     const clickRowHandler = (index: number)=> {
-        //console.log(list.get[index]);
-        onClickRow(list.get[index].idd);
+        const currentEl = list.get[index];
+        onClickRow(currentEl.idd);
+        if(setElement) setElement(currentEl);
     }
     return(
         <>

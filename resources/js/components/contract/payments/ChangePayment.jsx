@@ -1,68 +1,51 @@
-import React, {useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import Payment from "./Payment";
 import ButtonInForm from "../../dummyComponents/ButtonInForm";
 import CustomModal from "../../dummyComponents/CustomModal";
-import {formDataConverter} from "../../../utils/formDataConverter";
 import {useError} from "../../../hooks/useError";
-import {useDispatch, useSelector} from "react-redux";
-import {contractsSelectors} from "../../../store/contracts/selectors";
-import {compareDatesBool} from "../../../utils/dates/compareDatesBool";
+import {changeDateFormatOnISO} from "../../../utils/changeDateFormat";
+import {ChangePaymentDispatcher} from "../../../store/Dispatchers/Contracts/ChangePaymentDispatcher";
+import Warning from "../../dummyComponents/Warning";
+import {useShow} from "../../../hooks/useShow";
+import {DeletePaymentDispatcher} from "../../../store/Dispatchers/Contracts/DeletePaymentDispatcher";
 import DeleteButton from "../../dummyComponents/DeleteButton";
-import {changePayment, deletePayment} from "../../../store/contracts/payments/actions";
-import {useParams} from "react-router";
 
-const ChangePayment = ({setShow, payment}) => {
+const ChangePayment = ({setShow, payment, update}) => {
+    useMemo(() => payment.date = changeDateFormatOnISO(payment.date), [payment]);
     const [loading, setLoading] = useState(false);
-    const contract = useSelector(contractsSelectors.getCurrent);
-    const {contractId} = useParams();
     const error = useError();
     const form = useRef();
-    const dispatch = useDispatch();
-    const onSubmit = async (ev) => {
+    const onSubmit = (ev) => {
         ev.preventDefault();
-        setLoading(true);
-        error.noError();
-        try{
-            const data = formDataConverter(form);
-            data.id = payment.id;
-            if(compareDatesBool(contract.date_issue, data.date)) throw new Error('Дата платежа не может быть меньше даты выдачи договора.');
-            await dispatch(changePayment(data, contractId));
-            setShow(false);
-        }
-        catch (e) {
-            error.setError(e);
-        }
-        finally {
-            setLoading(false);
-        }
+        const dispatcher = new ChangePaymentDispatcher(error.setError, setLoading, form, setShow);
+        dispatcher.addNoReqData('id', payment.idd);
+        dispatcher.addNoReqData('update', update);
+        dispatcher.handle();
     }
-
-    const deletePaymentHandler = async () => {
-        try {
-            setLoading(true);
-            error.noError();
-            await dispatch(deletePayment(payment.id, contractId));
-            setShow(false);
-        } catch (e) {
-            error.setError(e);
-        }
-        finally {
-            setLoading(false);
-        }
+    const deletePaymentHandler = () => {
+        const dispatcher = new DeletePaymentDispatcher(error.setError, setLoading, null, setShow);
+        dispatcher.addNoReqData('id', payment.idd);
+        dispatcher.addNoReqData('update', update);
+        dispatcher.handle();
     }
+    const showDeleteWarning = useShow(Warning, {
+        onSubmit: deletePaymentHandler,
+        text: 'Вы уверены, что хотите удалить платеж? Отменить это действие невозможно'
+    });
 
- return (
-     <CustomModal customStyles={{width: '300px'}} setShow={setShow} >
-         <div className="margin-bottom_20">
-             <DeleteButton onClick={deletePaymentHandler} />
-         </div>
-      <form onSubmit={onSubmit} ref={form}>
-       <Payment defaultValue={payment} />
-       <ButtonInForm loading={loading} />
-          {error.comp()}
-      </form>
-     </CustomModal>
- );
+    return (
+        <CustomModal customStyles={{width: '300px'}} setShow={setShow}>
+            <div className="margin-bottom_10">
+                <DeleteButton onClick={showDeleteWarning.setTrue} text={'Удалить'} />
+            </div>
+            <form onSubmit={onSubmit} ref={form}>
+                <Payment defaultValue={payment}/>
+                <ButtonInForm loading={loading}/>
+                {error.Comp()}
+            </form>
+            {showDeleteWarning.Comp()}
+        </CustomModal>
+    );
 };
 
 export default ChangePayment;

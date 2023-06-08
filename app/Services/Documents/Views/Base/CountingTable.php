@@ -5,7 +5,7 @@ namespace App\Services\Documents\Views\Base;
 
 use App\Models\Contract\Contract;
 use App\Models\MoneySum;
-use App\Services\Documents\Base\Builders\CountingTableBuilder;
+use App\Services\Documents\Views\Base\Builders\CountingTableBuilder;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Section;
 

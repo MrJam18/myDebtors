@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Documents\Base\Builders;
+namespace App\Services\Documents\Views\Base\Builders;
 
 use App\Models\MoneySum;
 use Illuminate\Support\Collection;

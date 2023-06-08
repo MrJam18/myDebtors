@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Services\Documents\Views\Base;
 
-use App\Services\Documents\Base\Builders\DocBodyBuilder;
-use App\Services\Documents\Base\Builders\DocFooterBuilder;
-use App\Services\Documents\Base\Builders\DocHeadBuilder;
+use App\Services\Documents\Views\Base\Builders\DocBodyBuilder;
+use App\Services\Documents\Views\Base\Builders\DocFooterBuilder;
+use App\Services\Documents\Views\Base\Builders\DocHeadBuilder;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Section;
 use PhpOffice\PhpWord\PhpWord;

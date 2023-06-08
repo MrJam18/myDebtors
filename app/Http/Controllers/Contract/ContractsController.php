@@ -16,7 +16,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class ContractsController
 {
@@ -93,6 +92,13 @@ class ContractsController
             $executiveDocName = $contract->executiveDocument->type->name . ' №' . $contract->executiveDocument->number . ' от ' . $contract->executiveDocument->issued_date->format(RUS_DATE_FORMAT) . ' г.';
         }
         else $executiveDocName = 'Отсутствует';
+        if($contract->cession) {
+            /**
+             * @var Creditor $firstCreditor;
+             */
+            $firstCreditor = $contract->cession()->cession()->orderBy('transfer_date')->first();
+        }
+        else $firstCreditor = $contract->creditor;
         return [
             'contract' => [
                 'name'=>$contract->type->name,
@@ -100,8 +106,8 @@ class ContractsController
                 'debtorId'=> $contract->debtor->id,
                 'debtorName' => $contract->debtor->name->getFull(),
                 'status' => $contract->status,
-                'creditor' => $contract->creditor->short,
-                'firstCreditor' => $contract->creditor->short,
+                'creditor' => $contract->creditor->name,
+                'firstCreditor' => $firstCreditor->name,
                 'cession' => $contract->cession?->name ?? 'Принадлежит выдавшей организации' ,
                 'number' => $contract->number,
                 'sum_issue' => $contract->issued_sum,
@@ -114,7 +120,8 @@ class ContractsController
                 'penaltyToday' => $result->penalties,
                 'paymentsCount' => $contract->payments->count(),
                 'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
-                'executiveDocName' => $executiveDocName
+                'executiveDocName' => $executiveDocName,
+                'id' => $contract->id
             ]
         ];
     }

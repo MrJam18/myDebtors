@@ -7,6 +7,7 @@ use App\Models\Contract\Contract;
 use App\Models\MoneySum;
 use App\Services\Counters\Base\Limited;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class IgnorePaymentsLoanCountService extends LoanCountService
 {
@@ -26,10 +27,10 @@ class IgnorePaymentsLoanCountService extends LoanCountService
             $this->limited->setPercents($this->limited->isLimitedPenalty ? $this->limited->limitSum - $this->sum->penalties : $this->limited->limitSum);
         }
     }
-    function count(Contract $contract, Carbon $endDate): MoneySum
+    function count(Contract $contract, Carbon $endDate, ?Collection $payments = null): MoneySum
     {
         $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
-        $result = parent::count($contract, $endDate);
+        $result = parent::count($contract, $endDate, $payments);
         $this->countLimitedPercents();
         return $result;
     }

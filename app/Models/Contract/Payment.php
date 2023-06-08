@@ -14,12 +14,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $updated_at;
  * @property Carbon $date;
  * @property Contract $contract;
- * @property MoneySum $money_sum;
+ * @property MoneySum $moneySum;
  */
 class Payment extends BaseModel
 {
     protected $fillable = [
         'date'
+    ];
+    protected $casts = [
+        'date' => 'date:' . ISO_DATE_FORMAT
     ];
     public $timestamps = true;
 

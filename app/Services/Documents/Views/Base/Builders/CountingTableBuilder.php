@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Documents\Base\Builders;
+namespace App\Services\Documents\Views\Base\Builders;
 
 use App\Models\Contract\Payment;
 use App\Models\MoneySum;
@@ -61,12 +61,12 @@ class CountingTableBuilder extends TableBuilder
     function addPaymentRow(Payment $payment, float $percents): Row
     {
         $row = $this->table->addRow(500);
-        $this->addTextCell('- ' . $payment->money_sum->main);
+        $this->addTextCell('- ' . $payment->moneySum->main);
         $this->addTextCell($payment->date->format(RUS_DATE_FORMAT));
         $mergedCellStyle = $this->defaultCellStyle;
         $mergedCellStyle['gridSpan'] = 3;
         $this->addTextCell('Оплата долга', $mergedCellStyle);
-        $this->addTextCell('- ' . $payment->money_sum->percents);
+        $this->addTextCell('- ' . $payment->moneySum->percents);
         $this->addTextCell('= ' . $percents);
         return $row;
     }

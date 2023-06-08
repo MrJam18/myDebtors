@@ -12,7 +12,7 @@ abstract class LoanCountService extends CountService
     protected function countPayment(Payment $payment): void
     {
         $snapshot = $this->sum->replicate();
-        $this->sum->percents -= $payment->money_sum->sum;
+        $this->sum->percents -= $payment->moneySum->sum;
         if ($this->sum->percents < 0) {
             $this->sum->main += $this->sum->percents;
             $this->sum->percents = 0;
@@ -21,9 +21,9 @@ abstract class LoanCountService extends CountService
                 $this->sum->main = 0;
             }
         }
-        $payment->money_sum->percents = $snapshot->percents - $this->sum->percents;
-        $payment->money_sum->penalties = $snapshot->penalties - $this->sum->penalties;
-        $payment->money_sum->main = $snapshot->main - $this->sum->main;
+        $payment->moneySum->percents = $snapshot->percents - $this->sum->percents;
+        $payment->moneySum->penalties = $snapshot->penalties - $this->sum->penalties;
+        $payment->moneySum->main = $snapshot->main - $this->sum->main;
     }
 
     protected function countPercents(Carbon $startDate, Carbon $endDate): float

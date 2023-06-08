@@ -8,6 +8,7 @@ use App\Models\Contract\Payment;
 use App\Models\Holiday;
 use App\Models\MoneySum;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class CreditCountService extends CountService
 {
@@ -16,11 +17,11 @@ class CreditCountService extends CountService
     protected float $penaltyMain = 0;
     protected float $penaltyPercents = 0;
 
-    function count(Contract $contract, Carbon $endDate): MoneySum
+    function count(Contract $contract, Carbon $endDate, ?Collection $payments = null): MoneySum
     {
         $this->month_due_date = $contract->month_due_date;
         $this->month_due_sum = $contract->month_due_sum;
-        $result = parent::count($contract, $endDate);
+        $result = parent::count($contract, $endDate, $payments);
         $result->main += $this->penaltyMain;
         $result->percents += $this->penaltyPercents;
         $result->percents = floor($result->percents);

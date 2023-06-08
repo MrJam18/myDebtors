@@ -5,7 +5,7 @@ namespace App\Services\Documents\Views\CountingTables;
 
 use App\Models\Contract\Contract;
 use App\Services\Counters\Base\CountBreak;
-use App\Services\Documents\Base\Builders\CountingTableBuilder;
+use App\Services\Documents\Views\Base\Builders\CountingTableBuilder;
 use App\Services\Documents\Views\Base\CountingTable;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Section;
@@ -34,7 +34,7 @@ class CountingPenaltiesTable extends CountingTable
         $builder->addHeaders($headers);
         $this->countBreaks->each(function (CountBreak $break, int $index) {
             if($this->contract->due_date > $break->date) {
-                if($break->payment?->money_sum->main != 0) $this->sums->main -= $break->payment->money_sum->main;
+                if($break->payment?->moneySum->main != 0) $this->sums->main -= $break->payment->moneySum->main;
             }
             else {
                 $this->countBreaks->splice(0, $index);
@@ -45,7 +45,7 @@ class CountingPenaltiesTable extends CountingTable
         $penaltyBreak = new CountBreak($this->contract->due_date, $this->sums);
         $this->countBreaks->prepend($penaltyBreak);
         $this->countBreaks = $this->countBreaks->each(function (CountBreak $break, int $index) use ($builder){
-            if($break->payment && $break->payment->money_sum->main == 0 && $break->payment->money_sum->penalties == 0 || $break->isNoPenalty) {
+            if($break->payment && $break->payment->moneySum->main == 0 && $break->payment->moneySum->penalties == 0 || $break->isNoPenalty) {
                 return true;
             }
             if(isset($this->countBreaks[$index + 1])) {
@@ -54,7 +54,7 @@ class CountingPenaltiesTable extends CountingTable
                  */
                 $next = $this->countBreaks[$index + 1];
                 if($break->payment) {
-                    $paymentSum = $break->payment->money_sum;
+                    $paymentSum = $break->payment->moneySum;
                     $this->sums->main -= $paymentSum->main;
                     $this->sums->percents -= $paymentSum->penalties;
                     $builder->addPaymentRow($break->payment, $paymentSum->penalties);

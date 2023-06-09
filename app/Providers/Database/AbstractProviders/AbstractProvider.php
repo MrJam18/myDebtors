@@ -22,31 +22,6 @@ abstract class AbstractProvider
         $this->defaultOrderBy = $defaultOrderBy ?? new OrderBy('created_at', OrderDirection::DESC);
     }
 
-//
-//    function getAll(): Collection
-//    {
-//        return $this->query()->with('category')->get();
-//    }
-//
-//    protected function getRusDate(string $field): Expression
-//    {
-//        if(preg_match('/./', $field)) {
-//            $as = explode('.', $field);
-//            $as = $as[count($as) - 1];
-//        }
-//        else $as = $field;
-//        return DB::raw("date_format($field, '%d.%m.%Y') as $as");
-//    }
-//    protected function rusDateTime(string $field): Expression
-//    {
-//        if(preg_match('/./', $field)) {
-//            $as = explode('.', $field);
-//            $as = $as[count($as) - 1];
-//        }
-//        else $as = $field;
-//        return DB::raw("date_format($field, '%d.%m.%Y %H:%i:%s') as $as");
-//    }
-
 
     protected function getOrdered(?OrderBy $orderBy = null): CustomBuilder
     {

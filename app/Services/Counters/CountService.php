@@ -33,6 +33,7 @@ abstract class CountService
     protected float $fee;
     protected ContractType $contractType;
     protected bool $isCurrentYearLeap;
+    protected Collection $payments;
 
     function count(Contract $contract, Carbon $endDate, ?Collection $payments = null): MoneySum
     {
@@ -49,6 +50,7 @@ abstract class CountService
         $this->sum->penalties = 0;
         $this->contractType = $contract->type;
         if(!$payments) $payments = $contract->payments()->orderBy('date')->get();
+        $this->payments = $payments;
         $this->years = new Years($this->startDate, $this->endDate, $payments);
         $this->isPenaltiesCounted = [
             'started' => false,
@@ -147,6 +149,12 @@ abstract class CountService
     public function getBreaks(): Collection
     {
         return $this->breaks;
+    }
+    public function savePayments(): void
+    {
+        $this->payments->each(function(Payment $payment) {
+            $payment->moneySum->save();
+        });
     }
     abstract protected function countPercents(Carbon $startDate, Carbon $endDate): float;
     abstract protected function countPenalties(Carbon $startDate, Carbon $endDate): float;

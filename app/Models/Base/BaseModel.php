@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\DB;
  * @method static static firstOrNew(array $attributes = [], array $values = [])
  * @method static static find(int $id, array $columns = ['*'])
  * @method static CustomBuilder query()
+ * @method CustomBuilder|HasMany hasMany($related, $foreignKey = null, $localKey = null)
  */
 class BaseModel extends Model
 {

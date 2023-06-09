@@ -7,7 +7,7 @@ import {useUpdate} from "../../../hooks/useUpdate";
 import Toolbar from "./Toolbar";
 import {useShow} from "../../../hooks/useShow";
 
-const headers = [{name: 'Дата', key: 'date', type: 'date'},{ name: "Сумма", key: 'sum', type: 'number'}, {name: "Осн. долг", key: 'main', type: 'number'}, {name: "Проценты", key: 'percents', type: 'number'}, {name: "Неустойка", key: 'penalties', type: 'number'}];
+const headers = [{name: 'Дата', key: 'date', type: 'date'},{ name: "Сумма", key: 'money_sums.sum', type: 'number'}, {name: "Осн. долг", key: 'money_sums.main', type: 'number'}, {name: "Проценты", key: 'money_sums.percents', type: 'number'}, {name: "Неустойка", key: 'money_sums.penalties', type: 'number'}];
 
 const ContractPayments = () => {
     const {contractId} = useParams();

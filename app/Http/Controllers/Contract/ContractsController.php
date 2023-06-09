@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Contract;
 
+use App\Enums\Database\ActionObjectEnum;
+use App\Enums\Database\ActionTypeEnum;
 use App\Http\Requests\PaginateRequest;
 use App\Models\Cession\CessionGroup;
 use App\Models\Contract\Contract;
@@ -11,6 +13,8 @@ use App\Models\Contract\ContractType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\People\Debtor;
 use App\Providers\Database\ContractsProvider;
+use App\Services\ActionsService;
+use App\Services\Counters\CreditCountService;
 use App\Services\Counters\LimitedLoanCountService;
 use Carbon\Carbon;
 use Exception;
@@ -72,6 +76,8 @@ class ContractsController
         $contract->status_changed_at = Carbon::now();
         $contract->user()->associate(Auth::user());
         $contract->save();
+        $actionService = new ActionsService($contract->id, ActionObjectEnum::Contract);
+        $actionService->createAction(ActionTypeEnum::Create, 'создан настоящий контракт');
     }
     /**
      * @throws Exception
@@ -134,24 +140,69 @@ class ContractsController
 
         $data = $request->all();
         $contract=Contract::find($data['contractId']);
+
         switch ($data['column']) {
             case 'statusId':
+                $object = ActionObjectEnum::Status;
+                $result = 'Статус изменен с "' . $contract->status->name . '" на "';
                 $contract->status()->associate($data['value']);
+                $result .= $contract->status->name . '"';
                 break;
             case 'penalty':
+                $object = ActionObjectEnum::Penalty;
+                $result = 'Процент неустойки изменен с ' . $contract->penalty . ' % на ';
                 $contract->penalty = $data['value'];
+                $result .= $contract->penalty . '% годовых';
                 break;
             case 'percent':
+                $object = ActionObjectEnum::Percent;
+                $result = 'Процентная ставка изменена с ' . $contract->percent . ' % на ' . $data['value'] . '% годовых';
                 $contract->percent = $data['value'];
                 break;
             case 'sum_issue':
+                $object = ActionObjectEnum::IssuedSum;
+                $result = 'Сумма выдачи изменена с ' . $contract->issued_sum . " руб. на " . $data['value'] . "руб.";
                 $contract->issued_sum = $data['value'];
                 break;
            // case 'mainToday':
            //     return 'in process';
             case 'number':
+                $object = ActionObjectEnum::Number;
+                $result = 'Номер договора изменен с "' . $contract->number . '" на "' . $data['value'] . '"';
                 $contract->number = $data['value'];
+                break;
+            case 'date_issue':
+                $object = ActionObjectEnum::IssuedDate;
+                $result = 'Дата договора изменена с "' . $contract->issued_date->format(RUS_DATE_FORMAT) . '" на "';
+                $contract->issued_date = $data['value'];
+                $result .= $contract->issued_date->format(RUS_DATE_FORMAT) . '"';
+                break;
+            case 'due_date':
+                $object = ActionObjectEnum::DueDate;
+                $result = 'Дата исполнения изменена с "' . $contract->due_date->format(RUS_DATE_FORMAT) . '" на "';
+                $contract->due_date = $data['value'];
+                $result .= $contract->due_date->format(RUS_DATE_FORMAT) . '"';
+                break;
         }
         $contract->save();
+        if(isset($object)) {
+            $actionsService = new ActionsService($contract->id, $object);
+            $actionsService->createAction(ActionTypeEnum::Change, $result);
+        }
+        $needCount = [
+            'percent',
+            'penalty',
+            'date_issue',
+            'due_date',
+            'sum_issue'
+        ];
+        if(in_array($data['column'], $needCount)) {
+            if($contract->type->id === 1) $countService = new LimitedLoanCountService();
+            else $countService = new CreditCountService();
+            $countService->count($contract, now());
+            $countService->savePayments();
+        }
+
+
     }
 }

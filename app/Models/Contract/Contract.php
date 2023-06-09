@@ -6,6 +6,7 @@ namespace App\Models\Contract;
 use App\Models\Action\Action;
 use App\Models\Auth\User;
 use App\Models\Base\BaseModel;
+use App\Models\Base\CustomBuilder;
 use App\Models\Casts\Money;
 use App\Models\Cession\CessionGroup;
 use App\Models\CourtClaim\CourtClaim;
@@ -95,15 +96,15 @@ class Contract extends BaseModel
     {
         return $this->hasOne(ExecutiveDocument::class);
     }
-    function payments(): HasMany
+    function payments(): HasMany| CustomBuilder
     {
         return $this->hasMany(Payment::class);
     }
-    function courtClaims(): HasMany
+    function courtClaims(): HasMany | CustomBuilder
     {
         return $this->hasMany(CourtClaim::class);
     }
-    function actions(): HasMany
+    function actions(): HasMany|CustomBuilder
     {
         return $this->hasMany(Action::class);
     }

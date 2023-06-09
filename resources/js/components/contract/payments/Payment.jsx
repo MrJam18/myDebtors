@@ -9,7 +9,7 @@ const Payment = ({defaultValue = {}}) => {
   <>
       <div className='header_small' >Введите данные платежа</div>
    <TextField type='date' name='date' label='Дата платежа' defaultValue={defaultValue.date} InputLabelProps={{shrink: true}} required fullWidth size='small' className={styles.payment__input} />
-      <EasyInput  label='сумма платежа' name='sum' pattern='float'  defaultValue={defaultValue.sum} required fullWidth size='small' className={styles.payment__input} variant='outlined' />
+      <EasyInput  label='сумма платежа' name='sum' pattern='float'  defaultValue={defaultValue['money_sums.sum']} required fullWidth size='small' className={styles.payment__input} variant='outlined' />
   </>
  );
 };

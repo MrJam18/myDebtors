@@ -8,7 +8,6 @@ use App\Enums\Database\ActionTypeEnum;
 use App\Exceptions\ShowableException;
 use App\Http\Controllers\AbstractControllers\AbstractContractController;
 use App\Http\Requests\PaginateRequest;
-use App\Models\Base\CustomPaginator;
 use App\Models\Contract\Contract;
 use App\Models\Contract\Payment;
 use App\Models\MoneySum;
@@ -28,9 +27,21 @@ class PaymentsController extends AbstractContractController
     function getList(Contract $contract, PaginateRequest $request): array
     {
         $data = $request->validated();
-        $paginator = $contract->payments()->orderByData($data->orderBy)
+        $query = $contract->payments()->orderByData($data->orderBy)
             ->joinRelation('moneySum')
-            ->with('moneySum')->paginate($data->perPage, 'payments.*', page: $data->page);
+            ->with('moneySum');
+        if($data->search) {
+            if(containRusDate($data->search)) $query->searchByRusDate(['payments.date'], $data->search);
+            else {
+                $query->searchOne([
+                    'money_sums.main',
+                    'money_sums.percents',
+                    'money_sums.penalties',
+                    'money_sums.sum'
+                ], $data->search);
+            }
+        }
+        $paginator = $query->paginate($data->perPage, 'payments.*', page: $data->page);
         $list = $paginator->items()->map(function (Payment $payment) {
             return [
                 'money_sums.sum' => $payment->moneySum->sum,

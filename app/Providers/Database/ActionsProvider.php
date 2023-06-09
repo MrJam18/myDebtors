@@ -5,11 +5,9 @@ namespace App\Providers\Database;
 
 use App\Http\Requests\Base\ListRequestData;
 use App\Models\Action\Action;
-use App\Models\Action\ActionType;
 use App\Models\Base\CustomPaginator;
 use App\Models\Contract\Contract;
 use App\Providers\Database\AbstractProviders\AbstractProvider;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ActionsProvider extends AbstractProvider
 {
@@ -26,12 +24,20 @@ class ActionsProvider extends AbstractProvider
     }
     function getList(ListRequestData $data, Contract $contract): CustomPaginator
     {
-        return $contract->actions()->orderByData($data->orderBy)
+        $query = $contract->actions()->orderByData($data->orderBy)
             ->joinRelation('type')
             ->joinRelation('object')
             ->joinRelation('user.name')
             ->with(['type', 'object', 'user' => ['name']])
-            ->select('actions.*')
-            ->paginate($data->perPage, page: $data->page);
+            ->select('actions.*');
+        if($data->search) {
+            if(containRusDate($data->search)) {
+                $query->searchByRusDate(['actions.created_at'], $data->search);
+            }
+            else {
+                $query->searchOne(['result', 'action_types.name', 'action_objects.name', 'names.surname'], $data->search);
+            }
+        }
+        return $query->paginate($data->perPage, page: $data->page);
     }
 }

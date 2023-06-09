@@ -51,6 +51,16 @@ class CustomBuilder extends Builder
         });
         return $this;
     }
+    function searchByRusDate(array $byColumns, string $searchDate): static
+    {
+        $datesArray = explode('.', $searchDate, 3);
+        $date = '';
+        foreach ($datesArray as $item) {
+            $date = '-' . $item . $date;
+        }
+        $date = substr($date, 1);
+        return $this->searchOne($byColumns, $date);
+    }
 
     function searchOne(array $byColumns, string $search): static
     {

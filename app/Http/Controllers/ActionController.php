@@ -22,7 +22,7 @@ class ActionController extends AbstractController
         $list = $paginator->items()->map(function (Action $action){
             return [
                 'debtor' => $action->contract->debtor->name->getFull(),
-                'createdAt' => $action->created_at,
+                'createdAt' => $action->created_at->format(RUS_DATE_TIME_FORMAT),
                 'id' => $action->id,
                 'result' => $action->result,
                 'actionType' => $action->type->name,

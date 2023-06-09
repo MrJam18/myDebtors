@@ -10,11 +10,11 @@ type Props = {
     }>
     serverAddress: string,
     onClickRow?: (id: number) => void,
-    update: number,
+    update?: number,
     search?: string,
     setElement?: (el: Record<string, any>) => void
 }
-export default function CustomList({headers, serverAddress, onClickRow = null, update, search=null, setElement = null}: Props) {
+export default function CustomList({headers, serverAddress, onClickRow = null, update = null, search=null, setElement = null}: Props) {
     const list = useList(serverAddress, {perPage: 25}, search);
     useEffect(() => {
         if(update) list.update();

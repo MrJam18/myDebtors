@@ -11,8 +11,9 @@ const headers = [{name: 'Дата', key: 'date', type: 'date'},{ name: "Сумм
 
 const ContractPayments = () => {
     const {contractId} = useParams();
-    const update = useUpdate();
     const [changedPayment, setChangedPayment] = useState(null);
+    const [search, setSearch] = useState('');
+    const update = useUpdate();
     const showChangedPayment = useShow(ChangePayment, {payment: changedPayment, update: update.set});
     const onClickRow = () => {
         showChangedPayment.setShow(true);
@@ -22,8 +23,8 @@ const ContractPayments = () => {
     return (
         <div className={styles.payments}>
             <div className={styles.header_small}>Управление платежами</div>
-            <Toolbar update={update.set} />
-            <CustomList headers={headers} serverAddress={'contracts/' + contractId + '/payments/list'} update={update.state} setElement={setChangedPayment} onClickRow={onClickRow} />
+            <Toolbar setSearch={setSearch} update={update.set} />
+            <CustomList search={search} headers={headers} serverAddress={'contracts/' + contractId + '/payments/list'} update={update.state} setElement={setChangedPayment} onClickRow={onClickRow} />
             {showChangedPayment.Comp()}
         </div>
     );

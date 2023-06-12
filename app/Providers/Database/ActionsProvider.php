@@ -13,8 +13,8 @@ class ActionsProvider extends AbstractProvider
 {
     public function __construct()
     {
-        parent::__construct();
-        $this->model = Action::class;
+        parent::__construct(Action::class);
+
     }
 
     function getLastActions(int $userId, ListRequestData $data): CustomPaginator
@@ -28,8 +28,7 @@ class ActionsProvider extends AbstractProvider
             ->joinRelation('type')
             ->joinRelation('object')
             ->joinRelation('user.name')
-            ->with(['type', 'object', 'user' => ['name']])
-            ->select('actions.*');
+            ->with(['type', 'object', 'user' => ['name']]);
         if($data->search) {
             if(containRusDate($data->search)) {
                 $query->searchByRusDate(['actions.created_at'], $data->search);

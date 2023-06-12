@@ -1,3 +1,7 @@
 <?php
 declare(strict_types=1);
-$END$
+
+use App\Http\Controllers\Contract\FilesController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('existing-files', [FilesController::class, 'getExistingFiles']);

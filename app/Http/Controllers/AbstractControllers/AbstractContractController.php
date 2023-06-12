@@ -13,10 +13,12 @@ abstract class AbstractContractController extends AbstractController
 
     public function __construct(Request $request, ActionObjectEnum $defaultObject)
     {
-        foreach ($request->route()->parameters() as $name => $value) {
-            if($name === 'contract') {
-                $this->actionsService = new ActionsService((int)$value, $defaultObject);
-                break;
+        if($request->route()) {
+            foreach ($request->route()->parameters() as $name => $value) {
+                if ($name === 'contract') {
+                    $this->actionsService = new ActionsService((int)$value, $defaultObject);
+                    break;
+                }
             }
         }
     }

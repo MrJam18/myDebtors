@@ -26,7 +26,7 @@ const ContractMenu = ({menuValue, setMenuValue}) => {
             <Tabs value={menuValue} onChange={handleChangeMenu} className={classes.menu} centered variant='fullWidth'  aria-label="basic tabs example" orientation='vertical'>     
                 <Tab value='data' label="Договор" ></Tab>
                 <hr className={styles.divider} />
-                <Tab value='actions'   label="Действия" ></Tab>
+                <Tab value='actions'   label="Действия"></Tab>
                 <hr className={styles.divider} />
                 <Tab  value={'payments'} label="Платежи" ></Tab>
                 <hr className={styles.divider} />
@@ -34,7 +34,7 @@ const ContractMenu = ({menuValue, setMenuValue}) => {
                 <hr className={styles.divider} />
                 <Tab value={'documents'} label={'Документы'} ></Tab>
                 <hr className={styles.divider} />
-        </Tabs>
+            </Tabs>
         </div>
     );
 };

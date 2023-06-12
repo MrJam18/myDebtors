@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6821fa6d577e5b8fb0c3b96c9c2ce2cf",
+    "content-hash": "5d2f3814b9f1b2f032708a9ab1706696",
     "packages": [
         {
             "name": "appstract/laravel-opcache",
@@ -1381,6 +1381,68 @@
                 }
             ],
             "time": "2021-10-07T12:57:01+00:00"
+        },
+        {
+            "name": "kirschbaum-development/eloquent-power-joins",
+            "version": "3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kirschbaum-development/eloquent-power-joins.git",
+                "reference": "85ff7684a25049aee6a1c9e26a751ce5be60d6d9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kirschbaum-development/eloquent-power-joins/zipball/85ff7684a25049aee6a1c9e26a751ce5be60d6d9",
+                "reference": "85ff7684a25049aee6a1c9e26a751ce5be60d6d9",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^8.0|^9.0|^10.0",
+                "illuminate/support": "^8.0|^9.0|^10.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "laravel/legacy-factories": "^1.0@dev",
+                "orchestra/testbench": "^4.0|^5.0|^6.0|^7.0|^8.0",
+                "phpunit/phpunit": "^8.0|^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Kirschbaum\\PowerJoins\\PowerJoinsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Kirschbaum\\PowerJoins\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luis Dalmolin",
+                    "email": "luis.nh@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The Laravel magic applied to joins.",
+            "homepage": "https://github.com/kirschbaum-development/eloquent-power-joins",
+            "keywords": [
+                "eloquent",
+                "join",
+                "laravel",
+                "mysql"
+            ],
+            "support": {
+                "issues": "https://github.com/kirschbaum-development/eloquent-power-joins/issues",
+                "source": "https://github.com/kirschbaum-development/eloquent-power-joins/tree/3.0.3"
+            },
+            "time": "2023-06-04T12:19:28+00:00"
         },
         {
             "name": "laminas/laminas-escaper",
@@ -3749,70 +3811,6 @@
                 }
             ],
             "time": "2023-01-12T18:13:24+00:00"
-        },
-        {
-            "name": "reedware/laravel-relation-joins",
-            "version": "v4.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tylernathanreed/laravel-relation-joins.git",
-                "reference": "d6e25802644a1ea6b8668e3424894f02d0de7dd9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tylernathanreed/laravel-relation-joins/zipball/d6e25802644a1ea6b8668e3424894f02d0de7dd9",
-                "reference": "d6e25802644a1ea6b8668e3424894f02d0de7dd9",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/contracts": "^8.83|^9.52|^10.0",
-                "illuminate/database": "^8.83|^9.52|^10.0",
-                "illuminate/support": "^8.83|^9.52|^10.0",
-                "php": ">=7.3"
-            },
-            "require-dev": {
-                "illuminate/container": "^8.83|^9.52|^10.0",
-                "mockery/mockery": "^1.5.1",
-                "php-coveralls/php-coveralls": "^2.4",
-                "phpunit/phpunit": "^8.5.33|^9.5",
-                "squizlabs/php_codesniffer": "^3.6"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Reedware\\LaravelRelationJoins\\LaravelRelationJoinServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Reedware\\LaravelRelationJoins\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tyler Reed",
-                    "email": "tylernathanreed@gmail.com"
-                }
-            ],
-            "description": "Adds the ability to join on a relationship by name.",
-            "keywords": [
-                "eloquent",
-                "join",
-                "laravel",
-                "query",
-                "relation"
-            ],
-            "support": {
-                "issues": "https://github.com/tylernathanreed/laravel-relation-joins/issues",
-                "source": "https://github.com/tylernathanreed/laravel-relation-joins/tree/v4.0.1"
-            },
-            "time": "2023-04-01T17:21:04+00:00"
         },
         {
             "name": "symfony/console",

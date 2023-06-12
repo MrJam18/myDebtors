@@ -1,15 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Documents\Views;
+namespace App\Services\Documents\Views\Claims;
 
-use App\Services\Counters\IgnorePaymentsLoanCountService;
+use App\Models\CourtClaim\CourtClaim;
+use App\Services\Counters\CountService;
 use App\Services\Counters\LimitedLoanCountService;
 use App\Services\Documents\Views\Base\Builders\DocBodyBuilder;
+use App\Services\Documents\Views\CountingTables\LoanCountPenaltiesTable;
 
 
 abstract class LoanClaimDocView extends ClaimDocView
 {
+    public function __construct(CourtClaim $claim, CountService $countService)
+    {
+        parent::__construct($claim, $countService);
+        $this->penaltiesTable = new LoanCountPenaltiesTable($this->tableSection, $this->contract, $this->countService->getBreaks());
+    }
 
     protected function buildBody(DocBodyBuilder $builder): void
     {

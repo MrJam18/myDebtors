@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Services\Documents\Views;
-
-use Illuminate\Support\Collection;
+namespace App\Services\Documents\Views\Claims;
 
 trait CourtOrderTrait
 {

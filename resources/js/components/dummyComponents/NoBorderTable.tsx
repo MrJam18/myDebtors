@@ -15,20 +15,23 @@ type Props = {
     sortHandler?: (order: Order)=> void,
     focus?: string,
     loading?: boolean,
-    onClickRow?: (index: number) => void
+    onClickRow?: (index: number) => void,
 }
-
+let Headers;
 const NoBorderTable = ({rows = [], headers = [], sortHandler = null, focus = null, loading, onClickRow = null}: Props) => {
+    const [Rows, setRows] = useState([]);
     const table = useRef();
-    let Rows = [];
     const [empty, setEmpty] = useState(false);
     const clickRowHandler = (ev) => {
         const index = ev.currentTarget.getAttribute('data-index');
         onClickRow(index);
     }
+    const doHeaders = () => {
+        Headers = headers.map((header, index) => <th style={header.styles ? header.styles : null} key={index} className={styles.header}>{header.name} <SortButton  sortHandler={sortHandler} header={header} focus={focus}/></th>)
+    }
     const doRows = () => {
         if (!loading && rows.length !== 0) {
-            Rows = rows.map((row, index) => {
+            setRows(rows.map((row, index) => {
                 let array = []
                 const cellId = row.id;
                 delete row.id;
@@ -37,9 +40,11 @@ const NoBorderTable = ({rows = [], headers = [], sortHandler = null, focus = nul
                 for (const key in row) {
                     if(key === el.key) {
                         find = true;
-                    array.push(<td className={styles.row}>
-                        <span className={styles.rowContainer}>
-                        {row[key]}</span>
+                    array.push(
+                        <td className={styles.row}>
+                            <span className={styles.rowContainer}>
+                                {row[key]}
+                            </span>
                         </td>)
                         break;
                     }
@@ -60,21 +65,17 @@ const NoBorderTable = ({rows = [], headers = [], sortHandler = null, focus = nul
             <tr key={cellId} className={styles.rows}>
                 {array}
                 </tr> )
-        });
+        }));
     }
     }
     useEffect(()=> {
+        doRows();
         if(rows.length === 0 && !loading) {
             setEmpty(true);
         }
         else setEmpty(false);
     }, [rows, loading])
-    let Headers;
-    const doHeaders = () => {
-        Headers = headers.map((header, index) => <th style={header.styles ? header.styles : null} key={index} className={styles.header}>{header.name} <SortButton  sortHandler={sortHandler} header={header} focus={focus}/></th>)
-    }
-    doRows()
-    doHeaders()
+    useEffect(() => doHeaders(), [focus]);
     return (
         <>
     <table className={styles.table} ref={table}>

@@ -19,5 +19,7 @@ enum ActionObjectEnum: int
     case EnforcementProceedingStatement = 12;
     case Contract = 13;
     case File = 14;
+    case MonthDueDate = 15;
+    case MonthDueSum = 16;
 
 }

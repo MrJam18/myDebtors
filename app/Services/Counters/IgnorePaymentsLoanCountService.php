@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Services\Counters;
 
 use App\Models\Contract\Contract;
+use App\Models\Contract\Payment;
 use App\Models\MoneySum;
+use App\Services\Counters\Base\CountBreak;
 use App\Services\Counters\Base\Limited;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -38,5 +40,10 @@ class IgnorePaymentsLoanCountService extends LoanCountService
     function getLimited(): Limited
     {
         return $this->limited;
+    }
+
+    protected function addBreak(Carbon $date, Payment $payment = null): void
+    {
+        $this->breaks->push(new CountBreak($date, $this->sum->replicate(), $payment));
     }
 }

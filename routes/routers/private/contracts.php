@@ -21,3 +21,4 @@ Route::post('change-contract', [ContractsController::class, 'changeContract']);
 Route::prefix('{contract}/documents')->group(function () {
     Route::post('create-court-claim', [DocumentsController::class, 'createCourtClaim']);
 });
+Route::post('{contract}/change-creditor', [ContractsController::class, 'changeCreditor']);

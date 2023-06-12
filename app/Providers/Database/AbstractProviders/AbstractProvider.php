@@ -16,10 +16,13 @@ abstract class AbstractProvider
 {
     protected string $model;
     protected OrderBy $defaultOrderBy;
+    protected string $table;
 
-    public function __construct(?OrderBy $defaultOrderBy = null)
+    public function __construct(string $model, ?OrderBy $defaultOrderBy = null)
     {
-        $this->defaultOrderBy = $defaultOrderBy ?? new OrderBy('created_at', OrderDirection::DESC);
+        $this->table = (new $model())->getTable();
+        $this->model = $model;
+        $this->defaultOrderBy = $defaultOrderBy ?? new OrderBy($this->table . '.created_at', OrderDirection::DESC);
     }
 
 
@@ -39,7 +42,15 @@ abstract class AbstractProvider
         $in = User::query()->where('group_id', '=', $groupId)->get('id')->map(function (User $user) {
             return $user->id;
         });
-        return $this->getOrdered($orderBy)->whereIn('user_id', $in);
+        return $this->getOrdered($orderBy)->whereIn($this->table . '.user_id', $in);
+    }
+    protected function getAsEquals(string $value): string
+    {
+        return "$value as `$value`";
+    }
+    protected function getAsEqualsRusDate(string $value): string
+    {
+        return "DATE_FORMAT($value, '%d.%m.%Y') as `$value`";
     }
 
 

@@ -79,13 +79,10 @@ abstract class CountService
         else $this->countYear($this->startDate, $this->endDate, $firstYear);
         $this->addBreak($this->endDate);
         $this->sum->countSum();
-        return $this->sum;
+        return $this->getResult();
     }
 
-    protected function addBreak(Carbon $date, Payment $payment = null): void
-    {
-        $this->breaks->push(new CountBreak($date, $this->sum->replicate(), $payment));
-    }
+    abstract protected function addBreak(Carbon $date, Payment $payment = null): void;
 
 
     protected function getLastYearDate(int $year): Carbon
@@ -95,7 +92,7 @@ abstract class CountService
 
     protected function countFee(CourtClaimType $claimType): float
     {
-        $moneySum = $this->sum;
+        $moneySum = $this->getResult();
         if(!$this->sum->sum) $this->sum->countSum();
         if($this->sum->sum <= 20000) {
             $fee = $moneySum->sum / 100 * 4;
@@ -158,7 +155,6 @@ abstract class CountService
     }
     abstract protected function countPercents(Carbon $startDate, Carbon $endDate): float;
     abstract protected function countPenalties(Carbon $startDate, Carbon $endDate): float;
-//    abstract protected function countPenaltiesPeriod(Carbon $startDate, Carbon $endDate): float;
     abstract protected function countPeriod(Carbon $startDate, Carbon $endDate): void;
     abstract protected function countPayment(Payment $payment): void;
 

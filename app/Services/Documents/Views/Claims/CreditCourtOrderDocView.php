@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services\Documents\Views\Claims;
 
-class CreditCourtOrderDocView
+class CreditCourtOrderDocView extends CreditClaimDocView
 {
-
+    use CourtOrderTrait;
 }

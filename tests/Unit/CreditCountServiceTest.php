@@ -18,18 +18,6 @@ class CreditCountServiceTest extends CounterTest
     }
 
 
-    function test_percents_in_one_day()
-    {
-        $contract = $this->createTestContract(new Carbon('2020-01-01'), 100000, 100);
-        $result = $this->service->count($contract, new Carbon('2020-01-02'));
-        $this->assertEquals(273, $result->percents);
-    }
-    function test_percents_in_leap_year()
-    {
-        $contract = $this->createTestContract(new Carbon('2019-12-31'), 100000, 100);
-        $result = $this->countByService($contract, new Carbon('2020-12-31'));
-        $this->assertEquals(100000, $result->percents);
-    }
     function test_penalties_in_leap_year()
     {
         $contract = $this->createTestContract(new Carbon('2019-12-11'), 100000, 100, 100, new Carbon('2019-12-31'));

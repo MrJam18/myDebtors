@@ -1,10 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Documents\Views;
-
-use App\Models\CourtClaim\CourtClaim;
-use App\Services\Counters\CountService;
+namespace App\Services\Documents\Views\Claims;
 
 class LoanCourtOrderDocView extends LoanClaimDocView
 {

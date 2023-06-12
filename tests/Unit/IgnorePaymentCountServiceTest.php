@@ -42,12 +42,12 @@ class IgnorePaymentCountServiceTest extends CounterTest
     {
         $payment1 = new Payment();
         $payment1->date = new Carbon('2021-05-05');
-        $payment1->money_sum = new MoneySum();
-        $payment1->money_sum->sum = 5000;
+        $payment1->moneySum = new MoneySum();
+        $payment1->moneySum->sum = 5000;
         $payment2 = new Payment();
         $payment2->date = new Carbon('2021-10-05');
-        $payment2->money_sum = new MoneySum();
-        $payment2->money_sum->sum = 3000;
+        $payment2->moneySum = new MoneySum();
+        $payment2->moneySum->sum = 3000;
         $contract = $this->createTestContract(new Carbon('2019-01-27'), 50000, 300, 30, new Carbon('2019-01-27'), [$payment1, $payment2]);
         $result = $this->countByService($contract, new Carbon('2023-01-01'));
         $this->assertEquals(125000, $this->service->getLimited()->getPercents() + $result->penalties);

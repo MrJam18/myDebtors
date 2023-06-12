@@ -9,7 +9,7 @@ import {useShow} from "../../hooks/useShow";
 import ListSearcher from "../dummyComponents/search/ListSearcher";
 
 
-const headers = [{key: "name", name: 'Название'}, {key: 'lastAssignor', name: 'Цедент'}, {key: 'lastAssignee', name: 'Цессионарий'}, {key: 'lastTransferDate', name: 'Дата цессии', type: 'date'}, {key: 'created_at', name: "Дата создания"}];
+const headers = [{key: 'cession_groups.name', name: 'Название'}, {key: 'assignor_table.short', name: 'Цедент'}, {key: 'assignee_table.short', name: 'Цессионарий'}, {key: 'ranked_table.transfer_date', name: 'Дата цессии', type: 'date'}, {key: 'cession_groups.created_at', name: "Дата создания"}];
 
 const Cessions = () => {
     const update = useUpdate();
@@ -26,7 +26,7 @@ const Cessions = () => {
                <ListSearcher setSearch={setSearch} />
                <AddButton update={update.set} />
            </div>
-           <CustomList search={search} headers={headers} onClickRow={onClickRow} serverAddress={'cessions/list'} update={update.state} />
+           <CustomList defaultOrder={['cession_groups.created_at', 'DESC']} search={search} headers={headers} onClickRow={onClickRow} serverAddress={'cessions/list'} update={update.state} />
            {showChanger.Comp()}
        </Content>
     )

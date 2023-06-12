@@ -10,7 +10,7 @@ use App\Services\Documents\Views\Base\CountingTable;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Section;
 
-class CountingPenaltiesTable extends CountingTable
+class LoanCountPenaltiesTable extends CountingTable
 {
     public function __construct(Section $section, Contract $contract, Collection $countBreaks)
     {
@@ -44,7 +44,7 @@ class CountingPenaltiesTable extends CountingTable
         });
         $penaltyBreak = new CountBreak($this->contract->due_date, $this->sums);
         $this->countBreaks->prepend($penaltyBreak);
-        $this->countBreaks = $this->countBreaks->each(function (CountBreak $break, int $index) use ($builder){
+        $this->countBreaks->each(function (CountBreak $break, int $index) use ($builder){
             if($break->payment && $break->payment->moneySum->main == 0 && $break->payment->moneySum->penalties == 0 || $break->isNoPenalty) {
                 return true;
             }
@@ -70,6 +70,5 @@ class CountingPenaltiesTable extends CountingTable
             return true;
         });
         $builder->addCountResult('Сумма неустойки: ' . $this->sums->percents . ' руб.');
-
     }
 }

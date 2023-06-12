@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Documents\Views;
+namespace App\Services\Documents\Views\Claims;
 
 use App\Services\Documents\Views\Base\Builders\DocBodyBuilder;
 

@@ -1,18 +1,27 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Documents\Views;
+namespace App\Services\Documents\Views\Claims;
 
+use App\Models\CourtClaim\CourtClaim;
+use App\Services\Counters\CreditCountService;
 use App\Services\Documents\Views\Base\Builders\DocBodyBuilder;
+use App\Services\Documents\Views\CountingTables\CreditCountPenaltiesTable;
 
-class CreditClaimDocView extends ClaimDocView
+abstract class CreditClaimDocView extends ClaimDocView
 {
+
+    public function __construct(CourtClaim $claim, CreditCountService $countService)
+    {
+        parent::__construct($claim, $countService);
+        $this->penaltiesTable = new CreditCountPenaltiesTable($this->tableSection, $this->contract, $countService->getPenaltyBreaks());
+    }
 
     protected function buildBody(DocBodyBuilder $builder): void
     {
         $builder->addHeader($this->claim->type->name);
         $builder->addIndentRow(
-            "{$this->contract->issued_date->format(RUS_DATE_FORMAT)} г. {$this->firstCreditor->name} (далее - 'Заимодавец') и {$this->debtor->name->getFull()} (далее - 'Должник') заключили кредитный договор № {$this->contract->number} (далее - 'Договор'). В соответствии с условиями договора заимодавец передал должнику денежную сумму в размере {$this->contract->issued_sum} рублей сроком на {$this->inclineNumWord($this->contract->issued_date->diffInDays($this->contract->due_date), 'день', "дня", "дней")}, а Должник обязался возвратить такую же сумму денег и уплатить проценты в размере {$this->contract->percent} % годовых от суммы займа."
+            "{$this->contract->issued_date->format(RUS_DATE_FORMAT)} г. {$this->firstCreditor->name} (далее - 'Заимодавец') и {$this->debtor->name->getFull()} (далее - 'Должник') заключили кредитный договор № {$this->contract->number} (далее - 'Договор'). В соответствии с условиями договора заимодавец передал должнику денежную сумму в размере {$this->contract->issued_sum} рублей сроком до {$this->contract->due_date->format(RUS_DATE_FORMAT)} г., а Должник обязался возвратить такую же сумму денег и уплатить проценты в размере {$this->contract->percent} % годовых от суммы займа."
         );
         $builder->addIndentRow(
             "Кроме того, согласно договору, должник обязался {$this->contract->month_due_date} числа каждого месяца оплачивать задолженность по договору равными платежами в размере {$this->contract->month_due_sum} рублей."

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import useList from "../../hooks/useList";
 import NoBorderTable from "./NoBorderTable";
 import Pagination from "./Pagination";
-export default function CustomList({ headers, serverAddress, onClickRow = null, update = null, search = null, setElement = null }) {
-    const list = useList(serverAddress, { perPage: 25 }, search);
+export default function CustomList({ headers, defaultOrder = null, serverAddress, onClickRow = null, update = null, search = null, setElement = null }) {
+    const list = useList(serverAddress, { perPage: 25, order: defaultOrder }, search);
     useEffect(() => {
         if (update)
             list.update();

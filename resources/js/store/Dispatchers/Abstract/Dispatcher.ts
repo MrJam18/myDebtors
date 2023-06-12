@@ -8,6 +8,8 @@ export type DispatcherData =  {
     [key: string]: any,
     formData: Record<string, any> | null
 }
+type SetError = (boolean)=> void | null;
+type Update = ()=> void | null;
 
 
 export abstract class Dispatcher
@@ -15,6 +17,7 @@ export abstract class Dispatcher
     protected readonly _setError: Function | null;
     readonly #setLoading?: Dispatch<SetStateAction<boolean>> | null;
     readonly #setShow?: Dispatch<SetStateAction<boolean>> | null;
+    readonly #update?: Update;
     public data: DispatcherData;
     public noReqData: Record<string, any>
     protected readonly _dispatch: typeof store.dispatch = dispatch;
@@ -22,18 +25,18 @@ export abstract class Dispatcher
     protected readonly _api = api;
     protected _actions:  CaseReducerActions<SliceCaseReducers<unknown>, string> | null = null;
     protected abstract _handler(dispatcherData: DispatcherData): Promise<any>;
-    /**
-     *
-     * @param {function} setError function which change error state
-     * @param {function} setLoading function which change loading state
-     * @param {function} setShow function which change show state for close modalWindow
-     * @param {object} formRef formRef what inserted to data properties
-     */
-    constructor(setError: Function | null, setLoading: Dispatch<SetStateAction<boolean>> | null = null, formRef:  MutableRefObject<HTMLFormElement> | null = null, setShow: Dispatch<SetStateAction<boolean>> | null = null)
+    constructor(
+        setError: SetError,
+        setLoading: Dispatch<SetStateAction<boolean>> | null = null,
+        formRef:  MutableRefObject<HTMLFormElement> | null = null,
+        setShow: Dispatch<SetStateAction<boolean>> | null = null,
+        update: Update = null
+    )
     {
         if(setError) this._setError = setError;
         this.#setLoading = setLoading;
         this.#setShow = setShow;
+        this.#update = update;
         this.data = {formData: null};
         this.noReqData = {};
         if(formRef) this.data.formData = formDataConverter(formRef.current.elements);
@@ -49,6 +52,7 @@ export abstract class Dispatcher
             }
             const result = await this._runHandler();
             if(this.#setShow) this.#setShow(false);
+            if(this.#update) this.#update();
             return result;
         }
         catch (e: any) {

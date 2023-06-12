@@ -31,6 +31,7 @@
     border: none;
     background-color: darkviolet;
     border-radius: 50%;
+    z-index: 1;
 }
 .addInput {
     margin-bottom: 10px;

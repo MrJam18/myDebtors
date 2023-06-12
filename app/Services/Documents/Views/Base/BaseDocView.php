@@ -16,9 +16,9 @@ abstract class BaseDocView
 {
     protected PhpWord $document;
     protected Section $baseSection;
-    private DocHeadBuilder $headBuilder;
-    private DocBodyBuilder $bodyBuilder;
-    private DocFooterBuilder $footerBuilder;
+    protected DocHeadBuilder $headBuilder;
+    protected DocBodyBuilder $bodyBuilder;
+    protected DocFooterBuilder $footerBuilder;
 
     public function __construct(PhpWord $document = null, string $defaultFontName = 'Times New Roman', int $defaultFontSize = 11)
     {

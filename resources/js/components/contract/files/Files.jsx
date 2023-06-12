@@ -1,30 +1,40 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from '../../../css/contract.module.css';
 import FileHandler from "./FileHandler";
-import {useDispatch} from "react-redux";
-import {getExistingFiles} from "../../../store/contracts/actions";
-import {useParams} from "react-router";
-import {contractsSlice} from "../../../store/contracts/reducer";
+import api from "../../../http";
+import {Alert} from "../../../classes/Alert";
+import {getContractPath} from "../../../utils/getContractPath";
 
-const actions = contractsSlice.actions;
+
+const fileList = [
+    {name: 'contract', header: 'Договор и приложения'},
+    {name: 'courtOrder', header: 'Судебный приказ'},
+    {name: 'cancelDecision', header: 'Определение об отмене суд. приказа'},
+    {name: 'executiveDocument', header: 'Исполнительный лист'},
+    {name: 'IPInit', header: 'Постановление о возбуждении ИП'},
+    {name: 'IPEnd', header: 'Постановление об окончании ИП'}
+]
+
 
 const Files = () => {
-    const dispatch = useDispatch();
-    const {contractId} = useParams();
+    const [loading, setLoading] = useState(true);
+    const [existingFiles, setExistingFiles] = useState([]);
     useEffect(()=> {
-        dispatch(getExistingFiles(contractId));
-        return ()=> {
-            dispatch(actions.setExistingLoading(true));
-        }
-    })
+        api.get(getContractPath('files/existing-files'))
+            .then(({data}) => setExistingFiles(data))
+            .catch((e) => Alert.setError('Ошибка при получении списка файлов', e))
+            .finally(() => setLoading(false));
+    }, []);
  return (
   <div className={styles.documents}>
-      <FileHandler documentName='contract'  header={'Договор и приложения'} />
-      <FileHandler documentName='courtOrder' header={'Судебный приказ'} />
-      <FileHandler documentName='cancelDecision' header={'Определение об отмене суд. приказа'} />
-      <FileHandler documentName='receivingOrder' header={'Исполнительный лист'} />
-      <FileHandler documentName='IPInit' header={'Постановление о возбуждении ИП'} />
-      <FileHandler documentName='IPEnd' header={'Постановление об окончании ИП'} />
+      {
+          fileList.map((file)=> {
+             return (
+                 <FileHandler key={file.name} documentName={file.name} header={file.header} globalLoading={loading} existingFiles={existingFiles} />
+             )
+          }
+
+      )}
   </div>
  );
 };

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Services\Documents\Views;
+namespace App\Services\Documents\Views\Claims;
 
 use App\Models\Cession\Cession;
 use App\Models\Cession\CessionEnclosure;
@@ -20,7 +20,8 @@ use App\Services\Documents\Views\Base\BaseDocView;
 use App\Services\Documents\Views\Base\Builders\DocBodyBuilder;
 use App\Services\Documents\Views\Base\Builders\DocFooterBuilder;
 use App\Services\Documents\Views\Base\Builders\DocHeadBuilder;
-use App\Services\Documents\Views\CountingTables\CountingPenaltiesTable;
+use App\Services\Documents\Views\Base\CountingTable;
+use App\Services\Documents\Views\CountingTables\LoanCountPenaltiesTable;
 use App\Services\Documents\Views\CountingTables\CountingPercentsTable;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Section;
@@ -41,7 +42,7 @@ abstract class ClaimDocView extends BaseDocView
     protected Collection $enclosures;
     protected Collection $askHeader;
     protected CountingPercentsTable $percentsTable;
-    protected CountingPenaltiesTable $penaltiesTable;
+    protected CountingTable $penaltiesTable;
     protected Section $tableSection;
     protected ?Limited $limited;
     protected MoneySum $result;
@@ -76,7 +77,7 @@ abstract class ClaimDocView extends BaseDocView
         $this->enclosures->push($this->agent->enclosure);
         $tableSection = $this->document->addSection(['marginLeft' => 1100]);
         $this->percentsTable = new CountingPercentsTable($tableSection, $this->contract, $this->countService->getBreaks());
-        $this->penaltiesTable = new CountingPenaltiesTable($tableSection, $this->contract, $this->countService->getBreaks());
+//        $this->penaltiesTable = new LoanCountPenaltiesTable($tableSection, $this->contract, $this->countService->getBreaks());
         $this->tableSection = $tableSection;
         $this->result = $this->countService->getResult();
 //        $builder->addHeader($this->claim->type->name);
@@ -169,7 +170,7 @@ abstract class ClaimDocView extends BaseDocView
     {
         $builder->addRow('Квитанция об оплате государственной пошлины');
         $builder->addRow('Расчет исковых требований');
-        $builder->addRow('Договор № ' . $this->contract->number . ' от ' . $this->contract->issued_date->format(RUS_DATE_FORMAT) . ' г.');
+        $builder->addRow( $this->contract->type->name . ' № ' . $this->contract->number . ' от ' . $this->contract->issued_date->format(RUS_DATE_FORMAT) . ' г.');
         $builder->addRow('Расходный кассовый ордер');
         $this->enclosures->each(fn(string $text) => $builder->addRow($text));
         $builder->addSignature($this->agent->name->initials());

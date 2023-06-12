@@ -1,26 +1,24 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Services\Documents\Views;
 
-use App\Models\CourtClaim\CourtClaim;
-use App\Services\Counters\CountService;
 use App\Services\Documents\Views\Base\Builders\DocBodyBuilder;
 
-class LoanCourtClaimDocView extends LoanClaimDocView
+trait CourtClaimTrait
 {
-    public function __construct(CourtClaim $claim, CountService $countService)
+
+    protected function setClaimValues(): void
     {
-        parent::__construct($claim, $countService);
         $this->creditorTitle = 'Истец';
         $this->debtorTitle = 'Ответчик';
         $this->askHeader->push('На основании изложенного, руководствуясь ст.131-132 ГПК РФ,');
         $this->askHeader->push('Прошу:');
         $this->enclosures->push('Доказательства направления иска ответчику');
     }
-    protected function buildBody(DocBodyBuilder $builder): void
+
+    protected function buildRequirements(DocBodyBuilder $builder): void
     {
-        parent::buildBody($builder);
+        parent::buildRequirements($builder);
         $debtorGenitive = $this->debtor->name->getFullGenitive();
         $nextCountDate = $this->claim->count_date->clone()->addDay()->format(RUS_DATE_FORMAT);
         $builder->addRow('3.  Взыскать с ' . $debtorGenitive . ' в пользу ' . $this->creditor->name . ' задолженность по договору займа № ' . $this->contract->number . ' от ' . $this->contract->issued_date->format(RUS_DATE_FORMAT) . ' г., в том числе:');

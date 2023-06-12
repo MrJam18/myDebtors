@@ -5,10 +5,16 @@ namespace App\Models\Base;
 
 use App\Models\Auth\User;
 use App\Models\Subject\People\Name;
+use App\Providers\Database\AbstractProviders\Components\OrderBy;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Schema;
 
+/**
+ * @method self joinRelation(string $relation,Closure $callback = null, string $type = 'inner', $through = false, Builder $relatedQuery = null, $morphTypes = ['*'])
+ */
 class CustomBuilder extends Builder
 {
     function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null): CustomPaginator
@@ -44,6 +50,16 @@ class CustomBuilder extends Builder
             }
         });
         return $this;
+    }
+    function searchByRusDate(array $byColumns, string $searchDate): static
+    {
+        $datesArray = explode('.', $searchDate, 3);
+        $date = '';
+        foreach ($datesArray as $item) {
+            $date = '-' . $item . $date;
+        }
+        $date = substr($date, 1);
+        return $this->searchOne($byColumns, $date);
     }
 
     function searchOne(array $byColumns, string $search): static
@@ -103,5 +119,10 @@ class CustomBuilder extends Builder
     private function getSearchBinding(string $value): array
     {
         return ['%' . $value . '%'];
+    }
+    function orderByData(?OrderBy $orderBy = null): static
+    {
+        if($orderBy) $this->orderBy($orderBy->column, $orderBy->direction->name);
+        return $this;
     }
 }

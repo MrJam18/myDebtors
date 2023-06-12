@@ -97,6 +97,9 @@ class DatabaseSeeder extends Seeder
         $model = $this->setNameAndSave($model, 'исковое заявление');
         $model = $this->setNameAndSave($model, 'статус');
         $model = $this->setNameAndSave($model, "заявление о возбуждении ИП");
+        $model = $this->setNameAndSave($model, 'Договор');
+        $model = $this->setNameAndSave($model, 'Дата ежемесячного платежа');
+        $model = $this->setNameAndSave($model, 'Сумма ежемесячного платежа');
         $this->setNameAndSave($model, 'файл');
         $model = new ActionType();
         $model = $this->setNameAndSave($model, "создание");

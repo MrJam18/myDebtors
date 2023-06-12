@@ -12,6 +12,7 @@ import ButtonInForm from "../dummyComponents/ButtonInForm";
 import CustomModal from "../dummyComponents/CustomModal";
 import { AddContractDispatcher } from "../../store/Dispatchers/Contracts/AddContractDispatcher";
 import ServerSelect from "../dummyComponents/ServerSelect";
+import useInput from "../../hooks/useInput";
 const cessionsActions = cessionsSlice.actions;
 const defaultCession = { name: 'Принадлежит выдавшей организации', id: null };
 export const useStyles = makeStyles({
@@ -56,8 +57,9 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
     const error = useError();
     const [loading, setLoading] = useState(false);
     const [cession, setCession] = useState(defaultCession);
-    const [creditor, setCreditor] = useState();
+    const [creditor, setCreditor] = useState(null);
     const [statusId, setStatusId] = useState(1);
+    const typeInput = useInput('1');
     const startHandler = () => {
         error.noError();
         dispatch(organizationsSlice.actions.setSearchList([]));
@@ -75,13 +77,14 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
         updateList();
     };
     useEffect(startHandler, []);
-    useEffect(() => {
+    const onChangeCreditor = (creditor) => {
+        setCreditor(creditor);
         if (creditor?.default_cession) {
             setCession(creditor.default_cession);
         }
         else
             setCession(defaultCession);
-    }, [creditor]);
+    }
     return (
     <CustomModal customStyles={{ width: '500px' }} setShow={setShow} show>
          <form ref={formRef} onSubmit={formHandler}>
@@ -90,7 +93,7 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
                  <div className={styles.contractData}>
                      <div className={styles.selectBlock + ' ' + classes.input}>
                          <InputLabel id="contractType" required className={classes.selectLabel}>тип договора</InputLabel>
-                         <Select defaultValue={'1'} fullWidth variant='standard' labelId="contractType" name='typeId'>
+                         <Select {...typeInput} fullWidth variant='standard' labelId="contractType" name='typeId'>
                              <MenuItem value='1'>договор займа</MenuItem>
                              <MenuItem value='2'>кредитный договор</MenuItem>
                          </Select>
@@ -102,12 +105,18 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
                      <EasyInput label='дата исполнения' type='date' name='due_date' pattern='lessThenNow' required className={classes.input}/>
                      <EasyInput label='проц. ставка (% год.)' name='percent' pattern='float' required className={classes.input}/>
                      <EasyInput label='неустойка (% год.)' name='penalty' pattern='float' required className={classes.input}/>
+                     {typeInput.value === '2' &&
+                         <>
+                             <EasyInput label={'Сумма ежемес. платежа'} name='month_due_sum' required pattern={'float'} className={classes.input} />
+                             <EasyInput label='Дата ежемес. платежа' name='month_due_date' required className={classes.input} />
+                        </>
+                     }
                  </div>
                  <div className={styles.selectMargin}>
-                     <EasySearch label='кредитор, которому принадлежит заем' value={creditor} getValue='default_cession' required serverAddress={'creditors/search-list-with-cession'} setValue={setCreditor} />
+                     <EasySearch label='кредитор, которому принадлежит заем' value={creditor} getValue='default_cession' required serverAddress={'creditors/search-list-with-cession'} setValue={onChangeCreditor} />
                  </div>
                  <div className={styles.selectMargin}>
-                     <EasySearch label='договор цессии, по которому приобретен займ' value={cession} required serverAddress={'cessions/getNameList'} setValue={setCession}/>
+                     <EasySearch reqData={creditor ? {creditorId: creditor.id} : null} label='договор цессии, по которому приобретен займ' value={cession} required serverAddress={'cessions/search-list'} setValue={setCession}/>
                  </div>
              </div>
              <ButtonInForm loading={loading}/>

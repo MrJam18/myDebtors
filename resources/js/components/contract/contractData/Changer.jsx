@@ -20,7 +20,6 @@ const useStyles = makeStyles({
 })
 
 const Changer = ({data, setModal, contractId}) => {
-    console.log("Changer props:", {data, setModal, contractId});
     const classes = useStyles();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);

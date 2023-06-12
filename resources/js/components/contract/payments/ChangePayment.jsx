@@ -11,7 +11,11 @@ import {DeletePaymentDispatcher} from "../../../store/Dispatchers/Contracts/Dele
 import DeleteButton from "../../dummyComponents/DeleteButton";
 
 const ChangePayment = ({setShow, payment, update}) => {
-    useMemo(() => payment.date = changeDateFormatOnISO(payment.date), [payment]);
+    const changedPayment = useMemo(()=> {
+        let returned = {...payment};
+        returned.date = changeDateFormatOnISO(payment.date);
+        return returned;
+    },[payment]);
     const [loading, setLoading] = useState(false);
     const error = useError();
     const form = useRef();
@@ -39,7 +43,7 @@ const ChangePayment = ({setShow, payment, update}) => {
                 <DeleteButton onClick={showDeleteWarning.setTrue} text={'Удалить'} />
             </div>
             <form onSubmit={onSubmit} ref={form}>
-                <Payment defaultValue={payment}/>
+                <Payment defaultValue={changedPayment}/>
                 <ButtonInForm loading={loading}/>
                 {error.Comp()}
             </form>

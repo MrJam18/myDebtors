@@ -67,10 +67,10 @@ const Cession = ({data = {}, setShowNameChanger}) => {
                 <EasyInput label='Номер цессии' className={classes.smallInput} defaultValue={data.number} name='number' />
             </div>
             <div className="full-width-box">
-                <EasySearch label={'Цедент'} required value={assignor} serverAddress='creditors/search-list' getValue='short' setValue={setAssignor} />
+                <EasySearch label={'Цедент'} required value={assignee} serverAddress='creditors/search-list' getValue='short' setValue={setAssignee} />
             </div>
             <div className="full-width-box">
-               <EasySearch label='Цессионарий' required value={assignee} serverAddress='creditors/search-list' getValue='short' setValue={setAssignee} />
+               <EasySearch label='Цессионарий' required value={assignor} serverAddress='creditors/search-list' getValue='short' setValue={setAssignor} />
             </div>
             <div className='full-width-box'>
                 <CustomChips header='Подтверждающие документы' list={enclosures} setList={setEnclosures} addHeader='Введите название документа' />

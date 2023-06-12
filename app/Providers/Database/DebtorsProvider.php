@@ -11,8 +11,7 @@ class DebtorsProvider extends AbstractProviders\AbstractProvider
 {
     public function __construct()
     {
-        parent::__construct();
-        $this->model = Debtor::class;
+        parent::__construct(Debtor::class);
     }
 
     function getList(int $groupId, ListRequestData $data): CustomPaginator

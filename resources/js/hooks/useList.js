@@ -8,9 +8,17 @@ const defaultOptions = {
 };
 function useList(serverUrl, options = defaultOptions, search = null) {
     options = useMemo(() => {
-        if (options !== defaultOptions)
-            return Object.assign(Object.assign({}, defaultOptions), options);
-        return options;
+        if (options !== defaultOptions) {
+            const changedOptions = {};
+            for (let key in defaultOptions) {
+                if (options[key])
+                    changedOptions[key] = options[key];
+                else
+                    changedOptions[key] = defaultOptions[key];
+            }
+            return changedOptions;
+        }
+        return defaultOptions;
     }, []);
     const [list, setList] = useState([]);
     const [page, setPage] = useState(options.page);

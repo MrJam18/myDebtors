@@ -12,8 +12,7 @@ class AgentsProvider extends AbstractProvider
 {
     public function __construct()
     {
-        parent::__construct();
-        $this->model = Agent::class;
+        parent::__construct(Agent::class);
     }
     function getList(ListRequestData $data): CustomPaginator
     {

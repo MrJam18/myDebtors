@@ -9,7 +9,7 @@ use App\Services\AddressService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class BailiffController extends Controller
+class BailiffDepartmentsController extends Controller
 {
     public function create(Request $request): array
     {
@@ -38,4 +38,5 @@ class BailiffController extends Controller
             ];
         });
     }
+
 }

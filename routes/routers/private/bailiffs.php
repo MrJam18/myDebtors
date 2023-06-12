@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use App\Http\Controllers\Contract\BailiffController;
+use App\Http\Controllers\Contract\BailiffsController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('createOne', [BailiffController::class, 'create']);
-Route::get('search', [BailiffController::class, 'findByName']);
+Route::post('create', [BailiffsController::class, 'create']);
+Route::get('search', [BailiffsController::class, 'findByName']);
+Route::get('get-positions', [BailiffsController::class, 'getBailiffPositions']);

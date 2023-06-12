@@ -1,4 +1,3 @@
-// @ts-expect-error TS(2724): '"./changeDateFormat"' has no exported member name... Remove this comment to see the full error message
 import {changeDateFormatOnRus} from "./changeDateFormat";
 
 export const getDefaultCessionText = (number, transferDate, assignee, assignor) => {

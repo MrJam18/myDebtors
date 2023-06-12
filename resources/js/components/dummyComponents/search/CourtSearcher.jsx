@@ -21,7 +21,6 @@ const CourtSearcher = ({ setCourt }) => {
     const courtsList = useSelector(getCourtsList);
     const dispatch = useDispatch();
     const onChangeCourtInput = (value) => {
-        // @ts-expect-error TS(2345): Argument of type '(dispatch: any) => Promise<void>... Remove this comment to see the full error message
         dispatch(findCourtsByName(value));
     };
     const courtCreator = useModal();

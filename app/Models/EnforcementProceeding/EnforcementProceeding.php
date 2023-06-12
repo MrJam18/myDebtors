@@ -9,26 +9,27 @@ use App\Models\Subject\Bailiff\BailiffDepartment;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id;
+ * @property string $number;
+ * @property Carbon $begin_date;
+ * @property Carbon $end_date;
+ * @property Carbon $created_at;
+ * @property Carbon $updated_at;
+ * @property Carbon $status_date;
+ * @property EnforcementProceedingStatus $proceedingStatus
+ * @property Bailiff $bailiff
+ * @property ExecutiveDocument $executiveDocument
+ * @property float $sum;
+ * @property float $percents;
+ * @property float $penalties;
+ * @property float $main;
+ * @property float $fee;
+ */
 class EnforcementProceeding extends BaseModel
 {
 
-    /**
-     * @property int $id;
-     * @property string $number;
-     * @property Carbon $begin_date;
-     * @property Carbon $end_date;
-     * @property Carbon $created_at;
-     * @property Carbon $updated_at;
-     * @property Carbon $status_date;
-     * @property EnforcementProceedingStatus $proceedingStatus
-     * @property Bailiff $bailiff
-     * @property ExecutiveDocument $executiveDocument
-     * @property float $sum;
-     * @property float $percents;
-     * @property float $penalties;
-     * @property float $main;
-     * @property float $fee;
-     */
+
 
     protected $fillable = [
         'begin_date',

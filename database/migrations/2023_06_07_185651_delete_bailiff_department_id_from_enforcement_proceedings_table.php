@@ -12,13 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('enforcement_proceedings', function (Blueprint $table) {
-            $table->dropForeign(['enforcement_proceedings_bailiff_department_id_foreign']);
-            $table->dropColumn('bailiff_department_id');
-            $table->dropForeign('enforcement_proceedings_contract_id_foreign');
-            $table->dropColumn('contract_id');
-            $table->dropForeign('enforcement_proceedings_recovered_sum_id_foreign');
-            $table->dropColumn('recovery_sum_id');
-            //так же добавляю столбцы о которых говорили
+            $table->dropConstrainedForeignId('bailiff_department_id');
+            $table->dropConstrainedForeignId('contract_id');
+            $table->dropConstrainedForeignId('recovered_sum_id');
             $table->float('sum');
             $table->float('percents');
             $table->float('penalties');
@@ -32,7 +28,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('enforcement_proceedings', function (Blueprint $table) {
-            //
+            $table->foreignId('bailiff_department_id');
+            $table->foreignId('contract_id');
+            $table->foreignId('recovered_sum_id');
+            $table->dropColumn('sum');
+            $table->dropColumn('percents');
+            $table->dropColumn('penalties');
+            $table->dropColumn('main');
         });
     }
 };

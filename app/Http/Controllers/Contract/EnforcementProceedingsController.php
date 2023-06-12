@@ -26,7 +26,6 @@ class EnforcementProceedingsController extends Controller
          * @param EnforcementProceedingStatus $proceedingStatus
          */
         $data = $request->all();
-       // Log::info(dump($data));
         $enforcementProceeding = new EnforcementProceeding();
 
         $enforcementProceeding->begin_date= $data['beginDate'];

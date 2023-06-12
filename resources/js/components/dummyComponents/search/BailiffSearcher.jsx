@@ -22,7 +22,6 @@ const BailiffSearcher = ({ setBailiff, setError }) => {
     const dispatch = useDispatch();
     const onSearch = async (searchString) => {
         try {
-            // @ts-expect-error TS(2345): Argument of type '(dispatch: any) => Promise<void>... Remove this comment to see the full error message
             await dispatch(recieveBailiffsSearchList(searchString));
         }
         catch (e) {

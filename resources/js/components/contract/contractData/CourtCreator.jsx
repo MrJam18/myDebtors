@@ -34,12 +34,8 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
 
     useEffect(getNecessary, []);
     const onSubmit = async () => {
-        console.log("Selected bank:", selectedBank);
         let data = formDataConverter(form.current.elements);
-        data = {
-            ...data,
-            bankId: selectedBank.id,
-        };
+        if(selectedBank) data.bankId = selectedBank.id;
         if (!address) error.setError('Заполните адрес!');
         else {
             setLoading(true);

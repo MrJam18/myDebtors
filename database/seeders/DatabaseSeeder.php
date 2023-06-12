@@ -134,7 +134,8 @@ class DatabaseSeeder extends Seeder
         $otherSeeder->run();
         $otherSeeder = new HolidaysSeeder();
         $otherSeeder->run();
-
+        $otherSeeder = new EnforcementProceedingsStatusesSeeder();
+        $otherSeeder->run();
     }
 
     private function setNameAndSave(Model $model, string $name): Model

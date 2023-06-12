@@ -1,5 +1,5 @@
 import React from 'react';
-import CreateBailiff from "../../contract/contractData/CreateBailiff";
+import CreateBailiff from "../../contract/contractData/CreateBailiffDepartment";
 import CustomSearch from "./CustomSearch";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import styles from '*/dummySearch.module.css';

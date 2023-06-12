@@ -34,6 +34,7 @@ const CourtCreator = ({show, setShow, setValue = null}) => {
 
     useEffect(getNecessary, []);
     const onSubmit = async () => {
+        console.log("Selected bank:", selectedBank);
         let data = formDataConverter(form.current.elements);
         data = {
             ...data,

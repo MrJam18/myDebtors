@@ -4,7 +4,7 @@ import EasySelect from '../../dummyComponents/EasySelect';
 import styles from '../../../css/contract.module.css';
 import ButtonInForm from '../../dummyComponents/ButtonInForm';
 import { useParams } from 'react-router';
-import CreateBailiff from "./CreateBailiff";
+import CreateBailiff from "./CreateBailiffDepartment";
 import CourtCreator from "./CourtCreator";
 import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
 import EasyInput from "../../dummyComponents/EasyInput";
@@ -14,6 +14,7 @@ import api from "../../../http";
 import Loading from "../../dummyComponents/Loading";
 import {Alert} from "../../../classes/Alert";
 import {SetExecutiveDocumentDispatcher} from "../../../store/Dispatchers/Contracts/SetExecutiveDocumentDispatcher";
+import EnforcementProceedings from "./EnforcementProceedings";
 
 const types = [{name: 'Судебный приказ', id: 1}, {name: 'Исполнительный лист', id: 2}]
 
@@ -30,6 +31,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     const [typeId, setTypeId] = useState(null);
     const [court, setCourt] = useState(executiveDoc.court);
     const showCourtCreator = useModal();
+    const showEnforcementProceedings = useModal();
     const onClickCreateBailiff = () => {
         setShowCreateBailiff(true);
     }
@@ -69,7 +71,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                     <SearchAndAddButton value={court} onClickAddButton={showCourtCreator.setShowTrue} serverAddress={'courts/findByName'} required setValue={setCourt} label='Суд, вынесший решение' />
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
-                    <SearchAndAddButton value={bailiff} serverAddress={'bailiffs/search'} required setValue={setBailiff} label='Отдел судебных приставов-исполнителей' onClickAddButton={onClickCreateBailiff} />
+                    <SearchAndAddButton value={bailiff} serverAddress={'bailiffs-departments/search'} required setValue={setBailiff} label='Отдел судебных приставов-исполнителей' onClickAddButton={onClickCreateBailiff} />
                 </div>
                 <div className={styles.contentBlock}>
                     <EasyInput size={'small'}  className={styles.smallInput} pattern='lessThenNow' defaultValue={executiveDoc.issued_date} type='date' name='issued_date' required label='дата ИД' />
@@ -78,7 +80,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                 <div className={styles.contentBlock}>
                     <EasySelect name='typeId' onChange={(value)=>setTypeId(value)} variants={types} defaultValue={executiveDoc.typeId} label='Тип исполнительного документа *' />
                 </div>
-                <div className={styles.smallHeader}>Инфомация о взысканных суммах</div>
+                <div className={styles.smallHeader}>Суммы подлежащие взысканию</div>
                 <div className={styles.contentBlock}>
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={executiveDoc.main} name='main' variant='standard' pattern='float' required label='осн. долг' />
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={executiveDoc.percents} name='percents' variant='standard' pattern='float'  required label='Проценты' />
@@ -87,12 +89,21 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={executiveDoc.penalties} name='penalties' variant='standard' pattern='float' required label='Неустойка' />
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={executiveDoc.fee} name='fee' variant='standard' pattern='float' required label='Госпошлина' />
                 </div>
+                <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Исполнительное производство</div>
+
+                {showEnforcementProceedings.show &&
+                    <CustomModal customStyles={{width: 600}} show setShow={showEnforcementProceedings.setShow}>
+                        <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} />
+                    </CustomModal>
+                }
+
                 {typeId === 2 &&
                     <div className={styles.contentBlock}>
                         <EasyInput className={styles.smallInput} required defaultValue={executiveDoc.resolutionNumber} name='resolutionNumber' size={'small'} variant='standard' label='номер решения' />
                         <EasyInput size={'small'} className={styles.smallInput} required defaultValue={executiveDoc.resolutionDate} InputLabelProps={{shrink: true}} name='resolutionDate' type='date' pattern='lessThenNow' variant='standard' label='дата решения' />
                     </div>
                 }
+
             </div>
             {error && <div className="error">{error}</div>}
             <ButtonInForm loading={loading} />

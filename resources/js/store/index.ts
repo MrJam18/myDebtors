@@ -14,12 +14,14 @@ import agentsSlice from './agents/reducer';
 import { bailiffsSlice } from './bailiffs/reducer';
 import {listSlice} from "./list/reducer";
 import {ToolkitStore} from "@reduxjs/toolkit/dist/configureStore.js";
+import { executionsSlice } from './ executions/reducer';
 
 const rootReducer = combineReducers({
     courts: courtsReducer,
     payments: paymentsSlice.reducer,
     alert: alertReducer,
     organizations: organizationsSlice.reducer,
+    executions: executionsSlice.reducer,
     cessions: cessionsSlice.reducer,
     debtors: debtorsReducer,
     global: globalReducer,

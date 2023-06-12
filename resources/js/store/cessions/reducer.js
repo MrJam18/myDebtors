@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getLastInfo } from "../../utils/getLastinfo";
+import { fetchExecutionInfo } from "../ executions/actions";
 const initialState = {
     loading: true,
     searchList: [],
@@ -90,5 +91,17 @@ export const cessionsSlice = createSlice({
         setLastInfo(state) {
             state.info.lastInfo = getLastInfo(state.info.rows);
         }
-    }
+    },
+    extraReducers: builder => {
+        builder
+            .addCase(fetchExecutionInfo.pending, (state, action) => {
+            // Обновление состояния при начале запроса
+        })
+            .addCase(fetchExecutionInfo.fulfilled, (state, action) => {
+            // Обновление состояния после успешного завершения запроса
+        })
+            .addCase(fetchExecutionInfo.rejected, (state, action) => {
+            // Обновление состояния, если запрос завершился ошибкой
+        });
+    },
 });

@@ -19,7 +19,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Bailiff extends BaseModel
 {
     protected $fillable = [
-
+        'name',
+        'surname',
+        'patronymic'
     ];
     public $timestamps = true;
 

@@ -49,4 +49,8 @@ class Requisites extends BaseModel
     {
         return $this->belongsTo(User::class);
     }
+    public function getFillable()
+    {
+        return $this->fillable;
+    }
 }

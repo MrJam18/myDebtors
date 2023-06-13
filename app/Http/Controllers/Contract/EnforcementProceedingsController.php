@@ -19,7 +19,7 @@ class EnforcementProceedingsController extends Controller
         return EnforcementProceedingStatus::query()->get();
     }
 
-    public function create(Request $request)
+    public function create(Request $request):void
     {
         /**
          * @param EnforcementProceeding $enforcementProceeding
@@ -50,5 +50,11 @@ class EnforcementProceedingsController extends Controller
         $enforcementProceeding->save();
 
 
+    }
+
+    public function getAll($executiveDocId): array
+    {
+        // Log::info(dump($proceedings));
+        return EnforcementProceeding::query()->where('executive_document_id', $executiveDocId)->get()->toArray();
     }
 }

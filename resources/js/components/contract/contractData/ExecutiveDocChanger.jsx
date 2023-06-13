@@ -32,9 +32,13 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     const [court, setCourt] = useState(executiveDoc.court);
     const showCourtCreator = useModal();
     const showEnforcementProceedings = useModal();
+    const [enforcementProceedings, setEnforcementProceedings] = useState([]);
     const onClickCreateBailiff = () => {
         setShowCreateBailiff(true);
     }
+
+    let lastProceeding = enforcementProceedings.length > 0 ? enforcementProceedings[enforcementProceedings.length - 1] : null;
+
     const onSubmit = async (ev) => {
         ev.preventDefault();
         const dispatcher = new SetExecutiveDocumentDispatcher(setError, setLoading, formRef, setShow);
@@ -54,10 +58,18 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                 setCourt(data.court);
                 setBailiff(data.bailiff);
                 setTypeId(data.typeId)
+
+                // Получение данных об исполнительных производствах
+                return api.get(`enforcement-proceedings/get-all/${data.id}`);
             })
-            .catch((error) => Alert.setError('Ошибка при получении исп. документа',error))
+            .then(({data}) => {
+                setEnforcementProceedings(data);
+
+            })
+            .catch((error) => Alert.setError('Ошибка при получении данных', error))
             .finally(() => setDocLoading(false));
     }, []);
+
     return (
         <CustomModal customStyles={{width: 500}} show setShow={setShow}>
             {docLoading ? <Loading /> :
@@ -89,8 +101,16 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={executiveDoc.penalties} name='penalties' variant='standard' pattern='float' required label='Неустойка' />
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={executiveDoc.fee} name='fee' variant='standard' pattern='float' required label='Госпошлина' />
                 </div>
-                <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Исполнительное производство</div>
-
+                <div className={styles.contentBlock}>
+                    <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Исполнительное производство:</div>
+                    {enforcementProceedings.length > 0 ? (
+                        <div className={styles.smallInput}>
+                            {`№: ${lastProceeding.number}, Дата: ${lastProceeding.begin_date}`}
+                        </div>
+                    ) : (
+                        <div>Нет данных об исполнительном производстве</div>
+                    )}
+                </div>
                 {showEnforcementProceedings.show &&
                     <CustomModal customStyles={{width: 600}} show setShow={showEnforcementProceedings.setShow}>
                         <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} />

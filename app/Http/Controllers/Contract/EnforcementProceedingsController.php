@@ -54,7 +54,11 @@ class EnforcementProceedingsController extends Controller
 
     public function getAll($executiveDocId): array
     {
-        // Log::info(dump($proceedings));
-        return EnforcementProceeding::query()->where('executive_document_id', $executiveDocId)->get()->toArray();
+        return EnforcementProceeding::query()
+            ->where('executive_document_id', $executiveDocId)
+            ->with('bailiff.name')  // Assumes a bailiff relation in your EnforcementProceeding model
+            ->get()
+            ->toArray();
     }
+
 }

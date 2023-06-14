@@ -102,18 +102,18 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={executiveDoc.fee} name='fee' variant='standard' pattern='float' required label='Госпошлина' />
                 </div>
                 <div className={styles.contentBlock}>
-                    <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Исполнительное производство:</div>
+                    <div className={styles.contentBlock}>Исполнительное производство:</div>
                     {enforcementProceedings.length > 0 ? (
-                        <div className={styles.smallInput}>
+                        <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>
                             {`№: ${lastProceeding.number}, Дата: ${lastProceeding.begin_date}`}
                         </div>
                     ) : (
                         <div>Нет данных об исполнительном производстве</div>
-                    )}
+                    )}]
                 </div>
                 {showEnforcementProceedings.show &&
-                    <CustomModal customStyles={{width: 600}} show setShow={showEnforcementProceedings.setShow}>
-                        <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} />
+                    <CustomModal customStyles={{width: 500}} show setShow={showEnforcementProceedings.setShow}>
+                        <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} enforcementProceedingsArr={enforcementProceedings} />
                     </CustomModal>
                 }
 

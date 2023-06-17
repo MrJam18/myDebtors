@@ -153,7 +153,7 @@ class ContractsController
                 'month_due_sum' => $contract->month_due_sum,
                 'typeId' => $contract->type->id,
                 'courtClaimName' => $lastClaimName,
-                'courtClaimId' => $lastClaim->id
+                'courtClaimId' => $lastClaim?->id
             ]
         ];
     }

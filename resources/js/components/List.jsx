@@ -8,9 +8,11 @@ import Loading from './dummyComponents/Loading';
 import Pagination from './dummyComponents/Pagination';
 import AddContract from './contract/AddContract';
 import useList from "../hooks/useList.js";
+import {useLocation} from "react-router";
 
 const List = () => {
-    const list = useList('list/all', {perPage: 25});
+    const location = useLocation();
+    const list = useList('list/all', {perPage: 25}, location.state);
     const [addDebtor, setAddDebtor] = useState(false);
     const [addContract, setAddContract] = useState(false);
     const openAddDebtor = () => {
@@ -33,10 +35,10 @@ const List = () => {
           <FontAwesomeIcon icon={solid("arrow-down-z-a")} className={styles.imgUtil}/>
           </button>
           <button className={styles.buttonUtil} title='сортировка по дате договора'>
-          <FontAwesomeIcon icon={solid("sort-down")} className={styles.imgUtil}/>
+          <FontAwesomeIcon icon={solid("sort-down")} onClick={()=> list.setOrder(['contracts.issued_date', 'ASC'])} className={styles.imgUtil}/>
           </button>
           <button className={styles.buttonUtil} title='сортировка по дате договора'>
-          <FontAwesomeIcon icon={solid("sort-up")} className={styles.imgUtil}/>
+          <FontAwesomeIcon icon={solid("sort-up")} onClick={()=> list.setOrder(['contracts.issued_date', 'DESC'])} className={styles.imgUtil}/>
           </button>
           <button className={styles.buttonUtil} title='настройка фильтра'>
           <FontAwesomeIcon icon={solid("filter")} className={styles.imgUtil}/>

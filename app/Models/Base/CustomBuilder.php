@@ -85,31 +85,30 @@ class CustomBuilder extends Builder
         $namesArray = explode(' ', $fullName, 3);
         $length = count($namesArray);
         if($length === 1) {
-            $in = Name::query()->searchOne(['name', 'surname', 'patronymic'], $fullName)->select('id');
+            $this->searchOne(['names.name', 'names.surname', 'names.patronymic'], $fullName);
         }
         elseif($length === 2) {
-            $in = Name::query()->where(function (CustomBuilder $builder) use (&$namesArray) {
+            $this->where(function (CustomBuilder $builder) use (&$namesArray) {
                 $builder->orWhere(function (CustomBuilder $builder) use (&$namesArray) {
-                   $builder->whereRaw($this->getSearchWhereRaw('name'), $this->getSearchBinding($namesArray[0]));
-                   $builder->whereRaw($this->getSearchWhereRaw('surname'), $this->getSearchBinding($namesArray[1]));
+                   $builder->whereRaw($this->getSearchWhereRaw('names.name'), $this->getSearchBinding($namesArray[0]));
+                   $builder->whereRaw($this->getSearchWhereRaw('names.surname'), $this->getSearchBinding($namesArray[1]));
                 });
                 $builder->orWhere(function (CustomBuilder $builder) use (&$namesArray) {
-                    $builder->whereRaw($this->getSearchWhereRaw('name'), $this->getSearchBinding($namesArray[1]));
-                    $builder->whereRaw($this->getSearchWhereRaw('surname'), $this->getSearchBinding($namesArray[0]));
+                    $builder->whereRaw($this->getSearchWhereRaw('names.name'), $this->getSearchBinding($namesArray[1]));
+                    $builder->whereRaw($this->getSearchWhereRaw('names.surname'), $this->getSearchBinding($namesArray[0]));
                 });
                 $builder->orWhere(function (CustomBuilder $builder) use (&$namesArray) {
-                    $builder->whereRaw($this->getSearchWhereRaw('name'), $this->getSearchBinding($namesArray[0]));
-                    $builder->whereRaw($this->getSearchWhereRaw('patronymic'), $this->getSearchBinding($namesArray[1]));
+                    $builder->whereRaw($this->getSearchWhereRaw('names.name'), $this->getSearchBinding($namesArray[0]));
+                    $builder->whereRaw($this->getSearchWhereRaw('names.patronymic'), $this->getSearchBinding($namesArray[1]));
                 });
-            })->select('id');
+            });
         }
         else {
-            $in = Name::query()->where('surname', $namesArray[0])
-                ->where('name', $namesArray[1])
-                ->where('patronymic', $namesArray[2])
-                ->select('id');
+           $this->where('names.surname', $namesArray[0])
+                ->where('names.name', $namesArray[1])
+                ->whereRaw($this->getSearchWhereRaw('names.patronymic'), $this->getSearchBinding($namesArray[2]));
         }
-        $this->query->whereIn('name_id', $in);
+        $this->join('names', 'names.id', '=', $this->model->getTable() . '.name_id')->select($this->model->getTable() . '.*');
         return $this;
     }
     private function getSearchWhereRaw(string $column): string

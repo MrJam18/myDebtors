@@ -1,7 +1,6 @@
 import { Column } from "../classes/Column";
 import api from "../http";
 const noChange = true;
-const fullWidth = true;
 const getContractStatuses = async () => {
     const { data } = await api.get('contracts/get-statuses');
     return data;
@@ -22,8 +21,8 @@ export const contractColumns = [
     new Column('неустойка(год.)', 'penalty', 'percent'),
     new Column('неустойка на сегодня', 'penaltyToday', 'money', { noChange }),
     new Column('Количество платежей', 'paymentsCount', 'text', { noChange }),
-    new Column('Дата создания договора', 'createdAt', 'date', { noChange }),
-    new Column('Исполнительный документ', 'executiveDocName', 'setter')
+    new Column('Исполнительный документ', 'executiveDocName', 'setter', { style: "fullString" }),
+    new Column('Cудебный иск', 'courtClaimName', 'setter', { style: "fullString" })
 ];
 export const creditContractColumns = [
     new Column('Должник', 'debtorName', 'ref', { ref: '/debtors', refColName: 'debtorId', style: 'fullString' }),
@@ -44,6 +43,6 @@ export const creditContractColumns = [
     new Column('неустойка(год.)', 'penalty', 'percent'),
     new Column('неустойка на сегодня', 'penaltyToday', 'money', { noChange }),
     new Column('Количество платежей', 'paymentsCount', 'text', { noChange }),
-    new Column('Дата создания договора', 'createdAt', 'date', { noChange }),
-    new Column('Исполнительный документ', 'executiveDocName', 'setter')
+    new Column('Исполнительный документ', 'executiveDocName', 'setter'),
+    new Column('Cудебный иск', 'courtClaimName', 'setter')
 ];

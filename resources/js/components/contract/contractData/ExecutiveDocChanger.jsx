@@ -50,10 +50,12 @@ const ExecutiveDocChanger = ({setShow, update}) => {
         setDocLoading(true);
         api.get(`contracts/${contractId}/executive-documents/get-one`)
             .then(({data}) => {
-                setExecutiveDoc(data);
-                setCourt(data.court);
-                setBailiff(data.bailiff);
-                setTypeId(data.typeId)
+                if(data) {
+                    setExecutiveDoc(data);
+                    setCourt(data.court);
+                    setBailiff(data.bailiff);
+                    setTypeId(data.typeId)
+                }
             })
             .catch((error) => Alert.setError('Ошибка при получении исп. документа',error))
             .finally(() => setDocLoading(false));
@@ -68,7 +70,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                 {showCreateBailiff && <CreateBailiff setShow={setShowCreateBailiff} setNewValue={setBailiff} /> }
                 {showCourtCreator.show && <CourtCreator setValue={setCourt} setShow={showCourtCreator.setShow} show={showCourtCreator.show} /> }
                 <div className={styles.contentBlock}>
-                    <SearchAndAddButton value={court} onClickAddButton={showCourtCreator.setShowTrue} serverAddress={'courts/findByName'} required setValue={setCourt} label='Суд, вынесший решение' />
+                    <SearchAndAddButton value={court} onClickAddButton={showCourtCreator.setShowTrue} serverAddress={'courts/search-list'} required setValue={setCourt} label='Суд, вынесший решение' />
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
                     <SearchAndAddButton value={bailiff} serverAddress={'bailiffs-departments/search'} required setValue={setBailiff} label='Отдел судебных приставов-исполнителей' onClickAddButton={onClickCreateBailiff} />
@@ -90,12 +92,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={executiveDoc.fee} name='fee' variant='standard' pattern='float' required label='Госпошлина' />
                 </div>
                 <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Исполнительное производство</div>
-
-                {showEnforcementProceedings.show &&
-                    <CustomModal customStyles={{width: 600}} show setShow={showEnforcementProceedings.setShow}>
-                        <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} />
-                    </CustomModal>
-                }
+                {showEnforcementProceedings.show && <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} />}
 
                 {typeId === 2 &&
                     <div className={styles.contentBlock}>

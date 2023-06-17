@@ -44,4 +44,10 @@ class DocBodyBuilder extends BaseBuilder
             'alignment' => Jc::CENTER,
         ]);
     }
+    function addAskHeader(string $text): Text
+    {
+        $returned = $this->addIndentRow($text);
+        $this->addNoSpaceHeader('Прошу:');
+        return $returned;
+    }
 }

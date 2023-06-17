@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import EasyInput from "../../dummyComponents/EasyInput";
 import { makeStyles } from "@mui/styles";
 import { smallInput } from '../../../constants/css';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import styles from "../../../css/contract.module.css";
 import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
 import CreateBailiff from "./CreateBailiff";
@@ -10,7 +10,8 @@ import ServerSelect from "../../dummyComponents/ServerSelect";
 import ButtonInForm from "../../dummyComponents/ButtonInForm";
 import api from "../../../http";
 import {setAlert} from "../../../store/alert/actions";
-import {Alert} from "@mui/material";
+import CustomModal from "../../dummyComponents/CustomModal";
+import {useError} from "../../../hooks/useError";
 
 const useStyles = makeStyles({
     smallInput
@@ -18,7 +19,7 @@ const useStyles = makeStyles({
 
 const EnforcementProceedings = ({ data = {}, executiveDocId, setShow}) => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const error = useError();
     const classes = useStyles();
     const dispatch = useDispatch();
     const formRef = useRef();
@@ -36,7 +37,7 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow}) => {
 
     const formSubmitHandler = async () => {
         setLoading(true);
-        setError(false);
+        error.setError(false);
         try {
             const formData = new FormData(formRef.current);
             formData.append('enforcementProceedingStatus', enforcementProceedingStatus);
@@ -44,13 +45,13 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow}) => {
             formData.append('executiveDocId', executiveDocId);
 
             //console.log(Object.fromEntries(formData.entries()));
-            const { data } = await api.post('enforcement-proceedings/create', formData);
+            await api.post('enforcement-proceedings/create', formData);
             dispatch(setAlert('Успешно'));
             setShow(false);
 
         } catch (error) {
             //console.log(error);
-            Alert.setError('Возникла ошибка при отправке формы', error);
+            error.setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -59,16 +60,15 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow}) => {
 
 
     return (
-        <div>
+        <CustomModal customStyles={{width: 500}} setShow={setShow}>
             <form ref={formRef}>
-
                 {showCreateBailiff && <CreateBailiff setShow={setShowCreateBailiff} setNewItem={setBailiff} /> }
                 <div className="small-inputs-box">
                     <EasyInput autoFocus label='дата начала исп. производства' className={classes.smallInput}  type='date' name='beginDate' required />
                     <EasyInput autoFocus label='дата окончания исп. производства' className={classes.smallInput}  type='date' name='endDate'  />
                 </div>
                 <div className="small-inputs-box">
-                    <EasyInput label='Номер исп. производства' className={classes.smallInput} defaultValue={data.number} name='number' />
+                    <EasyInput label='Номер исп. производства' required className={classes.smallInput} defaultValue={data.number} name='number' />
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
                     <ServerSelect label='Статус исп. производства:' required value={enforcementProceedingStatus} serverAddress='enforcement-proceedings/search-status' setId={value => setEnforcementProceedingStatus(value)}/>
@@ -86,10 +86,9 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow}) => {
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={''} name='penalties' variant='standard' pattern='float' required label='Неустойка' />
                     <EasyInput className={styles.smallInput} size={'small'} defaultValue={''} name='fee' variant='standard' pattern='float' required label='Госпошлина' />
                 </div>
-
                 <ButtonInForm type='button' loading={loading} onClick={formSubmitHandler} />
             </form>
-        </div>
+        </CustomModal>
     );
 };
 

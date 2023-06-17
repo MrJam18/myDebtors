@@ -42,10 +42,10 @@ const CreditorChanger = ({setShow, update}: Props) => {
             setCession(defaultCession);
     }
     return (
-        <CustomModal setShow={setShow} header={"Изменение кредитора"}>
-            <div className={'header_small'}>
+        <CustomModal setShow={setShow}>
+            <h3 className={'header_small'}>
                 Изменение кредитора
-            </div>
+            </h3>
             <form onSubmit={onSubmit}>
                 <div className={styles.fullWidthBlock}>
                     <EasySearch label='кредитор, которому принадлежит заем' value={creditor} required serverAddress={'creditors/search-list-with-cession'} setValue={onChangeCreditor} />

@@ -54,11 +54,17 @@ class EnforcementProceedingsController extends Controller
 
     public function getAll($executiveDocId): array
     {
-        return EnforcementProceeding::query()
+        $proceedings = EnforcementProceeding::query()
             ->where('executive_document_id', $executiveDocId)
-            ->with('bailiff.name')  // Assumes a bailiff relation in your EnforcementProceeding model
+            ->with('bailiff.name')
             ->get()
             ->toArray();
-    }
 
+        $proceedings = array_map(function($item) {
+            $item['bailiff']['full_name'] = $item['bailiff']['name']['surname'] . ' ' . $item['bailiff']['name']['name'] . ' ' . $item['bailiff']['name']['patronymic'];
+            return $item;
+        }, $proceedings);
+
+        return $proceedings;
+    }
 }

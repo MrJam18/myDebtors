@@ -1,6 +1,7 @@
 .main {
     height: 100%;
-    background-color: #e5ffa6;
+    background-image: url(https://kalix.club/uploads/posts/2022-12/1671555135_kalix-club-p-oboi-bronza-krasivo-32.jpg);
+    border: 8px solid #ff590036;
 }
 .link {
     font-family: 'Roboto_slab', serif;

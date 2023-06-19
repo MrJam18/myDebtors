@@ -1,11 +1,14 @@
 .contentBox {
     padding: 20px 30px;
     border-radius: 15px;
-    background-color: white;
-    padding-left: 30px;
+    background-color: #faf0e6;
+    padding-left: 30px;   
 }
 .firstWindow {
     position: relative;
+    background-image: url(https://stopfake.kz/wp-content/uploads/2022/06/a479-5e397cef51eef.jpg);
+    background-size: no-repeat;
+    background-position: center;
 }
 .background {
     display: flex;
@@ -22,4 +25,19 @@
     margin-top: 10px;
     margin-bottom: 10px;
     text-align: center;
+
+    border: 2px solid #c08459; 
+    background: #c08457;
+    font-size: 18px; 
+    padding: 5px 20px;
+    border-radius: 10px;
+}
+.footer-bottom {
+    height: 79px;
+    background:#c08457;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 26px;
+
 }

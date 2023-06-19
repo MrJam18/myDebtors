@@ -33,12 +33,12 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow, enforcemen
     const penaltiesRef = useRef();
     const feeRef = useRef();
     const [enforcementProceedingStatus, setEnforcementProceedingStatus] = useState();
-    const [activeIndex, setActiveIndex] = useState(enforcementProceedingsArr.length - 1);
-    let lastProceeding = enforcementProceedingsArr[activeIndex];
-    const [bailiff, setBailiff] = useState({
-        id: lastProceeding.bailiff.id,
-        name: lastProceeding.bailiff.full_name
-    });
+    const [activeIndex, setActiveIndex] = useState(enforcementProceedingsArr.length > 0 ? enforcementProceedingsArr.length - 1 : 0);
+    let lastProceeding = enforcementProceedingsArr[activeIndex] || {};
+    const [bailiff, setBailiff] = useState(lastProceeding.bailiff ? {
+        id: lastProceeding.bailiff?.id,
+        name: lastProceeding.bailiff?.full_name
+    } : {});
     const [showCreateBailiff, setShowCreateBailiff] = useState(false);
 
 
@@ -168,14 +168,14 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow, enforcemen
                     sx={{maxWidth: 1000, flexGrow: 1}}
                     nextButton={
                         <Button size="small" onClick={handleNext} disabled={activeIndex === enforcementProceedingsArr.length - 1}>
-                            след. производство
+                            следующее
                             <KeyboardArrowRight sx={{paddingBottom: '4px'}} />
                         </Button>
                     }
                     backButton={
                         <Button size="small" onClick={handleBack} disabled={activeIndex === 0}>
                             <KeyboardArrowLeft sx={{paddingBottom: '4px'}} />
-                            пред. производство
+                            предидущее
                         </Button>
                     }
                 />

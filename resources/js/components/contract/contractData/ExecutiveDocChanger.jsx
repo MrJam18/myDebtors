@@ -108,8 +108,8 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                             {`№: ${lastProceeding.number}, Дата: ${lastProceeding.begin_date}`}
                         </div>
                     ) : (
-                        <div>Нет данных об исполнительном производстве</div>
-                    )}]
+                        <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Нет данных об исполнительном производстве</div>
+                    )}
                 </div>
                 {showEnforcementProceedings.show &&
                     <CustomModal customStyles={{width: 500}} show setShow={showEnforcementProceedings.setShow}>

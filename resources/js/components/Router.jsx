@@ -1,6 +1,6 @@
 import '../css/App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ListOld from './List';
+import ListOld from './List/List';
 import Menu from './Menu';
 import Claim from './Claim';
 import Contract from './contract/Contract';

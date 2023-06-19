@@ -209,6 +209,7 @@ html {
   width: 100%;
 }
 .flex_SB {
+  display: flex;
   justify-content: space-between;
 }
 .flex_JCC {
@@ -251,4 +252,11 @@ html {
   font-size: 19px;
   text-align: center;
   margin-bottom: 5px;
+}
+.underline-button:hover {
+  text-decoration: underline;
+}
+.underline-button {
+  cursor: pointer;
+  background: transparent;
 }

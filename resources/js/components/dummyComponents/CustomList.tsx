@@ -8,7 +8,7 @@ type Props = {
     headers: Array<{
         name: string,
         key: string
-    }>
+    }>,
     serverAddress: string,
     onClickRow?: (id: number) => void,
     update?: number,

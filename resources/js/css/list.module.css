@@ -96,6 +96,14 @@
 .debtor__infoIcon {
     padding-right: 0.6rem;
 }
+.fileBlock {
+    display: flex;
+    align-items: center;
+}
+.fullWidthBlock {
+    margin-bottom: 10px;
+    width: 100%;
+}
 /* .status {
     flex: 1
 } */

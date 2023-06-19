@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useMemo} from 'react';
 import { makeStyles } from '@mui/styles';
 import styles from '../../css/customSelect.module.css'
 import useInput from '../../hooks/useInput';
@@ -17,7 +17,7 @@ const useStyles = makeStyles( {
         fontWeight: 500,
         fontFamily: 'Roboto_slab, serif'
     },
-})
+});
 
 type Props = {
     name?: string,
@@ -37,7 +37,12 @@ type Props = {
 
 const EasySelect = React.forwardRef<HTMLElement, Props>(({name = null, label = null, variants, style, onChange = null, smallLabel=false, customClassName, defaultValue = "", value = "", required=false}: Props, ref) => {
     const classes: Record<any, any> = useStyles();
-    const [labelState, setLabelState] = useState(label);
+    const labelState = useMemo(()=> {
+        if (required && label) {
+            return label + ' *';
+        }
+        return label;
+    }, [label]);
     const input = useInput(defaultValue);
     const Variants = variants.map((el)=> <MenuItem value={el.id} key={el.id}>{el.name}</MenuItem>);
     const changeHandler = (ev) => {
@@ -47,18 +52,12 @@ const EasySelect = React.forwardRef<HTMLElement, Props>(({name = null, label = n
     useEffect(()=> {
         if(value) input.setValue(value);
     }, [value]);
-    useEffect(() => {
-        if (required && label) {
-            setLabelState(label + ' *');
-        }
-    }, [label]);
     return (
             <div className={styles.selectBlock + ' ' + classes.input + ' ' + customClassName } style={style}>
                 <InputLabel id={name} className={smallLabel ? classes.selectLabel : classes.fullWidthLabel} >{labelState}</InputLabel>
                 <Select required={required} inputRef={ref} fullWidth defaultValue={defaultValue} variant='standard' labelId={name} {...input} onChange={changeHandler} name={name}>
                         {Variants}
                 </Select>
-                
             </div>
     );
 });

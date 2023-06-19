@@ -8,9 +8,9 @@ import {addModalQuantity, subtractModalQuantity} from "../../store/global/index"
 const defaultHeaderStyles = {maxWidth: '400px', display: 'none'}
 
 type Props = {
-    children: React.ReactElement | React.ReactElement[]
+    children: React.ReactNode
     show?: boolean,
-    setShow?: (show: boolean)=> void,
+    setShow: (show: boolean)=> void,
     onClose?: ()=> void,
     customStyles?: React.CSSProperties,
     fixedStyles?: React.CSSProperties,

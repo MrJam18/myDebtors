@@ -1,11 +1,11 @@
-import styles from '../css/list.module.css';
-import Debtors from './Debtors';
-import AddDebtor from './debtor/AddDebtor';
+import styles from '../../css/list.module.css';
+import Debtors from '../Debtors';
+import AddDebtor from '../debtor/AddDebtor';
 import {  useState } from 'react';
-import Loading from './dummyComponents/Loading';
-import Pagination from './dummyComponents/Pagination';
-import AddContract from './contract/AddContract';
-import useList from "../hooks/useList.js";
+import Loading from '../dummyComponents/Loading';
+import Pagination from '../dummyComponents/Pagination';
+import AddContract from '../contract/AddContract';
+import useList from "../../hooks/useList";
 import {useLocation} from "react-router";
 import ListToolbar from "./ListToolbar";
 

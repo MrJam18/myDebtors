@@ -15,6 +15,7 @@ import Button from "@mui/material/Button";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import MobileStepper from "@mui/material/MobileStepper";
+import DataStepper from "../../DataStepper"
 
 const useStyles = makeStyles({
     smallInput
@@ -41,6 +42,14 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow, enforcemen
     } : {});
     const [showCreateBailiff, setShowCreateBailiff] = useState(false);
 
+    const handleStepChange = (newActiveIndex) => {
+        setActiveIndex(newActiveIndex);
+        setBailiff({
+            id: enforcementProceedingsArr[newActiveIndex]?.bailiff?.id,
+            name: enforcementProceedingsArr[newActiveIndex]?.bailiff?.full_name
+        });
+    };
+
 
     const [searchKey, setSearchKey] = useState(0);
     const clearForm = ()=>{
@@ -56,52 +65,6 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow, enforcemen
         feeRef.current.value = '';
 
     }
-
-
-    // if (!lastProceeding) {
-    //     if(enforcementProceedingsArr.length === 0){
-    //         lastProceeding = {
-    //             begin_date: '',
-    //             number: '',
-    //             status_id: '',
-    //             bailiff: { id: '', name: { surname: '', name: '', patronymic: ''}},
-    //             main: '',
-    //             percents: '',
-    //             penalties: '',
-    //             fee: ''
-    //         };
-    //     } else {
-    //         return <div>Loading...</div>;
-    //     }
-    // }
-
-
-
-    const handleNext = () => {
-        if (activeIndex < enforcementProceedingsArr.length - 1) {
-            setActiveIndex((prevActiveIndex) => {
-                setBailiff({
-                    id: enforcementProceedingsArr[prevActiveIndex + 1].bailiff.id,
-                    name: enforcementProceedingsArr[prevActiveIndex + 1].bailiff.full_name
-                });
-                return prevActiveIndex + 1;
-            });
-        }
-    };
-
-    const handleBack = () => {
-        if (activeIndex > 0) {
-            setActiveIndex((prevActiveIndex) => {
-                setBailiff({
-                    id: enforcementProceedingsArr[prevActiveIndex - 1].bailiff.id,
-                    name: enforcementProceedingsArr[prevActiveIndex - 1].bailiff.full_name
-                });
-                return prevActiveIndex - 1;
-            });
-        }
-    };
-
-
 
     const onClickCreateBailiff = ()=>{
         setShowCreateBailiff(true)
@@ -160,25 +123,8 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow, enforcemen
                     <EasyInput ref={penaltiesRef} className={styles.smallInput} size={'small'} defaultValue={lastProceeding.penalties} name='penalties' variant='standard' pattern='float' required label='Неустойка' />
                     <EasyInput ref={feeRef} className={styles.smallInput} size={'small'} defaultValue={lastProceeding.fee} name='fee' variant='standard' pattern='float' required label='Госпошлина' />
                 </div>
-                <MobileStepper
-                    variant="dots"
-                    steps={enforcementProceedingsArr.length}
-                    position="static"
-                    activeStep={activeIndex}
-                    sx={{maxWidth: 1000, flexGrow: 1}}
-                    nextButton={
-                        <Button size="small" onClick={handleNext} disabled={activeIndex === enforcementProceedingsArr.length - 1}>
-                            следующее
-                            <KeyboardArrowRight sx={{paddingBottom: '4px'}} />
-                        </Button>
-                    }
-                    backButton={
-                        <Button size="small" onClick={handleBack} disabled={activeIndex === 0}>
-                            <KeyboardArrowLeft sx={{paddingBottom: '4px'}} />
-                            предидущее
-                        </Button>
-                    }
-                />
+                <DataStepper dataArray={enforcementProceedingsArr} activeStep={activeIndex} onStepChange={handleStepChange} />
+
                 <div className={styles.buttonBlock}>
                     <ButtonInForm type='button' loading={loading} onClick={formSubmitHandler} className={styles.addEnforcementProceeding}/>
                     <Button variant='contained' color='success' name='add' onClick={clearForm}  className={styles.addEnforcementProceeding} >добавить</Button>

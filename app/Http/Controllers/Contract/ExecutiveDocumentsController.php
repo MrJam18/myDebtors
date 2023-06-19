@@ -37,7 +37,7 @@ class ExecutiveDocumentsController extends Controller
         $court = Court::find($data['courtId']);
         $exDoc->court()->associate($court);
         $bailiff = BailiffDepartment::find($data['bailiffId']);
-        $exDoc->bailiff()->associate($bailiff);
+        $exDoc->bailiffDepartment()->associate($bailiff);
         $exDoc->contract()->associate($contract);
         $exDoc->save();
     }
@@ -47,8 +47,8 @@ class ExecutiveDocumentsController extends Controller
         $executiveDocument = $contract->executiveDocument;
         $returned = $executiveDocument->toArray();
         $returned['bailiff'] = [
-            'name' => $executiveDocument->bailiff->name,
-            'id' => $executiveDocument->bailiff->id
+            'name' => $executiveDocument->bailiffDepartment->name,
+            'id' => $executiveDocument->bailiffDepartment->id
         ];
         $returned['court'] = [
             'name' => $executiveDocument->court->name,

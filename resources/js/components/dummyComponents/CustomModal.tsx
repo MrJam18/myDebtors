@@ -5,9 +5,19 @@ import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 const defaultHeaderStyles = {maxWidth: '400px', display: 'none'}
 
+type Props = {
+    children: React.ReactNode | React.ReactNode[],
+    show?: boolean,
+    setShow: React.Dispatch<React.SetStateAction<boolean>>,
+    onClose?: ()=> void,
+    customStyles?: React.CSSProperties,
+    fixedStyles?: React.CSSProperties,
+    header?: string,
+    customClassName?: string
+}
 
-const CustomModal = ({children, show = true, setShow, onClose = null, customStyles = null, fixedStyles = null, header = null, customClassName = null}) => {
-    const [headerStyles, setHeaderStyles] = useState(defaultHeaderStyles);
+const CustomModal = ({children, show = true, setShow, onClose = null, customStyles = null, fixedStyles = null, header = null, customClassName = null}: Props) => {
+    const [headerStyles, setHeaderStyles] = useState<React.CSSProperties>(defaultHeaderStyles);
     const closeHandler = () => {
         if (onClose){
             onClose();

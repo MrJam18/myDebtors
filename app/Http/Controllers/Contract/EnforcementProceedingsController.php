@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Contract;
 
+use App\Exceptions\ShowableException;
 use App\Http\Controllers\Controller;
+use App\Models\Contract\Contract;
 use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\EnforcementProceeding\EnforcementProceedingStatus;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
@@ -66,5 +68,23 @@ class EnforcementProceedingsController extends Controller
         }, $proceedings);
 
         return $proceedings;
+    }
+    public function getListByExecutiveDoc(Contract $contract, ExecutiveDocument $executiveDocument): Collection
+    {
+        if($contract->id !== $executiveDocument->contract->id) throw new ShowableException('Договор не соответствует исполнительному документу');
+        $list = $executiveDocument->enforcementProceedings;
+        $list->map(function (EnforcementProceeding $proceeding) {
+            $returned = $proceeding->toArray();
+            $returned['status'] = [
+                'name' => $proceeding->proceedingStatus->name,
+                'id' => $proceeding->proceedingStatus->id
+                ];
+            $returned['bailiff'] = [
+                'name' => $proceeding->bailiff->name,
+                'id' => $proceeding->bailiff->id
+                ];
+            return $returned;
+        });
+        return $list;
     }
 }

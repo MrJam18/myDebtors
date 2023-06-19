@@ -111,10 +111,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                         <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Нет данных об исполнительном производстве</div>
                     )}
                 </div>
-                {showEnforcementProceedings.show &&
-                    <CustomModal customStyles={{width: 500}} show setShow={showEnforcementProceedings.setShow}>
-                        <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} enforcementProceedingsArr={enforcementProceedings} />
-                    </CustomModal>
+                {showEnforcementProceedings.show && <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} enforcementProceedingsArr={enforcementProceedings} />
                 }
 
                 {typeId === 2 &&

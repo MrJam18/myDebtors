@@ -34,6 +34,7 @@ class EnforcementProceeding extends BaseModel
     protected $fillable = [
         'begin_date',
         'end_date',
+        'status_date',
         'sum',
         'percents',
         'penalties',
@@ -51,6 +52,13 @@ class EnforcementProceeding extends BaseModel
             $model->status_date = Carbon::now();
         });
     }
+
+//    protected $casts = [
+//        'begin_date' => RUS_DATE_CAST,
+//        'end_date' => RUS_DATE_CAST,
+//        'status_date' => RUS_DATE_CAST
+//    ];
+
 
     function proceedingStatus(): BelongsTo
     {

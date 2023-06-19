@@ -5,7 +5,6 @@
     margin: 0;
     padding: 8px 0;
     height: 30px;
-    background-color:#c08457;
 }
 .element {
     list-style-type: none;
@@ -35,4 +34,4 @@
 }
 .link_active {
     border-color: black;
-}
+} 

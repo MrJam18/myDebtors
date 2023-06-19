@@ -42,31 +42,20 @@ const Login = () => {
             setLoading(false);
         }
     };
-    return (<><div className='background firstWindow'>
-        <div className="header">Войдите для использования приложения.</div>
-        <form onSubmit={onSubmit}>
+    return (<div className='background firstWindow'>
+            <div className="header">Войдите для использования приложения.</div>
+            <form onSubmit={onSubmit}>
             <div className={'contentBox' + ' ' + styles.main}>
                 <div className={styles.header}>Введите email и пароль.</div>
-                <TextField label='Email' name='email' fullWidth size='small' type='email' required className={classes.input} />
-                <TextField label='Пароль' type='password' name='password' fullWidth size='small' required className={classes.input} />
+                <TextField label='Email' name='email' fullWidth size='small' type='email' required className={classes.input}/>
+                <TextField label='Пароль' type='password' name='password' fullWidth size='small' required className={classes.input}/>
                 <LoadingButton loading={loading} className={classes.button} variant='contained' type='submit'>Войти
                 </LoadingButton>
                 <Link to='/registration' className={styles.regLink + ' ' + 'antiLink'}>Регистрация</Link>
                 {error && <div className="error">{error}</div>}
             </div>
-        </form>
-    </div><div className='footer-bottom'>
-            <div>
-                <p>8 800 200 200</p>
-                <p>myDeptors@mail.com</p>
-            </div>
-            <div>
-                <p>my Deptors</p>
-                <p>© 2023 Brand All Rights Reserved.</p>
-            </div>
-        </div></>
-);
+            </form>
+        </div>);
 };
 export default Login;
 //# sourceMappingURL=Login.jsx.map
-

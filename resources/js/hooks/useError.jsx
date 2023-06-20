@@ -1,9 +1,9 @@
 import { useState } from "react";
 export const useError = () => {
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
     const noError = () => {
-        setError(false);
+        setError(null);
     };
     const Comp = () => error ? <div className='error'>{error}</div> : <></>;
     return { error, setError, Comp, noError };
-}
+};

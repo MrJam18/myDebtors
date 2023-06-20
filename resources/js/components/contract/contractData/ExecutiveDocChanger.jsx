@@ -54,17 +54,12 @@ const ExecutiveDocChanger = ({setShow, update}) => {
         setDocLoading(true);
         api.get(`contracts/${contractId}/executive-documents/get-one`)
             .then(({data}) => {
-                setExecutiveDoc(data);
-                setCourt(data.court);
-                setBailiff(data.bailiff);
-                setTypeId(data.typeId)
-
-                // Получение данных об исполнительных производствах
-                return api.get(`enforcement-proceedings/get-all/${data.id}`);
-            })
-            .then(({data}) => {
-                setEnforcementProceedings(data);
-
+                if(data) {
+                    setExecutiveDoc(data);
+                    setCourt(data.court);
+                    setBailiff(data.bailiff);
+                    setTypeId(data.typeId)
+                }
             })
             .catch((error) => Alert.setError('Ошибка при получении данных', error))
             .finally(() => setDocLoading(false));
@@ -80,7 +75,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                 {showCreateBailiff && <CreateBailiff setShow={setShowCreateBailiff} setNewValue={setBailiff} /> }
                 {showCourtCreator.show && <CourtCreator setValue={setCourt} setShow={showCourtCreator.setShow} show={showCourtCreator.show} /> }
                 <div className={styles.contentBlock}>
-                    <SearchAndAddButton value={court} onClickAddButton={showCourtCreator.setShowTrue} serverAddress={'courts/findByName'} required setValue={setCourt} label='Суд, вынесший решение' />
+                    <SearchAndAddButton value={court} onClickAddButton={showCourtCreator.setShowTrue} serverAddress={'courts/search-list'} required setValue={setCourt} label='Суд, вынесший решение' />
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
                     <SearchAndAddButton value={bailiff} serverAddress={'bailiffs-departments/search'} required setValue={setBailiff} label='Отдел судебных приставов-исполнителей' onClickAddButton={onClickCreateBailiff} />
@@ -111,12 +106,6 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                         <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Нет данных об исполнительном производстве</div>
                     )}
                 </div>
-                {showEnforcementProceedings.show &&
-                    <CustomModal customStyles={{width: 500}} show setShow={showEnforcementProceedings.setShow}>
-                        <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} enforcementProceedingsArr={enforcementProceedings} />
-                    </CustomModal>
-                }
-
                 {typeId === 2 &&
                     <div className={styles.contentBlock}>
                         <EasyInput className={styles.smallInput} required defaultValue={executiveDoc.resolutionNumber} name='resolutionNumber' size={'small'} variant='standard' label='номер решения' />
@@ -128,6 +117,8 @@ const ExecutiveDocChanger = ({setShow, update}) => {
             {error && <div className="error">{error}</div>}
             <ButtonInForm loading={loading} />
             </form>
+                    {showEnforcementProceedings.show && <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} enforcementProceedingsArr={enforcementProceedings} />
+                    }
                 </>
             }
         </CustomModal>

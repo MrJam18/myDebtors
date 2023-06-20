@@ -11,11 +11,6 @@ abstract class DocumentService
 {
     protected BaseDocView $view;
 
-    public function __construct()
-    {
-
-    }
-
     function getFileResponse(string $name = 'Документ'): StreamedResponse
     {
         $headers = [

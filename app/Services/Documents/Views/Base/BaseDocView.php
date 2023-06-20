@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Services\Documents\Views\Base;
 
+use App\Models\Subject\People\Agent;
 use App\Services\Documents\Views\Base\Builders\DocBodyBuilder;
 use App\Services\Documents\Views\Base\Builders\DocFooterBuilder;
 use App\Services\Documents\Views\Base\Builders\DocHeadBuilder;
@@ -19,9 +20,11 @@ abstract class BaseDocView
     protected DocHeadBuilder $headBuilder;
     protected DocBodyBuilder $bodyBuilder;
     protected DocFooterBuilder $footerBuilder;
+    protected Agent $agent;
 
-    public function __construct(PhpWord $document = null, string $defaultFontName = 'Times New Roman', int $defaultFontSize = 11)
+    public function __construct(Agent $agent, PhpWord $document = null, string $defaultFontName = 'Times New Roman', int $defaultFontSize = 11)
     {
+        $this->agent = $agent;
         if (!$document) $this->document = new PhpWord();
         else $this->document = $document;
         $this->document->setDefaultFontName($defaultFontName);
@@ -46,6 +49,7 @@ abstract class BaseDocView
         $this->buildBody($this->bodyBuilder);
         $this->footerBuilder->addHeader('Приложение:');
         $this->buildFooter($this->footerBuilder);
+        $this->footerBuilder->addSignature($this->agent->name->initials());
 
     }
 

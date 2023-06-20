@@ -5,11 +5,15 @@ namespace App\Models\ExecutiveDocument;
 
 use App\Models\Base\BaseModel;
 use App\Models\Contract\Contract;
+use App\Models\Contract\IpInitStatement;
+use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\MoneySum;
 use App\Models\Subject\Bailiff\BailiffDepartment;
 use App\Models\Subject\Court\Court;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id;
@@ -22,9 +26,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $resolution_date;
  * @property Contract $contract;
  * @property ExecutiveDocumentType $type;
- * @property BailiffDepartment $bailiff;
+ * @property BailiffDepartment $bailiffDepartment
  * @property Court $court;
  * @property MoneySum $moneySum;
+ * @property Collection $ipInitStatements;
+ * @property Collection $enforcementProceedings;
  */
 class ExecutiveDocument extends BaseModel
 {
@@ -50,7 +56,7 @@ class ExecutiveDocument extends BaseModel
     {
         return $this->belongsTo(Contract::class);
     }
-    function bailiff(): BelongsTo
+    function bailiffDepartment(): BelongsTo
     {
         return $this->belongsTo(BailiffDepartment::class);
     }
@@ -61,5 +67,13 @@ class ExecutiveDocument extends BaseModel
     function moneySum(): BelongsTo
     {
         return $this->belongsTo(MoneySum::class);
+    }
+    function ipInitStatements(): HasMany
+    {
+        return $this->hasMany(IpInitStatement::class);
+    }
+    function enforcementProceedings(): HasMany
+    {
+        return $this->hasMany(EnforcementProceeding::class);
     }
 }

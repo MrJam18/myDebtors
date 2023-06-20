@@ -56,7 +56,7 @@ class AuthController extends AbstractController
                 ]
             ];
         }
-        return response()->json(['error' => 'Unauthorized'])->setStatusCode(401);
+        return response()->json(['error' => 'Введены неверные учетные данные'])->setStatusCode(402);
     }
     function logout(): JsonResponse
     {

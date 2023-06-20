@@ -1,6 +1,6 @@
 import '../css/App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ListOld from './List';
+import ListOld from './List/List';
 import Menu from './Menu';
 import Claim from './Claim';
 import Contract from './contract/Contract';
@@ -15,7 +15,7 @@ import Loading from './dummyComponents/Loading';
 import HidingAlert from './dummyComponents/HidingAlert';
 import Start from './start/Start';
 import Creditors from './creditors/Creditors';
-import { getGlobalError, setGlobalError } from '../store/global';
+import {getGlobalError, setGlobalError} from '../store/global';
 import { setAlert } from '../store/alert/actions';
 import usersSlice from '../store/users/reducer';
 import LeftMenu from './LeftMenu';
@@ -41,6 +41,7 @@ function Router() {
         setAlert('Ошибка', error, 'error');
         dispatch(setGlobalError(false));
     }, [error]);
+
     // @ts-expect-error TS(2686): 'React' refers to a UMD global, but the current fi... Remove this comment to see the full error message
     if (loading)
         return <Loading />;

@@ -1,0 +1,23 @@
+.toolbarBox {
+    width: 42%;
+    display: flex;
+    justify-content: space-between;
+}
+.toolbar__leftBox {
+    width: 42%;
+    display: flex;
+    justify-content: left;
+}
+.toolbar__button {
+    width: 25%;
+    padding: 3px 50px;
+}
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.bottomButton {
+    width: auto;
+    margin: 0 15px;
+}

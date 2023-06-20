@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Models\Subject\Creditor;
 
+use App\Enums\Database\CreditorTypeEnum;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;

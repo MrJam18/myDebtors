@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 });
 const standardInputMUISx = { '& .MuiInput-root': standardFontSize, '& .MuiInputLabel-root': standardFontSize };
 const checkBoxInputProps = { tabIndex: '-1' };
-const AddDebtor = ({ setAddDebtor, updateList }) => {
+const AddDebtor = ({ setShow, updateList }) => {
     const classes = useStyles();
     const [noPatronymic, setNoPatronymic] = useState(false);
     const [noBirthPlace, setNoBirthPlace] = useState(false);
@@ -54,7 +54,7 @@ const AddDebtor = ({ setAddDebtor, updateList }) => {
         // dispatcher.data.passportType = passportType;
         dispatcher.data.address = addressForDB;
         await dispatcher.handle();
-        setAddDebtor(false);
+        setShow(false);
         updateList();
     };
     useEffect(() => {
@@ -69,7 +69,7 @@ const AddDebtor = ({ setAddDebtor, updateList }) => {
     }, []);
     return (
     // @ts-expect-error TS(2741): Property 'onClose' is missing in type '{ children:... Remove this comment to see the full error message
-    <CustomModal header={'Создание должника'} show={true} customStyles={{ width: '40%', minWidth: '465px', maxWidth: '500px' }} setShow={setAddDebtor}>
+    <CustomModal header={'Создание должника'} show={true} customStyles={{ width: '40%', minWidth: '465px', maxWidth: '500px' }} setShow={setShow}>
             <form onSubmit={formHandler} ref={debtorForm}>
                 <div className={styles.debtor__block}>
                 <div className={styles.header + ' ' + styles.header_first}>Информация о должнике</div>

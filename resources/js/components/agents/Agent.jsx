@@ -19,6 +19,7 @@ const Agent = ({defaultValues = {
                 <div className={styles.smallContainer}>
                     <EasyCheckBox name={'is_default'} rootStyles={{fontSize: '16px'}} className={styles.checkbox} size={'medium'} defaultValue={defaultValues.is_default} label="Представитель по умолчанию" />
                     <EasyCheckBox label="Не виден группе" name='no_show_group' defaultValue={defaultValues.no_show_group} rootStyles={{fontSize: '16px'}} className={styles.checkbox} size={'medium'} />
+                    <TextField className={styles.fullInput} style={{marginTop: '6px'}} defaultValue={defaultValues.phone} name='phone' label={'Телефон'} variant='standard' required fullWidth />
                 </div>
             </div>
             <Address setAddressForDB={setAddressForDB} defaultValue={defaultValues.fullAddress} />

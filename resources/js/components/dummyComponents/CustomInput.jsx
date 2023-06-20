@@ -29,4 +29,3 @@ const CustomInput = React.forwardRef(({ autofocus = false, disabled = false, def
     return (<TextField placeholder={placeholder} onKeyDown={onKeyDown} autoFocus={autofocus} disabled={disabled} defaultValue={defaultValue} label={label} inputProps={{ pattern }} inputRef={inputRef} variant={variant} required={required} InputLabelProps={type === 'date' ? { shrink: true } : null} className={className} name={name} fullWidth type={type} size={size}/>);
 });
 export default CustomInput;
-``;

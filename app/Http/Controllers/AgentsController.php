@@ -63,6 +63,7 @@ class AgentsController extends Controller
             $agent->is_default = $formData['is_default'];
             $agent->no_show_group = $formData['no_show_group'];
             $agent->enclosure = $formData['enclosure'];
+            $agent->phone = $formData['phone'];
             $agent->user()->associate($user);
             $agent->address()->associate($address);
             $passport->series=$formData['passportSeries'];
@@ -88,6 +89,7 @@ class AgentsController extends Controller
             'is_default' => $agent->is_default,
             'no_show_group' => $agent->no_show_group,
             'enclosure' => $agent->enclosure,
+            'phone' => $agent->phone,
             'fullAddress' => $agent->address?->getFull(), // проверить на существование адреса перед вызовом getFull()
             'passportSeries' => $agent->passport?->series, // проверить на существование паспорта перед обращением к series
             'passportNumber' => $agent->passport?->number, // проверить на существование паспорта перед обращением к number

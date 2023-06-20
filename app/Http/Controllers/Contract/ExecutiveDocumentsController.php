@@ -42,21 +42,24 @@ class ExecutiveDocumentsController extends Controller
         $exDoc->save();
     }
 
-    public function getOne(Contract $contract): array
+    public function getOne(Contract $contract): ?array
     {
         $executiveDocument = $contract->executiveDocument;
-        $returned = $executiveDocument->toArray();
-        $returned['bailiff'] = [
-            'name' => $executiveDocument->bailiffDepartment->name,
-            'id' => $executiveDocument->bailiffDepartment->id
-        ];
-        $returned['court'] = [
-            'name' => $executiveDocument->court->name,
-            'id' => $executiveDocument->court->id
-        ];
-        $returned = array_merge($returned, $executiveDocument->moneySum->toArray());
-        $returned['typeId'] = $executiveDocument->type->id;
-        $returned['id'] = $executiveDocument->id;
-        return $returned;
+        if($executiveDocument) {
+            $returned = $executiveDocument->toArray();
+            $returned['bailiff'] = [
+                'name' => $executiveDocument->bailiffDepartment->name,
+                'id' => $executiveDocument->bailiffDepartment->id
+            ];
+            $returned['court'] = [
+                'name' => $executiveDocument->court->name,
+                'id' => $executiveDocument->court->id
+            ];
+            $returned = array_merge($returned, $executiveDocument->moneySum->toArray());
+            $returned['typeId'] = $executiveDocument->type->id;
+            $returned['id'] = $executiveDocument->id;
+            return $returned;
+        }
+        else return null;
     }
 }

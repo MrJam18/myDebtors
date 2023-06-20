@@ -28,9 +28,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class EnforcementProceeding extends BaseModel
 {
-
-
-
     protected $fillable = [
         'begin_date',
         'end_date',
@@ -43,15 +40,15 @@ class EnforcementProceeding extends BaseModel
         'number'
     ];
 
-    public static function boot() {
-        parent::boot();
-
-        // При каждом сохранении или обновлении модели
-        static::saving(function($model) {
-            // Обновляем поле status_date текущей датой и временем
-            $model->status_date = Carbon::now();
-        });
-    }
+//    public static function boot() {
+//        parent::boot();
+//
+//        // При каждом сохранении или обновлении модели
+//        static::saving(function($model) {
+//            // Обновляем поле status_date текущей датой и временем
+//            $model->status_date = Carbon::now();
+//        });
+//    }
 
 //    protected $casts = [
 //        'begin_date' => RUS_DATE_CAST,

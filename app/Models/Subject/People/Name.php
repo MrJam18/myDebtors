@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Models\Subject\People;
 
 use App\Models\Base\BaseModel;
+use App\Models\Subject\GenitiveTrait;
 use Carbon\Carbon;
 
 /**
@@ -16,6 +17,8 @@ use Carbon\Carbon;
  */
 class Name extends BaseModel
 {
+    use GenitiveTrait;
+
     protected $fillable = [
         'name',
         'surname',
@@ -36,27 +39,6 @@ class Name extends BaseModel
         $returned = $this->getGenitiveCase($this->surname) . ' ' . $this->getGenitiveCase($this->name);
         if($this->patronymic) $returned .= ' ' . $this->getGenitiveCase($this->patronymic);
         return $returned;
-    }
-
-    private function getGenitiveCase(string $word): string {
-        $lastChar = mb_substr($word, -1);
-        $lastTwoChars = mb_substr($word, -2);
-
-        if ($lastTwoChars === 'ий' || $lastTwoChars === 'ый') {
-            return mb_substr($word, 0, -2) . 'ого';
-        } elseif ($lastTwoChars === 'ая' || $lastTwoChars === 'яя') {
-            return mb_substr($word, 0, -2) . 'ой';
-        } elseif ($lastTwoChars === 'ое' || $lastTwoChars === 'ее') {
-            return mb_substr($word, 0, -2) . 'ого';
-        } elseif ($lastChar === 'ь') {
-            return mb_substr($word, 0, -1) . 'я';
-        } elseif ($lastChar === 'а') {
-            return mb_substr($word, 0, -1) . 'ы';
-        } elseif ($lastChar === 'й') {
-            return mb_substr($word, 0, -1) . 'я';
-        } else {
-            return $word . 'а';
-        }
     }
 
 }

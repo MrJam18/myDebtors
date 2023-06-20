@@ -5,6 +5,7 @@ namespace App\Models\ExecutiveDocument;
 
 use App\Models\Base\BaseModel;
 use App\Models\Contract\Contract;
+use App\Models\Contract\IpInitStatement;
 use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\MoneySum;
 use App\Models\Subject\Bailiff\BailiffDepartment;
@@ -25,9 +26,10 @@ use Illuminate\Support\Collection;
  * @property string $resolution_date;
  * @property Contract $contract;
  * @property ExecutiveDocumentType $type;
- * @property BailiffDepartment $bailiffDepartment;
+ * @property BailiffDepartment $bailiffDepartment
  * @property Court $court;
  * @property MoneySum $moneySum;
+ * @property Collection $ipInitStatements;
  * @property Collection $enforcementProceedings;
  */
 class ExecutiveDocument extends BaseModel
@@ -65,6 +67,10 @@ class ExecutiveDocument extends BaseModel
     function moneySum(): BelongsTo
     {
         return $this->belongsTo(MoneySum::class);
+    }
+    function ipInitStatements(): HasMany
+    {
+        return $this->hasMany(IpInitStatement::class);
     }
     function enforcementProceedings(): HasMany
     {

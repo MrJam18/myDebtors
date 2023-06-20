@@ -50,7 +50,7 @@ abstract class ClaimDocView extends BaseDocView
 
     public function __construct(CourtClaim $claim, CountService $countService)
     {
-        parent::__construct();
+        parent::__construct($claim->agent);
         $this->lastText = new Collection();
         $this->enclosures = new Collection();
         $this->askHeader = new Collection();
@@ -173,7 +173,6 @@ abstract class ClaimDocView extends BaseDocView
         $builder->addRow( $this->contract->type->name . ' № ' . $this->contract->number . ' от ' . $this->contract->issued_date->format(RUS_DATE_FORMAT) . ' г.');
         $builder->addRow('Расходный кассовый ордер');
         $this->enclosures->each(fn(string $text) => $builder->addRow($text));
-        $builder->addSignature($this->agent->name->initials());
     }
 
     abstract protected function setClaimValues(): void;

@@ -10,11 +10,7 @@ import ServerSelect from "../../dummyComponents/ServerSelect";
 import ButtonInForm from "../../dummyComponents/ButtonInForm";
 import api from "../../../http";
 import {setAlert} from "../../../store/alert/actions";
-import {Alert} from "@mui/material";
 import Button from "@mui/material/Button";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import MobileStepper from "@mui/material/MobileStepper";
 import DataStepper from "../../DataStepper"
 
 const useStyles = makeStyles({
@@ -33,6 +29,7 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow, enforcemen
     const percentsRef = useRef();
     const penaltiesRef = useRef();
     const feeRef = useRef();
+
     const [enforcementProceedingStatus, setEnforcementProceedingStatus] = useState();
     const [activeIndex, setActiveIndex] = useState(enforcementProceedingsArr.length > 0 ? enforcementProceedingsArr.length - 1 : 0);
     let lastProceeding = enforcementProceedingsArr[activeIndex] || {};
@@ -50,15 +47,11 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow, enforcemen
         });
     };
 
-
-    const [searchKey, setSearchKey] = useState(0);
     const clearForm = ()=>{
         beginDateRef.current.value = '';
         endDateRef.current.value = '';
         numberRef.current.value = '';
-        setBailiff(undefined);
-        setEnforcementProceedingStatus('');
-        setSearchKey(prevKey => prevKey + 1);
+        setBailiff({id: '', name: ''});
         mainRef.current.value = '';
         percentsRef.current.value = '';
         penaltiesRef.current.value = '';
@@ -71,20 +64,15 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow, enforcemen
     }
 
     const formSubmitHandler = async () => {
-        console.log('bailiff before form submission:', bailiff);
         setLoading(true);
 
         try {
             const formData = new FormData(formRef.current);
-
             formData.append('enforcementProceedingStatus', enforcementProceedingStatus);
             formData.append('bailiff', bailiff.id);
             formData.append('executiveDocId', executiveDocId);
-
             const { data } = await api.post('enforcement-proceedings/create', formData);
-
             dispatch(setAlert('Успешно', 'сохранено'));
-
             setShow(false);
 
         } catch (error) {
@@ -109,10 +97,10 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow, enforcemen
                     <EasyInput ref={numberRef} label='Номер исп. производства' className={classes.smallInput} defaultValue={lastProceeding.number} name='number' />
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
-                    <ServerSelect key={activeIndex} defaultId={lastProceeding.status_id}  label='Статус исп. производства:' required value={enforcementProceedingStatus} serverAddress='enforcement-proceedings/search-status' setId={value => setEnforcementProceedingStatus(value)}/>
+                    <ServerSelect  defaultId={lastProceeding.status_id} label='Статус исп. производства:' required serverAddress='enforcement-proceedings/search-status' setId={value => setEnforcementProceedingStatus(value)}/>
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
-                    <SearchAndAddButton key={activeIndex} label='Судебный пристав:' required serverAddress='bailiffs/search' value={bailiff}  setValue={setBailiff} onClickAddButton={onClickCreateBailiff}/>
+                    <SearchAndAddButton  label='Судебный пристав:' required serverAddress='bailiffs/search' value={bailiff}  setValue={setBailiff} onClickAddButton={onClickCreateBailiff}/>
                 </div>
                 <div className={styles.smallHeader}>Взысканные суммы</div>
                 <div className={styles.contentBlock}>

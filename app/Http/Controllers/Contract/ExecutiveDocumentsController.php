@@ -11,6 +11,7 @@ use App\Models\MoneySum;
 use App\Models\Subject\Bailiff\BailiffDepartment;
 use App\Models\Subject\Court\Court;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ExecutiveDocumentsController extends Controller
 {
@@ -45,6 +46,7 @@ class ExecutiveDocumentsController extends Controller
     public function getOne(Contract $contract): ?array
     {
         $executiveDocument = $contract->executiveDocument;
+      //  Log::info(dump($executiveDocument));
         if($executiveDocument) {
             $returned = $executiveDocument->toArray();
             $returned['bailiff'] = [

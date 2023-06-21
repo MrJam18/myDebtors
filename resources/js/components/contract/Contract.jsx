@@ -14,6 +14,7 @@ import Actions from './Actions';
 import { setAlert } from '../../store/alert/actions';
 import Files from "./files/Files";
 import {contractsSlice} from "../../store/contracts/reducer";
+import ContractComment from './contractComments/ContractComment';
 
 
 const Contract = () => {
@@ -33,6 +34,8 @@ const Contract = () => {
                 return <Actions />
             case 'files':
                 return  <Files />
+            case 'contractComments':
+                return <ContractComment />
         }
     }
 

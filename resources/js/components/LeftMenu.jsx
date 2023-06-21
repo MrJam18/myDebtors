@@ -37,7 +37,6 @@ const LeftMenu = () => {
                 </NavLink>
                 <MenuItem className={classes.menuItem} divider>Мои задачи</MenuItem>
                 <MenuItem className={classes.menuItem} divider>Настройки</MenuItem>
-                <MenuItem className={classes.menuItem} divider>Настройки</MenuItem>
                 </div>
             </Drawer>
         </div>

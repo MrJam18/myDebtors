@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-use App\Http\Controllers\Contract\ContractsController;
-use App\Http\Controllers\Contract\CourtController;
+use App\Http\Controllers\Contracts\ContractsController;
+use App\Http\Controllers\Contracts\CourtController;
 use Illuminate\Support\Facades\Route;
 
 

@@ -9,7 +9,12 @@ import {useShow} from "../../hooks/useShow";
 import ListSearcher from "../dummyComponents/search/ListSearcher";
 
 
-const headers = [{key: "name", name: 'Название'}, {key: 'lastAssignor', name: 'Цедент'}, {key: 'lastAssignee', name: 'Цессионарий'}, {key: 'lastTransferDate', name: 'Дата цессии', type: 'date'}, {key: 'created_at', name: "Дата создания"}];
+const headers = [
+    {key: "name", name: 'Название'},
+    {key: 'lastAssignor', name: 'Цедент'},
+    {key: 'lastAssignee', name: 'Цессионарий'},
+    {key: 'lastTransferDate', name: 'Дата цессии', type: 'date'},
+    {key: 'created_at', name: "Дата создания"}];
 
 const Cessions = () => {
     const update = useUpdate();

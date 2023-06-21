@@ -12,7 +12,12 @@ import Pagination from '../dummyComponents/Pagination';
 const Actions = () => {
     const {contractId} = useParams();
     const dispatch = useDispatch();
-    const headers = [{name: "Дата/время", key: 'createdAt', type: 'date/time'}, {name: "Создатель", key: 'user'}, {name: "Действие", key: 'actionType'} , {name: "Объект", key: 'actionObject'}, {name: "Результат", key: 'result', styles: {minWidth: '200px'}}];
+    const headers = [
+        {name: "Дата/время", key: 'createdAt', type: 'date/time'},
+        {name: "Создатель", key: 'user'},
+        {name: "Действие", key: 'actionType'},
+        {name: "Объект", key: 'actionObject'},
+        {name: "Результат", key: 'result', styles: {minWidth: '200px'}}];
     const actions = useSelector(getActionsList);
     const totalActions = useSelector(getActionsTotal);
     const [loading, setLoading] = useState(true);

@@ -7,6 +7,7 @@ use App\Casts\Money;
 use App\Models\Action\Action;
 use App\Models\Auth\User;
 use App\Models\Base\BaseModel;
+use App\Models\Base\CustomBuilder;
 use App\Models\Cession\CessionGroup;
 use App\Models\CourtClaim\CourtClaim;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
@@ -107,6 +108,10 @@ class Contract extends BaseModel
     function actions(): HasMany
     {
         return $this->hasMany(Action::class);
+    }
+    function comments(): HasMany | CustomBuilder
+    {
+        return $this->hasMany(ContractComment::class);
     }
 
 }

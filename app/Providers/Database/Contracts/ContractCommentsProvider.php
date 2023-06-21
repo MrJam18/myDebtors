@@ -23,10 +23,8 @@ class ContractCommentsProvider extends AbstractProvider
     /**
      * @throws \Exception
      */
-    function getList(ListRequestData $data): CustomPaginator
+    function getList(ListRequestData $data, Contract $contract): CustomPaginator
     {
-        return $this->byGroupId(getGroupId(), $data->orderBy)->with(['contracts_comments' => [
-            'contract_id:id,number', 'user_id:id,name', 'file_id:id,url'
-        ]])->paginate($data->perPage, page: $data->page);
+        return $contract->comments()->with(['user', 'file'])->paginate($data->perPage, page: $data->page);
     }
 }

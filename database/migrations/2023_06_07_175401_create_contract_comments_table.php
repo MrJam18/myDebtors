@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('comments', 500);
             $table->foreignId('contract_id')->constrained('contracts');
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('file_id')->nullable()->constrained('files');
+            $table->foreignId('file_id')->nullable()->constrained('comment_files');
             $table->timestamps();
         });
     }

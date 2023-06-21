@@ -24,7 +24,10 @@ const CreditorsToolBar = ({setUpdate, setSearch}) => {
         <div className={styles.toolbar}>
             <ListSearcher setSearch={setSearch} />
             <AddCreditor setUpdate={setUpdate} show={showAddOrg} setShow={setShowAddOrg} />
-            <Button variant="text" onClick={addOrgClickHandler} className={classes.payments__toolBarButton}><FontAwesomeIcon icon={solid('plus')} className={styles.addIcon}/> Добавить</Button>
+            <Button variant="text" onClick={addOrgClickHandler} className={classes.payments__toolBarButton}>
+                <FontAwesomeIcon icon={solid('plus')} className={styles.addIcon}/>
+                Добавить
+            </Button>
         </div>
     );
 };

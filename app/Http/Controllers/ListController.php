@@ -7,7 +7,7 @@ use App\Http\Controllers\AbstractControllers\AbstractController;
 use App\Http\Requests\PaginateRequest;
 use App\Models\Auth\User;
 use App\Models\Contract\Contract;
-use App\Models\Subject\Debtor;
+use App\Models\Subject\People\Debtor;
 use App\Providers\Database\DebtorsProvider;
 use Illuminate\Support\Facades\Auth;
 

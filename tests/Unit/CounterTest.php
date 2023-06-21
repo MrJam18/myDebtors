@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Models\Contract\Contract;
+use App\Models\Contract\ContractType;
 use App\Models\Contract\Payment;
 use App\Models\MoneySum;
 use App\Services\Counters\CountService;
@@ -14,6 +15,7 @@ use Tests\TestCase;
 abstract class CounterTest extends TestCase
 {
     protected ?CountService $service;
+    protected ?Collection $payments = null;
 
 
     function test_percents_in_one_day()
@@ -52,6 +54,12 @@ abstract class CounterTest extends TestCase
         $result = $this->countByService($contract, new Carbon('2021-12-31'));
         $this->assertEquals(100000, $result->penalties);
     }
+    function test_penalties_in_several_years()
+    {
+        $contract = $this->createTestContract(new Carbon('2015-12-31'), 100000, 100, 100, new Carbon('2017-12-31'));
+        $result = $this->countByService($contract, new Carbon('2020-12-31'));
+        $this->assertEquals(300000, $result->penalties);
+    }
     function test_percents_with_payment()
     {
         $payment = new Payment();
@@ -61,7 +69,7 @@ abstract class CounterTest extends TestCase
         $paymentSum->main = 1000;
         $paymentSum->penalties = 1000;
         $paymentSum->percents = 1000;
-        $payment->money_sum = $paymentSum;
+        $payment->moneySum = $paymentSum;
         $contract = $this->createTestContract(new Carbon('2020-12-31'), 100000, 100, 0, new Carbon('2020-12-31'), [$payment]);
         $result = $this->countByService($contract, new Carbon('2021-12-31'));
         $this->assertEquals(90000, $result->percents);
@@ -75,7 +83,7 @@ abstract class CounterTest extends TestCase
         $paymentSum->main = 1000;
         $paymentSum->penalties = 1000;
         $paymentSum->percents = 1000;
-        $payment->money_sum = $paymentSum;
+        $payment->moneySum = $paymentSum;
         $contract = $this->createTestContract(new Carbon('2020-12-31'), 100000, 100, 10, new Carbon('2020-12-31'), [$payment]);
         $result = $this->countByService($contract, new Carbon('2021-12-31'));
         $this->assertEquals(90000, $result->percents);
@@ -86,7 +94,7 @@ abstract class CounterTest extends TestCase
 
 
 
-    protected function createTestContract(Carbon $issuedDate, float $issuedSum, float $percent = 0, float $penalty = 0, ?Carbon $dueDate = null, $payments = []): Contract
+    protected function createTestContract(Carbon $issuedDate, float $issuedSum, float $percent = 0, float $penalty = 0, ?Carbon $dueDate = null, $payments = null): Contract
     {
         if(!$dueDate) $dueDate = Carbon::now()->setTime(0, 0);
         $contract = new Contract();
@@ -96,13 +104,14 @@ abstract class CounterTest extends TestCase
         $contract->penalty = $penalty;
         $contract->issued_sum = $issuedSum;
         $contract->number = 'test';
-        $contract->payments = new Collection($payments);
+        if($payments) $this->payments = new Collection($payments);
+        $contract->type()->associate(ContractType::find(1));
         return $contract;
     }
 
     protected function countByService(Contract $contract, Carbon $endDate): MoneySum
     {
-        return $this->service->count($contract, $endDate);
+        return $this->service->count($contract, $endDate, $this->payments);
     }
 
 }

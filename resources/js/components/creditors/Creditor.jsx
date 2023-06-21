@@ -5,7 +5,7 @@ import Address from "../dummyComponents/Address/Address";
 import {makeStyles} from "@mui/styles";
 import SearchAndAddButton from "../dummyComponents/search/SearchAndAddButton";
 import {useMedia} from "../../hooks/useMedia";
-import AddBanksRequisites from "./AddBanksRequisites";
+import AddBanksRequisites from "../AddBanksRequisites";
 import CustomInput from "../dummyComponents/CustomInput";
 import {capitalize} from "../../utils/text/capitalize";
 import ServerSelect from "../dummyComponents/ServerSelect";

@@ -2,7 +2,7 @@ import React, { useEffect, useState, forwardRef } from "react";
 import api from "../../http/index";
 import EasySelect from "./EasySelect";
 import { Alert } from "../../classes/Alert";
-const ServerSelect = forwardRef(({ name = null, label, style = null, setId = null, customClassName = null, defaultId = null, defaultValue, serverAddress, smallLabel = false }, ref) => {
+const ServerSelect = forwardRef(({ name = null, label, style = null, setId = null, customClassName = null, defaultId = null, defaultValue, serverAddress, smallLabel = false, required = false }, ref) => {
     const [variants, setVariants] = useState([]);
     const [initId, setInitId] = useState('');
     useEffect(() => {
@@ -15,7 +15,8 @@ const ServerSelect = forwardRef(({ name = null, label, style = null, setId = nul
             if (defaultId) {
                 const found = res.data.find((el) => el.id == defaultId);
                 if (found) {
-                    setId(found.id);
+                    if (setId)
+                        setId(found.id);
                     setInitId(found.id);
                 }
             }
@@ -31,6 +32,6 @@ const ServerSelect = forwardRef(({ name = null, label, style = null, setId = nul
             Alert.setError('Select error', res);
         });
     }, []);
-    return (<EasySelect smallLabel={smallLabel} ref={ref} name={name} label={label} onChange={setId} variants={variants} style={style} customClassName={customClassName} value={initId}/>);
+    return (<EasySelect required={required} smallLabel={smallLabel} ref={ref} name={name} label={label} onChange={setId} variants={variants} style={style} customClassName={customClassName} value={initId}/>);
 });
 export default ServerSelect;

@@ -24,7 +24,7 @@ export const findCourtsByName = (string) => async dispatch => {
     let result;
     try{
     result = await api.get('/courts/findByName?find=' + string);
-    
+
     }
     catch(e){
         throw new Error(e.message);
@@ -59,9 +59,11 @@ export const createCourt = (court, address) => async () => {
         const {data} = await api.post('courts/create', {
             court, address
         });
+        console.log(data)
         return data;
     }
     catch(e){
+        console.dir(e);
         throw new Error(e.message);
     }
 }

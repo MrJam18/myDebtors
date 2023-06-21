@@ -48,42 +48,42 @@ class AddressService extends BaseService
         return $address;
     }
 
-    function updateAddress(Address $currentAddress, array $newAddressData): Address
-    {
-        $addressData = new AddressData($newAddressData);
-
-        $country = Country::updateOrCreate($this->getNameArr($currentAddress->country->name), $this->getNameArr($addressData->country));
-        $currentAddress->country()->associate($country);
-        $regionData = array_merge($this->getNameArr($currentAddress->region->name), ['country_id' => $currentAddress->country->id]);
-        $region = Region::updateOrCreate($regionData, $this->getNameArr($addressData->region));
-        $currentAddress->region()->associate($region);
-
-        if ($addressData->area) {
-            $areaData = array_merge($this->getNameArr($currentAddress->area->name), ['region_id' => $currentAddress->region->id]);
-            $area = Area::updateOrCreate($areaData, $this->getNameArr($addressData->area));
-            $currentAddress->area()->associate($area);
-        }
-
-        $settlementData = array_merge($this->getNameArr($currentAddress->settlement->name), [
-            'area_id' => $currentAddress->area?->id,
-            'region_id' => $currentAddress->region->id
-        ]);
-        $settlement = Settlement::updateOrCreate($settlementData, $this->getNameArr($addressData->settlement));
-        $currentAddress->settlement()->associate($settlement);
-
-        $streetData = array_merge($this->getNameArr($currentAddress->street->name), ['settlement_id' => $currentAddress->settlement->id]);
-        $street = Street::updateOrCreate($streetData, $this->getNameArr($addressData->street));
-        $currentAddress->street()->associate($street);
-
-        $currentAddress->postal_code = $addressData->postal_code;
-        $currentAddress->house = $addressData->house;
-        $currentAddress->flat = $addressData->flat ?? $currentAddress->flat;
-        $currentAddress->block = $addressData->block ?? $currentAddress->block;
-
-        $currentAddress->save();
-
-        return $currentAddress;
-    }
+//    function updateAddress(Address $currentAddress, array $newAddressData): Address
+//    {
+//        $addressData = new AddressData($newAddressData);
+//
+//        $country = Country::updateOrCreate($this->getNameArr($currentAddress->country->name), $this->getNameArr($addressData->country));
+//        $currentAddress->country()->associate($country);
+//        $regionData = array_merge($this->getNameArr($currentAddress->region->name), ['country_id' => $currentAddress->country->id]);
+//        $region = Region::updateOrCreate($regionData, $this->getNameArr($addressData->region));
+//        $currentAddress->region()->associate($region);
+//
+//        if ($addressData->area) {
+//            $areaData = array_merge($this->getNameArr($currentAddress->area->name), ['region_id' => $currentAddress->region->id]);
+//            $area = Area::updateOrCreate($areaData, $this->getNameArr($addressData->area));
+//            $currentAddress->area()->associate($area);
+//        }
+//
+//        $settlementData = array_merge($this->getNameArr($currentAddress->settlement->name), [
+//            'area_id' => $currentAddress->area?->id,
+//            'region_id' => $currentAddress->region->id
+//        ]);
+//        $settlement = Settlement::updateOrCreate($settlementData, $this->getNameArr($addressData->settlement));
+//        $currentAddress->settlement()->associate($settlement);
+//
+//        $streetData = array_merge($this->getNameArr($currentAddress->street->name), ['settlement_id' => $currentAddress->settlement->id]);
+//        $street = Street::updateOrCreate($streetData, $this->getNameArr($addressData->street));
+//        $currentAddress->street()->associate($street);
+//
+//        $currentAddress->postal_code = $addressData->postal_code;
+//        $currentAddress->house = $addressData->house;
+//        $currentAddress->flat = $addressData->flat ?? $currentAddress->flat;
+//        $currentAddress->block = $addressData->block ?? $currentAddress->block;
+//
+//        $currentAddress->save();
+//
+//        return $currentAddress;
+//    }
 
 
     private function getNameArr(string $name): array

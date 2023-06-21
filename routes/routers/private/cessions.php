@@ -9,3 +9,4 @@ Route::post('create-one', [CessionsController::class, 'createOne']);
 Route::get('get-one/{cessionGroup}', [CessionsController::class, 'getOne']);
 Route::post('change-one/{cessionGroup}', [CessionsController::class, 'changeOne']);
 Route::delete('delete-one/{cessionGroup}', [CessionsController::class, 'deleteOne']);
+Route::get('search-list', [CessionsController::class, 'getSearchList']);

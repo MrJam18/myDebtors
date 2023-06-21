@@ -51,7 +51,7 @@ const Address = ({setAddressForDB, defaultValue = '', showHeader = true}: Props)
                 placeholder: 'Введите адрес',
             }}/>
                 </div>
-                <button onClick={showAddressManually.setTrue} type={"button"} title={'Адрес вручную'} className={styles.handleAddressButton}>
+                <button onClick={()=> showAddressManually.setShow(true)} type={"button"} title={'Адрес вручную'} className={styles.handleAddressButton}>
                     <img src={addressManuallyIMG} className={styles.handleAddressIMG} alt="Добавить адрес вручную"/>
                 </button>
             </div>

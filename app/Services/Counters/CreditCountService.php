@@ -7,7 +7,10 @@ use App\Models\Contract\Contract;
 use App\Models\Contract\Payment;
 use App\Models\Holiday;
 use App\Models\MoneySum;
+use App\Services\Counters\Base\CountBreak;
+use App\Services\Counters\Base\PenaltyBreak;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class CreditCountService extends CountService
 {
@@ -15,16 +18,17 @@ class CreditCountService extends CountService
     protected float $month_due_sum;
     protected float $penaltyMain = 0;
     protected float $penaltyPercents = 0;
+    protected float $percents = 0;
+    protected float $penalties = 0;
+    protected Collection $penaltyBreaks;
 
-    function count(Contract $contract, Carbon $endDate): MoneySum
+
+    function count(Contract $contract, Carbon $endDate, ?Collection $payments = null): MoneySum
     {
+        $this->penaltyBreaks = new Collection();
         $this->month_due_date = $contract->month_due_date;
         $this->month_due_sum = $contract->month_due_sum;
-        $result = parent::count($contract, $endDate);
-        $result->main += $this->penaltyMain;
-        $result->percents += $this->penaltyPercents;
-        $result->percents = floor($result->percents);
-        return $result;
+        return parent::count($contract, $endDate, $payments);
     }
 
     protected function countPeriod(Carbon $startDate, Carbon $endDate): void
@@ -38,7 +42,6 @@ class CreditCountService extends CountService
             for($month = $paymentFirstDate->month + 1; $month <= $endDate->month; $month++) {
                 $nextPaymentDate = new Carbon($endDate->year . '-' . $month . '-' . $this->month_due_date);
                 $this->skipDaysOff($nextPaymentDate);
-                $this->addBreak($paymentDate);
                 if($nextPaymentDate < $this->dueDate) {
                     $this->countAllByDueMonth($paymentDate, $nextPaymentDate);
                     $paymentDate = $nextPaymentDate;
@@ -55,29 +58,33 @@ class CreditCountService extends CountService
 
     protected function countPayment(Payment $payment): void
     {
-        $snapshot = $this->sum->replicate();
-        $snapshot->percents += $this->penaltyPercents;
-        $snapshot->main += $this->penaltyMain;
-        $this->penaltyPercents -= $payment->money_sum->sum;
+        $snapshot = [
+            'main' => $this->sum->main,
+            'percents' => $this->percents,
+            'penalties' => $this->penalties
+        ];
+        $snapshot['percents'] += $this->penaltyPercents;
+        $snapshot['main'] += $this->penaltyMain;
+        $this->penaltyPercents -= $payment->moneySum->sum;
         if ($this->penaltyPercents < 0) {
             $this->penaltyMain += $this->penaltyPercents;
             $this->penaltyPercents = 0;
             if ($this->penaltyMain < 0) {
-                $this->sum->penalties += $this->penaltyMain;
+                $this->penalties += $this->penaltyMain;
                 $this->penaltyMain = 0;
-                if($this->sum->penalties < 0) {
-                    $this->sum->percents += $this->sum->penalties;
-                    $this->sum->penalties = 0;
-                    if($this->sum->percents < 0) {
-                        $this->sum->main += $this->sum->percents;
-                        $this->sum->percents = 0;
+                if($this->penalties < 0) {
+                    $this->percents += $this->penalties;
+                    $this->penalties = 0;
+                    if($this->percents < 0) {
+                        $this->sum->main += $this->percents;
+                        $this->percents = 0;
                     }
                 }
             }
         }
-        $payment->money_sum->percents = $snapshot->percents - $this->sum->percents - $this->penaltyPercents;
-        $payment->money_sum->penalties = $snapshot->penalties - $this->sum->penalties;
-        $payment->money_sum->main = $snapshot->main - $this->sum->main - $this->penaltyMain;
+        $payment->moneySum->percents = $snapshot['percents'] - $this->percents - $this->penaltyPercents;
+        $payment->moneySum->penalties = $snapshot['penalties'] - $this->penalties;
+        $payment->moneySum->main = $snapshot['main'] - $this->sum->main - $this->penaltyMain;
     }
 
     protected function countPercents(Carbon $startDate, Carbon $endDate): float
@@ -85,11 +92,11 @@ class CreditCountService extends CountService
         $result = 0;
         if($this->sum->main != 0) {
             $result = $this->getPercents($startDate, $endDate, $this->percent, $this->sum->main);
-            $this->sum->percents += $result;
+            $this->percents += $result;
         }
         $penaltyResult = 0;
         if($this->penaltyMain != 0) $penaltyResult = $this->getPercents($startDate, $endDate, $this->percent, $this->penaltyMain);
-        $this->setPenaltyPercents($penaltyResult + $this->penaltyPercents);
+        $this->penaltyPercents += $penaltyResult;
         return $result;
     }
 
@@ -97,7 +104,7 @@ class CreditCountService extends CountService
     {
         if($this->penaltyMain != 0) {
             $result = $this->getPercents($startDate, $endDate, $this->penalty, $this->penaltyMain);
-            $this->sum->penalties += $result;
+            $this->penalties += $result;
             return $result;
         }
         return 0;
@@ -124,37 +131,33 @@ class CreditCountService extends CountService
         else $daysInYear = 365;
         return $main * $days / $daysInYear * $percent / 100;
     }
-    protected function setPenaltyPercents(float $value)
-    {
-        $this->penaltyPercents = $this->roundMoney($value);
-    }
-    protected function setPenaltyMain(float $value)
-    {
-        $this->penaltyMain = $this->roundMoney($value);
-    }
-    protected function roundMoney(float $money): float
-    {
-        return round($money, 2);
-    }
 
     protected function countAllByDueMonth(Carbon $startDate, Carbon $endDate): float
     {
         $result = $this->countPercents($startDate, $endDate);
         $this->countPenalties($startDate, $endDate);
-        $this->setPenaltyPercents($this->penaltyPercents + $this->sum->percents);
-        $this->penaltyMain += $this->month_due_sum;
-        $this->sum->main -= $this->month_due_sum;
-        $this->sum->percents = 0;
+        $this->penaltyPercents += $this->percents;
+        if($this->sum->main != 0) {
+            $this->penaltyMain += $this->month_due_sum;
+            $this->sum->main -= $this->month_due_sum;
+            if($this->sum->main < 0) {
+                $this->penaltyMain += $this->sum->main;
+                $this->sum->main = 0;
+            }
+            $this->addPenaltyBreak($endDate);
+        }
+        $this->percents = 0;
         return $result;
     }
     protected function countEnd(Carbon $startDate, Carbon $endDate): void
     {
-        if($endDate >= $this->dueDate) {
+        if($startDate >= $this->dueDate && $endDate <= $this->dueDate) {
             $this->countPercentsAndPenalties($startDate, $this->dueDate);
             $this->penaltyMain += $this->sum->main;
-            $this->penaltyPercents += $this->sum->percents;
+            $this->penaltyPercents += $this->percents;
             $this->sum->main = 0;
-            $this->sum->percents = 0;
+            $this->percents = 0;
+            $this->addPenaltyBreak($this->dueDate);
             $this->countPercentsAndPenalties($this->dueDate, $endDate);
         }
         else {
@@ -162,4 +165,32 @@ class CreditCountService extends CountService
         }
     }
 
+    protected function addBreak(Carbon $date, Payment $payment = null): void
+    {
+        $result = $this->getResult();
+        $this->breaks->push(new CountBreak($date, $result, $payment));
+        if(!($payment && $payment->moneySum->main == 0 && $payment->moneySum->penalties == 0)) {
+            $this->addPenaltyBreak($date, $payment);
+        }
+    }
+    protected function addPenaltyBreak(Carbon $date, ?Payment $payment = null)
+    {
+        $sum = new MoneySum();
+        $sum->main = $this->penaltyMain;
+        $sum->penalties = $this->penalties;
+        $this->penaltyBreaks->push(new PenaltyBreak($date, $sum, $payment));
+    }
+    public function getResult(): MoneySum
+    {
+        $sum = new MoneySum();
+        $sum->percents = $this->penaltyPercents + $this->percents;
+        $sum->main = $this->penaltyMain + $this->sum->main;
+        $sum->penalties = $this->penalties;
+        $sum->countSum();
+        return $sum;
+    }
+    public function getPenaltyBreaks(): Collection
+    {
+        return $this->penaltyBreaks;
+    }
 }

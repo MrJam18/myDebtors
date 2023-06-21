@@ -53,9 +53,11 @@ export const createCourt = (court, address) => async () => {
         const { data } = await api.post('courts/create', {
             court, address
         });
+        console.log(data);
         return data;
     }
     catch (e) {
+        console.dir(e);
         throw new Error(e.message);
     }
 };

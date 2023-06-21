@@ -22,30 +22,21 @@ const useStyles = makeStyles({
         }
     }
 });
-/**
- * Searching elements and setting result by function setValue.
- * @param {string} label header of search input.
- * @param {object} customStyles first priority styles.
- * @param {string} serverAddress server address for get list of values.
- * @param {number} delay delay after text input
- * @param {function} setValue function which setting value after clicking on element of a search list
- * @param {object} value current value
- * @param {number} value.id value id
- * @param {string} value.name name of value
- * @param {boolean} required if true input becomes required
- * @param {boolean} disabled if true input becomes disabled
- * @param onKeyDown function on event onKeyDown
- * @param {string | null} className className
- * @returns {JSX.Element}
- */
-const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 300, setValue, value = null, required = false, disabled = false, onKeyDown = null, className = null }) => {
+const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 300, setValue, value = null, required = false, disabled = false, onKeyDown = null, className = null, reqData = null }) => {
     const [results, setResults] = useState([]);
     const onSearch = async (val) => {
         try {
-            const response = await api.get(serverAddress + `?searchString=${val}`);
+            let url = serverAddress + `?searchString=${val}`;
+            if (reqData) {
+                for (let key in reqData) {
+                    url += `&${key}=${reqData[key]}`;
+                }
+            }
+            const response = await api.get(url);
             if (!response.data || !(response.data instanceof Array))
                 throw new Error('cant get data from url ' + response.config.url);
-            setResults(response.data);
+            if (response.data.length !== 0)
+                setResults(response.data);
         }
         catch (e) {
             Alert.setError('EasySearch Error', e);
@@ -54,10 +45,14 @@ const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 
     const classes = useStyles();
     const input = useRef(null);
     const debouncedSearch = useDebounce(onSearch, delay);
+    const [shrink, setShrink] = useState(false);
     const changeInputHandler = async (ev) => {
-        const value = ev.target.value;
-        if (value !== '')
-            debouncedSearch(value);
+        const val = ev.target.value;
+        if (val !== '') {
+            debouncedSearch(val);
+        }
+        if (value)
+            setValue(null);
     };
     const chooseHandler = (ev) => {
         const id = +ev.currentTarget.getAttribute('data-id');
@@ -70,26 +65,29 @@ const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 
         };
     }, []);
     useEffect(() => {
-        input.current.value = value ? value.name : '';
-        setResults([]);
-        input.current.setCustomValidity('');
+        if (value) {
+            setShrink(true);
+            input.current.value = value.name;
+            setResults([]);
+            input.current.setCustomValidity('');
+        }
+        else if (required) {
+            input.current.setCustomValidity('Введите название и выберите из списка!');
+        }
     }, [value]);
     const Results = results.map((result) => {
         return (<MenuItem key={result.id} className={classes.result} tabIndex={0} focusVisibleClassName={styles.selected} data-id={result.id} onClick={chooseHandler}> {result.name} </MenuItem>);
     });
-    useEffect(() => {
-        if (required) {
-            if (value)
-                input.current.setCustomValidity('');
-            else
-                input.current.setCustomValidity('Введите название и выберите из списка!');
-        }
-        return () => {
-            setResults([]);
-        };
-    }, []);
+    const onFocus = () => {
+        if (!shrink)
+            setShrink(true);
+    };
+    const onBlur = (ev) => {
+        if (!ev.target.value)
+            setShrink(false);
+    };
     return (<div style={customStyles} className={styles.main + (className ? ' ' + className : '')}>
-      <TextField disabled={disabled} size='small' onKeyDown={onKeyDown} label={label} required={required} InputLabelProps={{ shrink: true }} defaultValue={value === null || value === void 0 ? void 0 : value.name} variant='standard' inputRef={input} onChange={changeInputHandler} fullWidth/>
+      <TextField disabled={disabled} onBlur={onBlur} onFocus={onFocus} onChange={changeInputHandler} size='small' onKeyDown={onKeyDown} label={label} required={required} InputLabelProps={{ shrink }} defaultValue={value === null || value === void 0 ? void 0 : value.name} variant='standard' inputRef={input} fullWidth/>
       <div className={styles.results}>{Results}</div>
      </div>);
 };

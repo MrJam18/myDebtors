@@ -8,10 +8,10 @@ use App\Models\Base\CustomBuilder;
 use App\Models\Cession\CessionGroup;
 use App\Models\Contract\Contract;
 use App\Models\Requisites\Requisites;
-use App\Models\Subject\Agent;
 use App\Models\Subject\Creditor\Creditor;
-use App\Models\Subject\Debtor;
-use App\Models\Subject\Name;
+use App\Models\Subject\People\Agent;
+use App\Models\Subject\People\Debtor;
+use App\Models\Subject\People\Name;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -70,6 +70,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'phone',
         'remember_token',
     ];
+    public function newEloquentBuilder($query): CustomBuilder
+    {
+        return new CustomBuilder($query);
+    }
 
     function role(): BelongsTo
     {

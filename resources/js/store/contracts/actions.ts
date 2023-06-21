@@ -1,18 +1,11 @@
 import {setAlert} from "../alert/actions";
-import api, {saveFile, saveFilePost} from "../../http";
+import api from "../../http";
 import {contractsSlice} from "./reducer";
-import {receiveList} from "../list/actions";
 import {alertHandler} from "../../utils/errorHandler";
 
 
 const actions = contractsSlice.actions;
 
-
-export const createContract = (data) => async (dispatch) =>  {
-    await api.post('contracts/createOne', data);
-    dispatch(setAlert('Успешно', "Контракт успешно создан"));
-    await dispatch(receiveList());
-}
 export const getCurrentContract = (id) => async (dispatch) => {
     // @ts-expect-error TS(2554): Expected 1 arguments, but got 0.
     dispatch(actions.fetchPending());
@@ -35,64 +28,17 @@ export const changeContract = (column, value, contractId) => async (dispatch) =>
         await dispatch( getCurrentContract(contractId));
     }
     catch(e) {
-        console.dir(e);
-        dispatch(actions.fetchError(e.message));
-        dispatch(setAlert('Ошибка запроса на сервер!', e.message, 'error'));
-        throw new Error('Ошибка запроса на сервер!' + e.message)
+        let message = e.mesage;
+        if(e.response.status === 551) message = e.response.data.message;
+        throw new Error(message);
     }
-}
-
-export const createCourtClaim = (data) => async (dispatch) => {
-    await saveFilePost(`documents/createCourtClaim`, data, `${data.type + data.contractId}.docx`);
-    dispatch(setAlert('Успешно', "Заявление успешно создано."));
-}
-
-export const createDocument = (path, docName) => async (dispatch) => {
-    try {
-        return await saveFile(`documents/${path}`, docName + '.docx');
-    }
-    catch(e) {
-        dispatch(setAlert('Ошибка запроса на сервер!', e.message, 'error'));
-        dispatch(actions.fetchError(e.message));
-        throw new Error(e.message);
-    }
-}
-
-export const recieveLimitationsList = (limit, page, order) => async dispatch => {
-    const {data} = await api.get(`contracts/getLimitationsList?limit=${limit}&page=${page}&order=${order}`)
-    dispatch(actions.setLimitations({list: data.rows, total: data.count}));
 }
 
 export const createIPInitDoc = (contractId, agentId) => async (dispatch, getState) => {
-    if(!getState().contracts.executiveDoc.id) throw new Error('Укажите данные исполнительного документа!');
-    await saveFilePost('documents/createIPInit', {contractId, agentId}, `ЗВИП по договору ${contractId}.docx`);
-    dispatch(setAlert('Успешно', "Заявление успешно создано."));
-}
-
-export const setExecutiveDoc = (formData, court, bailiff, typeId, contractId, executiveDocId) => async dispatch => {
-    if(!court) throw new Error('укажите суд, вынесший решение!');
-    if(!bailiff) throw new Error('Укажите отдел судебных приставов!');
-    if(!typeId) throw new Error('Укажите тип исполнительного документа!');
-    const sendingExecutiveDoc = {
-        ...formData,
-        courtId: court.id,
-        bailiffId: bailiff.id,
-        typeId,
-        contractId,
-        id: executiveDocId || null
-    }
-    console.log(sendingExecutiveDoc)
-    const {data} = await api.post('executiveDocs/setExecutiveDoc', sendingExecutiveDoc);
-    const executiveDocForStore = {
-        ...formData,
-        court,
-        bailiff,
-        typeId,
-        id: data.id
-    }
-    dispatch(actions.setExecutiveDoc(executiveDocForStore));
-    dispatch(actions.setExecutiveDocName(data.executiveDocName));
-    dispatch(setAlert('Успешно', 'Исполнительный документ успешно изменен/установлен'));
+    // if(!getState().contracts.executiveDoc.id) throw new Error('Укажите данные исполнительного документа!');
+    // await saveFilePost('documents/createIPInit', {contractId, agentId}, `ЗВИП по договору ${contractId}.docx`);
+    // dispatch(setAlert('Успешно', "Заявление успешно создано."));
+    throw new Error('no implemented');
 }
 
 export const deleteContract = id => async dispatch => {
@@ -107,7 +53,7 @@ export const recieveStatuses = () => async dispatch => {
 export const getExistingFiles = (contractId) => async dispatch => {
     try {
         dispatch(actions.setLoadingExisting(true));
-        const {data} = await api.get('files/getExistingFiles?contractId=' + contractId);
+        const {data} = await api.get(`contracts/${contractId}/files/get-existing`);
         dispatch(actions.setExistingFiles(data));
     }
     catch (e) {
@@ -147,14 +93,5 @@ export const uploadContractFile = (fileName, contractId, formData) => async disp
     }
     finally {
         dispatch(actions.setCurrentLoadingExisting({fileName, status: false}));
-    }
-}
-
-export const receiveExecutiveDoc = (contractId) => async (dispatch) => {
-    try {
-        const {data} = await api.get('executiveDocs/getExecutiveDoc?contractId=' + contractId);
-        return data;
-    } catch (e) {
-        dispatch(setAlert('Исп. документ не получен.', e.message, 'error'));
     }
 }

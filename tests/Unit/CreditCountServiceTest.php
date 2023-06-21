@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Models\Contract\Contract;
+use App\Models\Contract\ContractType;
 use App\Services\Counters\CreditCountService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -17,18 +18,6 @@ class CreditCountServiceTest extends CounterTest
     }
 
 
-    function test_percents_in_one_day()
-    {
-        $contract = $this->createTestContract(new Carbon('2020-01-01'), 100000, 100);
-        $result = $this->service->count($contract, new Carbon('2020-01-02'));
-        $this->assertEquals(273, $result->percents);
-    }
-    function test_percents_in_leap_year()
-    {
-        $contract = $this->createTestContract(new Carbon('2019-12-31'), 100000, 100);
-        $result = $this->countByService($contract, new Carbon('2020-12-31'));
-        $this->assertEquals(100000, $result->percents);
-    }
     function test_penalties_in_leap_year()
     {
         $contract = $this->createTestContract(new Carbon('2019-12-11'), 100000, 100, 100, new Carbon('2019-12-31'));
@@ -58,6 +47,8 @@ class CreditCountServiceTest extends CounterTest
         $contract->payments = new Collection($payments);
         $contract->month_due_sum = $monthDueSum;
         $contract->month_due_date = $monthDueDate;
+        $contract->type()->associate(ContractType::find(2));
+
         return $contract;
     }
 

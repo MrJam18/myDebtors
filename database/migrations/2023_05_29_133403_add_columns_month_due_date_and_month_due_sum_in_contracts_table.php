@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('contracts', function (Blueprint $table) {
             $table->integer('month_due_date')->nullable();
-            $table->float('month_due_sum', 12);
+            $table->float('month_due_sum', 12)->nullable();
         });
     }
 

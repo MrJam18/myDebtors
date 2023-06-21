@@ -58,7 +58,10 @@ const Registration = ({}) => {
             <ButtonInForm loading={loading.state} />
                 {error.Comp()}
         </form>
+
     </Content>
+
+
         );
 }
 

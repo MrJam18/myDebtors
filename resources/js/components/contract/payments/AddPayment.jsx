@@ -10,34 +10,32 @@ import ButtonInForm from "../../dummyComponents/ButtonInForm";
 import {contractsSelectors} from "../../../store/contracts/selectors";
 import {compareDatesBool} from "../../../utils/dates/compareDatesBool";
 
-const AddPayment = ({ setModal })=> {
+const AddPayment = ({ setModal, update })=> {
  const { contractId } = useParams();
  const contract = useSelector(contractsSelectors.getCurrent);
  const dispatch = useDispatch();
  const form = useRef();
  const [error, setError] = useState(false);
  const [loading, setLoading] = useState(false);
- const handleClose = ev => {
-  setModal(false);
-  setError(false);
-  setLoading(false);
- }
  const formHandler = async (ev) => {
   ev.preventDefault();
   setLoading(true);
-  const payment = formDataConverter(form);
+  setError(false);
+  const payment = formDataConverter(form.current);
   try {
    if(compareDatesBool(contract.date_issue, payment.date)) throw new Error('Дата платежа не может быть меньше даты выдачи договора.');
    await dispatch(addPayment(payment, contractId));
    dispatch(setAlert('Успешно!', 'Платеж успешно добавлен!'));
+   update();
    setModal(false);
   } catch (e) {
+   console.dir(e);
    setError(e.message)
   } finally {
    setLoading(false);
   }
  }
- return <CustomModal onClose={handleClose} customStyles={{width: '300px'}} setShow={setModal} >
+ return <CustomModal customStyles={{width: '300px'}} setShow={setModal} >
      <form onSubmit={formHandler} ref={form}>
      <Payment />
       <ButtonInForm loading={loading} />

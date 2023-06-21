@@ -16,6 +16,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Carbon $updated_at;
  * @property string $checking_account;
  * @property string $correspondent_account;
+ * @property string $inn
+ * @property string $kpp
+ * @property string $kbk
+ * @property string $recipient
  * @property BankRequisites $bank;
  * @property Creditor | null $creditor;
  * @property User $user;
@@ -24,7 +28,11 @@ class Requisites extends BaseModel
 {
     protected $fillable = [
         'correspondent_account',
-        '$checking_account'
+        'checking_account',
+        'inn',
+        'kpp',
+        'kbk',
+        'recipient',
     ];
     public $timestamps = true;
     protected $table = 'requisites';
@@ -40,5 +48,9 @@ class Requisites extends BaseModel
     function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+    public function getFillable()
+    {
+        return $this->fillable;
     }
 }

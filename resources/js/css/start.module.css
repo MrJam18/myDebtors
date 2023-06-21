@@ -1,12 +1,13 @@
 .main {
     display: grid;
-    background-color: #ddd;;
+    background-color: #c08457;
     height: 100%;
     grid-template-columns: 50% 50%;
     grid-template-rows: 46% 46%;
     overflow: hidden;
     /* gap: 20px; */
     row-gap: 40px;
+    background-image: url(https://stopfake.kz/wp-content/uploads/2022/06/a479-5e397cef51eef.jpg);
 }
 .refference {
     text-decoration: none;
@@ -21,7 +22,7 @@
     height: 100%;
     border-radius: 15px;
     padding-bottom: 20px;
-    background-color: white;
+    background-color:#faf0e6;
 }
 .relativeContainer {
     position: relative;

@@ -1,6 +1,10 @@
 import {Checkbox, FormControlLabel, SxProps} from "@mui/material";
 import React, {useEffect, useState} from "react";
-import {standardFontSize} from "../../utils/standardFontSize";
+
+const standardFontSize = {
+    fontSize: '16px'
+}
+
 
 type Props = {
     size?: 'small' | 'medium',
@@ -18,7 +22,7 @@ const EasyCheckBox = ({
     onChange,
     defaultValue = false,
     className = null,
-    size='small',
+    size='medium',
     rootStyles= standardFontSize,
     tabIndex = null,
     label

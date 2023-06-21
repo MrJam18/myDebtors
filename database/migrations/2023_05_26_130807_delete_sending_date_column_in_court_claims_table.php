@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('court_claims', function (Blueprint $table) {
-            $table->date('sending_date');
+            $table->date('sending_date')->nullable();
         });
     }
 };

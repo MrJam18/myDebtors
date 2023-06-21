@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Casts\Money;
 use App\Models\Base\BaseModel;
+use App\Models\Casts\Money;
 use Carbon\Carbon;
 
 /**
@@ -18,6 +18,13 @@ use Carbon\Carbon;
  */
 class MoneySum extends BaseModel
 {
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->main = 0;
+        $this->penalties = 0;
+        $this->percents = 0;
+    }
 
     protected $fillable = [
         'sum',

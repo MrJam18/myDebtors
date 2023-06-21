@@ -17,8 +17,7 @@ class ContractsProvider extends AbstractProvider
 {
     public function __construct()
     {
-        parent::__construct();
-        $this->model = Contract::class;
+        parent::__construct(Contract::class);
     }
 
     function getLimitations(ListRequestData $data): CustomPaginator

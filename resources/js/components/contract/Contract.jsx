@@ -14,7 +14,8 @@ import Actions from './Actions';
 import { setAlert } from '../../store/alert/actions';
 import Files from "./files/Files";
 import {contractsSlice} from "../../store/contracts/reducer";
-import ContractComment from './contractComments/ContractComment';
+import Documents from "./documents/Documents";
+import {useUpdate} from "../../hooks/useUpdate";
 
 
 const Contract = () => {
@@ -24,18 +25,19 @@ const Contract = () => {
     const [error, setError] = useState(false);
     const contract = useSelector(contractsSelectors.getCurrent);
     const [menuValue, setMenuValue] = useState('data');
+    const update = useUpdate();
     const menuSelector = () => {
         switch (menuValue) {
             case 'data':
-                return <ContractData contractId={contractId}/>
+                return <ContractData update={update.set} contractId={contractId}/>
             case 'payments':
-                return <ContractPayments />
+                return <ContractPayments update={update.set} />
             case 'actions':
                 return <Actions />
             case 'files':
                 return  <Files />
-            case 'contractComments':
-                return <ContractComment />
+            case 'documents':
+                return <Documents update={update.set} />
         }
     }
 
@@ -59,7 +61,7 @@ const Contract = () => {
         return () => {
             dispatch(contractsSlice.actions.reset());
         }
-    }, []);
+    }, [update.state]);
     return (
     <div className={'background firstWindow'}>
         {loading &&  <div className="header">Загрузка</div> }

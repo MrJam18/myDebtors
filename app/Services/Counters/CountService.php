@@ -6,6 +6,7 @@ namespace App\Services\Counters;
 use App\Models\Contract\Contract;
 use App\Models\Contract\ContractType;
 use App\Models\Contract\Payment;
+use App\Models\CourtClaim\CourtClaimType;
 use App\Models\MoneySum;
 use App\Services\Counters\Base\CountBreak;
 use App\Services\Counters\Base\Year;
@@ -30,8 +31,11 @@ abstract class CountService
         'ended' => false
     ];
     protected float $fee;
+    protected ContractType $contractType;
+    protected bool $isCurrentYearLeap;
+    protected Collection $payments;
 
-    function count(Contract $contract, Carbon $endDate): MoneySum
+    function count(Contract $contract, Carbon $endDate, ?Collection $payments = null): MoneySum
     {
         $this->percent = $contract->percent;
         $this->penalty = $contract->penalty;
@@ -44,7 +48,10 @@ abstract class CountService
         $this->sum->main = $contract->issued_sum;
         $this->sum->percents = 0;
         $this->sum->penalties = 0;
-        $this->years = new Years($this->startDate, $this->endDate, $contract->payments);
+        $this->contractType = $contract->type;
+        if(!$payments) $payments = $contract->payments()->orderBy('date')->get();
+        $this->payments = $payments;
+        $this->years = new Years($this->startDate, $this->endDate, $payments);
         $this->isPenaltiesCounted = [
             'started' => false,
             'ended' => false
@@ -56,11 +63,13 @@ abstract class CountService
         $firstYear = $this->years->list->first();
         $lastYear = $this->years->getLastYear();
         if($lastYear) {
+            $this->isCurrentYearLeap = $firstYear->isLeap;
             $this->countYear($this->startDate, $firstYear->getLastDate(), $firstYear);
             $otherYears = $this->years->getMiddleYears();
             $otherYears->each(function (Year $year) {
                 $lastPrevYearDate = $this->getLastYearDate($year->number - 1);
-                if($this->breaks->last()->date->isLeapYear() !== $year->isLeap) {
+                if($this->isCurrentYearLeap !== $year->isLeap) {
+                    $this->isCurrentYearLeap = $year->isLeap;
                     $this->addBreak($lastPrevYearDate);
                 }
                 $this->countYear($lastPrevYearDate, $year->getLastDate(), $year);
@@ -69,20 +78,11 @@ abstract class CountService
         }
         else $this->countYear($this->startDate, $this->endDate, $firstYear);
         $this->addBreak($this->endDate);
-        return $this->sum;
+        $this->sum->countSum();
+        return $this->getResult();
     }
 
-    protected function addBreak(Carbon $date, Payment $payment = null): void
-    {
-        $this->breaks->push(new CountBreak($date, $this->sum->replicate(), $payment));
-    }
-
-//    protected function countPercents(Carbon $startDate, Carbon $endDate): float
-//    {
-//        $counted = $this->getPercents($startDate, $endDate, $this->percent);
-//        $this->sum->percents += $counted;
-//        return $counted;
-//    }
+    abstract protected function addBreak(Carbon $date, Payment $payment = null): void;
 
 
     protected function getLastYearDate(int $year): Carbon
@@ -90,10 +90,9 @@ abstract class CountService
         return  new Carbon($year . '-12-31');
     }
 
-    public function countFee(ContractType $type): float
+    protected function countFee(CourtClaimType $claimType): float
     {
-        $fee = 0;
-        $moneySum = $this->sum;
+        $moneySum = $this->getResult();
         if(!$this->sum->sum) $this->sum->countSum();
         if($this->sum->sum <= 20000) {
             $fee = $moneySum->sum / 100 * 4;
@@ -112,30 +111,23 @@ abstract class CountService
                 $fee = 60000;
             }
         }
-        if($type->name === "Судебный приказ") {
+        if($claimType->id === 1) {
             $fee = $fee / 2;
         }
-        $this->fee = $fee;
+        $this->fee = round($fee, 2);
         return $this->fee;
     }
-//    protected function countPenalties(Carbon $startDate, Carbon $endDate): float
-//    {
-//        $counted = $this->getPercents($startDate, $endDate, $this->penalty);
-//        $this->sum->penalties += $counted;
-//        return $counted;
-//    }
-//    protected function countPenaltiesPeriod($startDate, $endDate): float {
-//        $counted = 0;
-//        if ($this->isPenaltiesCounted['started']) {
-//            $counted = $this->countPenalties($startDate, $endDate);
-//        } elseif ($endDate > $this->dueDate) {
-//            $this->isPenaltiesCounted['started'] = true;
-//            $counted = $this->countPenalties($this->dueDate, $endDate);
-//        }
-//        return $counted;
-//    }
+    function getResult(): MoneySum
+    {
+        return $this->sum->replicate();
+    }
 
-    static function getResult(Contract $contract, Carbon $endDate): MoneySum
+    function getFee(CourtClaimType $claimType): float {
+        if(!isset($this->fee)) return $this->countFee($claimType);
+        return $this->fee;
+    }
+
+    static function staticCount(Contract $contract, Carbon $endDate): MoneySum
     {
         return (new static())->count($contract, $endDate);
     }
@@ -155,9 +147,14 @@ abstract class CountService
     {
         return $this->breaks;
     }
+    public function savePayments(): void
+    {
+        $this->payments->each(function(Payment $payment) {
+            $payment->moneySum->save();
+        });
+    }
     abstract protected function countPercents(Carbon $startDate, Carbon $endDate): float;
     abstract protected function countPenalties(Carbon $startDate, Carbon $endDate): float;
-//    abstract protected function countPenaltiesPeriod(Carbon $startDate, Carbon $endDate): float;
     abstract protected function countPeriod(Carbon $startDate, Carbon $endDate): void;
     abstract protected function countPayment(Payment $payment): void;
 

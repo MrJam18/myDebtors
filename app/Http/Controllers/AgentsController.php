@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaginateRequest;
+use App\Http\Requests\SearchRequest;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
-use App\Models\Requisites\BankRequisites;
-use App\Models\Requisites\Requisites;
-use App\Models\Subject\Agent;
 use App\Models\Subject\Creditor\Creditor;
-use App\Models\Subject\Name;
+use App\Models\Subject\People\Agent;
+use App\Models\Subject\People\Name;
 use App\Providers\Database\AgentsProvider;
 use App\Services\AddressService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -63,6 +63,7 @@ class AgentsController extends Controller
             $agent->is_default = $formData['is_default'];
             $agent->no_show_group = $formData['no_show_group'];
             $agent->enclosure = $formData['enclosure'];
+            $agent->phone = $formData['phone'];
             $agent->user()->associate($user);
             $agent->address()->associate($address);
             $passport->series=$formData['passportSeries'];
@@ -80,7 +81,7 @@ class AgentsController extends Controller
      */
     function getOne(Agent $agent): array
     {
-        toConsole($agent->no_show_group);
+
         return [
             'name' => $agent->name->name,
             'surname' => $agent->name->surname,
@@ -88,6 +89,7 @@ class AgentsController extends Controller
             'is_default' => $agent->is_default,
             'no_show_group' => $agent->no_show_group,
             'enclosure' => $agent->enclosure,
+            'phone' => $agent->phone,
             'fullAddress' => $agent->address?->getFull(), // проверить на существование адреса перед вызовом getFull()
             'passportSeries' => $agent->passport?->series, // проверить на существование паспорта перед обращением к series
             'passportNumber' => $agent->passport?->number, // проверить на существование паспорта перед обращением к number
@@ -144,14 +146,16 @@ class AgentsController extends Controller
         }
         // Обработка адреса
         if ($input['address'] !== 'initial') {
-            $updatedAddress = $addressService->updateAddress($agent->address, $input['address']);
+            $updatedAddress = $addressService->addAddress($input['address']);
+            $oldAddress = $agent->address;
             $agent->address()->associate($updatedAddress);
         }
         // Обработка checkbox
             $agent->no_show_group=$formData['no_show_group'];
             $agent->is_default = $formData['is_default'];
-        if ($agent->save()) Log::info('saved'); // сохраняем обновленного агента
-        return response()->json($agent, 200);
+        $agent->save();
+        if(isset($oldAddress)) $oldAddress->delete();
+        return response()->json($agent);
     }
 
     public function delete(Agent $agent): JsonResponse
@@ -159,9 +163,33 @@ class AgentsController extends Controller
         $agent->delete();
         $agent->address?->delete();
         $agent->passport?->delete();
-        return response()->json(['success' => 'Agent deleted'], 200);
-
+        $agent->name->delete();
+        return response()->json(['success' => 'Agent deleted']);
     }
+    public function getDefault(): ?array
+    {
+        /**
+         * @var Agent $agent
+         */
+        $agent = Agent::query()->where('user_id', Auth::id())->where('is_default', true)->first();
+        if($agent) return [
+            'name' => $agent->name->getFull(),
+            'id' => $agent->id
+        ];
+        else return null;
+    }
+    function getSearchList(SearchRequest $request): Collection
+    {
+        $list = Agent::query()->byGroupId(getGroupId())->searchByFullName($request->validated())->limit(5)->get();
+        toConsole(Agent::query()->byGroupId(getGroupId())->searchByFullName($request->validated())->limit(5)->toSql());
+        return $list->map(function (Agent $agent) {
+            return [
+              'id' => $agent->id,
+              'name' => $agent->name->getFull()
+            ];
+        });
+    }
+
 
 
 }

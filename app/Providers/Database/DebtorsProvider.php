@@ -5,15 +5,13 @@ namespace App\Providers\Database;
 
 use App\Http\Requests\Base\ListRequestData;
 use App\Models\Base\CustomPaginator;
-use App\Models\Subject\Debtor;
-use App\Models\Subject\Name;
+use App\Models\Subject\People\Debtor;
 
 class DebtorsProvider extends AbstractProviders\AbstractProvider
 {
     public function __construct()
     {
-        parent::__construct();
-        $this->model = Debtor::class;
+        parent::__construct(Debtor::class);
     }
 
     function getList(int $groupId, ListRequestData $data): CustomPaginator

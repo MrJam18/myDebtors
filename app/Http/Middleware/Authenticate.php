@@ -4,15 +4,13 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class Authenticate extends Middleware
 {
 
-    function handle($request, Closure $next, ...$guards): Closure | JsonResponse | Response
+    function handle($request, Closure $next, ...$guards): mixed
     {
         if(Auth::guest()) {
             return response()->json(['error' => 'Unauthorized access'], 401);

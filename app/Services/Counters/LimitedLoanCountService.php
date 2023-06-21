@@ -9,6 +9,7 @@ use App\Models\MoneySum;
 use App\Services\Counters\Base\CountBreak;
 use App\Services\Counters\Base\Limited;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class LimitedLoanCountService extends LoanCountService
 {
@@ -18,10 +19,10 @@ class LimitedLoanCountService extends LoanCountService
     protected bool $endFlag = false;
 
 
-    function count(Contract $contract, Carbon $endDate): MoneySum
+    function count(Contract $contract, Carbon $endDate, ?Collection $payments = null): MoneySum
     {
-        $this->limited = new Limited($contract->issued_sum, $contract->issued_date);
-        return parent::count($contract, $endDate);
+        $this->limited = new Limited($contract->issued_sum, $contract->issued_date, );
+        return parent::count($contract, $endDate, $payments);
     }
 
     protected function countLimitedDate(Carbon $currentDate): void
@@ -89,7 +90,7 @@ class LimitedLoanCountService extends LoanCountService
 
     protected function addBreak(Carbon $date, Payment $payment = null, bool $noPenalty = false): void
     {
-        $this->breaks->push(new CountBreak($date, $this->sum, $payment, $this->isPercentsCounted, $this->isPenaltiesCounted['ended'], $noPenalty));
+        $this->breaks->push(new CountBreak($date, $this->sum->replicate(), $payment, $this->isPercentsCounted, !$this->isPenaltiesCounted['ended'], $noPenalty));
     }
 
 

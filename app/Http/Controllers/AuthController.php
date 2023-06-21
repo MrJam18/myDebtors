@@ -14,8 +14,7 @@ use App\Models\Auth\Group;
 use App\Models\Auth\GroupVerifyToken;
 use App\Models\Auth\User;
 use App\Models\Auth\UserRole;
-use App\Models\Subject\Name;
-use Exception;
+use App\Models\Subject\People\Name;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -57,7 +56,7 @@ class AuthController extends AbstractController
                 ]
             ];
         }
-        return response()->json(['error' => 'Unauthorized'])->setStatusCode(401);
+        return response()->json(['error' => 'Введены неверные учетные данные'])->setStatusCode(402);
     }
     function logout(): JsonResponse
     {

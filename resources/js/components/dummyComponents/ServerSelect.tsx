@@ -1,4 +1,3 @@
-import {InputLabel} from "@mui/material";
 import React, {ForwardedRef, useEffect, useState, forwardRef} from "react";
 import api from "../../http/index";
 import EasySelect from "./EasySelect";
@@ -13,10 +12,11 @@ type ServerSelectProps = {
     defaultId?: string | number,
     serverAddress: string,
     defaultValue?: string,
-    smallLabel?: boolean
+    smallLabel?: boolean,
+    required?: boolean
 }
 
-const ServerSelect = forwardRef(({name = null, label, style = null, setId = null, customClassName = null, defaultId = null, defaultValue, serverAddress, smallLabel=false}: ServerSelectProps, ref: ForwardedRef<any>) => {
+const ServerSelect = forwardRef(({name = null, label, style = null, setId = null, customClassName = null, defaultId = null, defaultValue, serverAddress, smallLabel=false, required=false}: ServerSelectProps, ref: ForwardedRef<any>) => {
     const [variants, setVariants] = useState([]);
     const [initId, setInitId] = useState('');
     useEffect(()=> {
@@ -27,7 +27,7 @@ const ServerSelect = forwardRef(({name = null, label, style = null, setId = null
                 if(defaultId) {
                     const found = res.data.find((el) => el.id == defaultId);
                     if(found) {
-                        setId(found.id);
+                        if(setId) setId(found.id);
                         setInitId(found.id);
                     }
                 }
@@ -44,7 +44,7 @@ const ServerSelect = forwardRef(({name = null, label, style = null, setId = null
             });
     }, []);
     return (
-        <EasySelect smallLabel={smallLabel} ref={ref} name={name} label={label} onChange={setId} variants={variants} style={style} customClassName={customClassName} value={initId} />
+        <EasySelect required={required} smallLabel={smallLabel} ref={ref} name={name} label={label} onChange={setId} variants={variants} style={style} customClassName={customClassName} value={initId} />
     );
 });
 

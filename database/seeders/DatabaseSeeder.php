@@ -18,8 +18,7 @@ use App\Models\Passport\PassportType;
 use App\Models\Subject\Court\CourtLevel;
 use App\Models\Subject\Court\CourtType;
 use App\Models\Subject\Creditor\CreditorType;
-use App\Models\Subject\Name;
-use Carbon\Carbon;
+use App\Models\Subject\People\Name;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -31,8 +30,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = new User();
-        $user->email = 'mr.jam18@yandex.ru';
-        $user->password = '7262dD4600';
+        $user->email = 'amd@ya.ru';
+        $user->password = '123';
         $user->phone = '89821174497';
         $username = new Name();
         $username->name = 'Джамиль';
@@ -98,6 +97,9 @@ class DatabaseSeeder extends Seeder
         $model = $this->setNameAndSave($model, 'исковое заявление');
         $model = $this->setNameAndSave($model, 'статус');
         $model = $this->setNameAndSave($model, "заявление о возбуждении ИП");
+        $model = $this->setNameAndSave($model, 'Договор');
+        $model = $this->setNameAndSave($model, 'Дата ежемесячного платежа');
+        $model = $this->setNameAndSave($model, 'Сумма ежемесячного платежа');
         $this->setNameAndSave($model, 'файл');
         $model = new ActionType();
         $model = $this->setNameAndSave($model, "создание");
@@ -119,19 +121,24 @@ class DatabaseSeeder extends Seeder
         $model = $this->setNameAndSave($model, 'ИП возбуждено');
         $this->setNameAndSave($model, 'ИП окончено');
         $model = new ContractType();
-        $model = $this->setNameAndSave($model, 'займ');
-        $this->setNameAndSave($model, "Кредит");
+        $model = $this->setNameAndSave($model, 'Договор займа');
+        $this->setNameAndSave($model, "Кредитный договор");
         $model = new Country();
         $this->setNameAndSave($model, 'Россия');
         $model = new CourtClaimType();
-        $model = $this->setNameAndSave($model, 'Судебный приказ');
+        $model = $this->setNameAndSave($model, 'Заявление о выдаче судебного приказа');
         $this->setNameAndSave($model, 'Исковое заявление');
         $model = new CourtClaimStatus();
         $model = $this->setNameAndSave($model, 'Не готов');
         $model = $this->setNameAndSave($model, "Отправлен");
         $model = $this->setNameAndSave($model, 'Получено решение');
         $model = $this->setNameAndSave($model, 'Получен исполнительный документ');
-
+        $otherSeeder = new BailiffPositionsSeeder();
+        $otherSeeder->run();
+        $otherSeeder = new HolidaysSeeder();
+        $otherSeeder->run();
+        $otherSeeder = new EnforcementProceedingsStatusesSeeder();
+        $otherSeeder->run();
     }
 
     private function setNameAndSave(Model $model, string $name): Model

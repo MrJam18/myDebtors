@@ -1,9 +1,15 @@
 .main {
     width: 60%;
     min-width: 650px;
-    max-width: 920px;
+    max-width: 900px;
     padding: 0;
     display: flex;
+}
+.documents__executiveChoosesMain {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .header_small {
     font-weight: 600;
@@ -51,7 +57,7 @@
     text-transform: capitalize;
 }
 .content_header {
-    font-weight: bolder; 
+    font-weight: bolder;
 }
 .content__link {
     color: #343434;
@@ -63,12 +69,12 @@
 }
 .content__link:hover {
     border-bottom: 1px solid #000;
-    padding-bottom: 0;   
+    padding-bottom: 0;
 }
 .paddingBox__left {
     padding-top: 20px
 }
-.content__button { 
+.content__button {
     color: #343434;
     font-size: 18px;
     margin: 0;
@@ -88,9 +94,15 @@
 .payments__add {
     display: flex;
     text-transform: uppercase;
-    
+
 }
-.payments__toolbar {
+.list__toolbar {
+    display: flex;
+    width: 100%;
+    margin-bottom: 5px;
+    justify-content: space-between;
+}
+.actionsList__toolbar {
     display: flex;
     width: 100%;
     margin-bottom: 5px;
@@ -152,6 +164,8 @@
 }
 .selectedDoc__noParams {
     margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
 }
 .selectDocument__button {
     margin-top: 8px;
@@ -191,15 +205,28 @@
 }
 .documents {
     width: 100%;
-    padding: 20px 30px 20px 20px;
+    padding: 20px 60px 20px 50px;
+}
+.documents__checkboxesContainer {
+    margin-top: 20px;
+}
+.documents__selector {
+    display: block;
+    width: 65%;
 }
 .documents__header {
     display: block;
     font-weight: 600;
     font-family: 'Roboto_slab', serif;
-    margin: 0 auto 2px;
-    font-size: 17px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    font-size: 20px;
     text-align: center;
+}
+.documents__selectorHolder {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 .documents__fileHandler {
     margin-bottom: 10px;
@@ -256,4 +283,26 @@
 }
 .executiveChooses__ExecutiveDocName:hover {
     text-decoration: underline;
+}
+.smallInputsHolder {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.blockHeader {
+    font-family: 'Roboto_slab', serif;
+    font-size: 19px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+.flexBetween {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+}
+.smallBlock {
+    display: block;
+    width: 47%;
 }

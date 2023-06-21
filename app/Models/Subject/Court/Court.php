@@ -7,6 +7,8 @@ use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use App\Models\CourtClaim\CourtClaim;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
+use App\Models\Requisites\BankRequisites;
+use App\Models\Requisites\Requisites;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,10 +19,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon $created_at;
  * @property Carbon $updated_at;
  * @property string $name;
- * @property CourtLevel $level_id;
- * @property CourtType $type_id;
+ * @property Address $address;
+ * @property int $level_id;
+ * @property int $type_id;
  * @property Collection $executiveDocuments;
  * @property Collection $courtClaims;
+ * @property Requisites $requisites;
  */
 class Court extends BaseModel
 {
@@ -49,4 +53,9 @@ class Court extends BaseModel
     {
         return $this->hasMany(CourtClaim::class);
     }
+    function requisites(): BelongsTo
+    {
+        return $this->belongsTo(Requisites::class);
+    }
+
 }

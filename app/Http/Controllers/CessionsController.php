@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AbstractControllers\AbstractController;
 use App\Http\Requests\PaginateRequest;
+use App\Http\Requests\SearchRequest;
 use App\Models\Cession\Cession;
 use App\Models\Cession\CessionEnclosure;
 use App\Models\Cession\CessionGroup;
 use App\Models\Subject\Creditor\Creditor;
 use App\Providers\Database\CessionsProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -19,21 +21,7 @@ class CessionsController extends AbstractController
     function getList(PaginateRequest $request, CessionsProvider $provider): array
     {
         $paginator = $provider->getList($request->validated());
-        $list = $paginator->items()->map(function (CessionGroup $cession) {
-            /**
-             * @var Cession $lastCession
-             */
-            $lastCession = $cession->cessions()->orderBy('transfer_date', 'desc')->first();
-           return [
-               'name' => $cession->name,
-                'lastAssignor' => $lastCession->assignor->name,
-               'lastAssignee' => $lastCession->assignee->name,
-               'lastTransferDate' => $lastCession->transfer_date->format(RUS_DATE_FORMAT),
-               'created_at' => $cession->created_at->format(RUS_DATE_TIME_FORMAT),
-               'idd' => $cession->id
-           ];
-        });
-        return $paginator->jsonResponse($list);
+        return $paginator->jsonResponse();
     }
 
     function createOne(Request $request): void
@@ -83,7 +71,7 @@ class CessionsController extends AbstractController
         $cession->use_default_text = $cessionData['useDefaultText'];
         $cession->text = $cessionData['text'];
         $cession->number = $cessionData['number'];
-        $cession->sum = $cessionData['sum'];
+        $cession->sum = $cessionData['sum'] ?? null;
         $cession->assignee()->associate(Creditor::find($cessionData['assigneeId']));
         $cession->assignor()->associate(Creditor::find($cessionData['assignorId']));
         if($cessionGroup) $cession->cessionGroup()->associate($cessionGroup);
@@ -101,11 +89,7 @@ class CessionsController extends AbstractController
         return [
             'name' => $cessionGroup->name,
             'id' => $cessionGroup->id,
-            'cessions' => $cessionGroup
-                ->cessions()
-                ->with(['assignor:id,name,short', 'assignee:id,name,short', 'enclosures'])
-                ->get()
-                ->map(function (Cession $cession) {
+            'cessions' => $cessionGroup->cessions()->with(['assignor:id,name,short', 'assignee:id,name,short', 'enclosures'])->get()->map(function (Cession $cession) {
                 return [
                     'assignor' => $cession->assignor,
                     'assignee' => $cession->assignee,
@@ -133,5 +117,9 @@ class CessionsController extends AbstractController
             });
             $cessionGroup->delete();
         });
+    }
+    function getSearchList(SearchRequest $request, CessionsProvider $provider): Collection
+    {
+        return $provider->getSearchList($request->validated(), (int)$request->input('creditorId'));
     }
 }

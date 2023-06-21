@@ -1,7 +1,16 @@
-@php
-$file = "/path/to/filename.php";
-$line = 35;
-print "<a href='phpstorm://open?url=file://$file&line=$line'>Open with PhpStorm</a>";
-// Alternate Syntax to match PhpStorm 8 for the Macintosh
-print "<a href='phpstorm://open?file=$file&line=$line'>Open with PhpStorm</a>";
-@endphp
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    Downloading....
+    <script>
+
+    </script>
+</body>
+</html>

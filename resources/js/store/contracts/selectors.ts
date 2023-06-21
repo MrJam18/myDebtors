@@ -1,12 +1,10 @@
-// @ts-ignore
-// @ts-ignore
-
 import {SelectorCreator} from "../base/selectorCreator";
 import {SelectExisting} from "../../classes/SelectExisting";
 export const contractsSelectors = new SelectorCreator('contracts');
 
 contractsSelectors.easyCreator('list');
 contractsSelectors.easyCreator('current');
+
 contractsSelectors.getContractId = contractsSelectors.chunkCreator('current.id');
 contractsSelectors.easyCreator('limitations');
 contractsSelectors.easyCreator('totalLimitations');

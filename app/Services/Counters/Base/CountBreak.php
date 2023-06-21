@@ -15,9 +15,8 @@ class CountBreak
         public ?Payment $payment = null,
         public bool $isPercentsCounted = true,
         public bool $isPenaltiesCounted = true,
-        public bool $isNoPenalty = false
+        public bool $isNoPenalty = false,
     )
     {
-
     }
 }

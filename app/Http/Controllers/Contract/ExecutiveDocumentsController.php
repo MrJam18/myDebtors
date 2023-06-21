@@ -46,21 +46,27 @@ class ExecutiveDocumentsController extends Controller
     public function getOne(Contract $contract): ?array
     {
         $executiveDocument = $contract->executiveDocument;
-      //  Log::info(dump($executiveDocument));
-        if($executiveDocument) {
-            $returned = $executiveDocument->toArray();
-            $returned['bailiff'] = [
-                'name' => $executiveDocument->bailiffDepartment->name,
-                'id' => $executiveDocument->bailiffDepartment->id
+        $bailiffDepartment = BailiffDepartment::find($executiveDocument->bailiff_id);
+        if($bailiffDepartment) {
+            $data = $executiveDocument->toArray();
+            $data['bailiff'] = [
+                'name' => $bailiffDepartment->name,
+                'id' => $bailiffDepartment->id
             ];
-            $returned['court'] = [
-                'name' => $executiveDocument->court->name,
-                'id' => $executiveDocument->court->id
+        }
+        $court = Court::find($executiveDocument->court_id);
+        if($court) {
+            $data['court'] = [
+                'name' => $court->name,
+                'id' => $court->id
             ];
-            $returned = array_merge($returned, $executiveDocument->moneySum->toArray());
-            $returned['typeId'] = $executiveDocument->type->id;
-            $returned['id'] = $executiveDocument->id;
-            return $returned;
+        }
+        $data = array_merge($data, $executiveDocument->moneySum->toArray());
+        $type = ExecutiveDocumentType::find($executiveDocument->type_id);
+        if($type){
+            $data['typeId'] = $type->id;
+            $data['id'] = $executiveDocument->id;
+            return $data;
         }
         else return null;
     }

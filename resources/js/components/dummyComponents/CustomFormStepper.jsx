@@ -16,9 +16,7 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
         setDataArray(changedArr);
         setActiveStep(step);
         const activeData = changedArr[step];
-        setActiveData(activeData);
-        if (onChangeStep)
-            onChangeStep(activeData);
+        changeActiveData(activeData);
     };
     const handleNext = () => {
         if (activeStep < dataArray.length - 1) {
@@ -48,16 +46,28 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
         setDataArray((dataArray) => {
             const changedArr = [...dataArray];
             changedArr.splice(currentStep, 1);
+            const length = changedArr.length;
             if (currentStep === 0) {
-                if (changedArr.length === 0)
+                if (length === 0)
                     changedArr.push(defaultData);
                 else
                     stepChanger(0, changedArr);
             }
-            else
-                handleBack();
+            else if (currentStep > length - 1) {
+                setActiveStep(length - 1);
+                changeActiveData(changedArr[length - 1]);
+            }
+            else {
+                const activeData = changedArr[currentStep];
+                changeActiveData(activeData);
+            }
             return changedArr;
         });
+    };
+    const changeActiveData = (activeData) => {
+        setActiveData(activeData);
+        if (onChangeStep)
+            onChangeStep(activeData);
     };
     const onAdd = () => {
         const newArr = addNewData();

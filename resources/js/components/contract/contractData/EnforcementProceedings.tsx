@@ -71,19 +71,22 @@ const EnforcementProceedings = ({ executiveDocId, setShow}) => {
             .finally(()=> setLoading(false));
     }, []);
     const updateInputs = (data: Record<string, any>)=> {
-        const elements = formRef.current.elements as Record<string, any>;
-        updateElement('begin_date');
-        updateElement('end_date');
-        updateElement('number');
-        updateElement('main');
-        updateElement('percents');
-        updateElement('fee');
-        updateElement('penalties');
-        setBailiff(data.bailiff);
-        setStatusId(data.status_id ?? 0);
-        function updateElement(property: string) {
-            if(data[property]) elements[property].value = data[property];
-            else elements[property].value = '';
+        if(formRef.current) {
+            const elements = formRef.current.elements as Record<string, any>;
+            updateElement('begin_date');
+            updateElement('end_date');
+            updateElement('number');
+            updateElement('main');
+            updateElement('percents');
+            updateElement('fee');
+            updateElement('penalties');
+            setBailiff(data.bailiff);
+            setStatusId(data.status_id ?? 0);
+
+            function updateElement(property: string) {
+                if (data[property]) elements[property].value = data[property];
+                else elements[property].value = '';
+            }
         }
     }
     return (

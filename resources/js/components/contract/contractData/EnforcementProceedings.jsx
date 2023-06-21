@@ -68,21 +68,23 @@ const EnforcementProceedings = ({ executiveDocId, setShow }) => {
     }, []);
     const updateInputs = (data) => {
         var _a;
-        const elements = formRef.current.elements;
-        updateElement('begin_date');
-        updateElement('end_date');
-        updateElement('number');
-        updateElement('main');
-        updateElement('percents');
-        updateElement('fee');
-        updateElement('penalties');
-        setBailiff(data.bailiff);
-        setStatusId((_a = data.status_id) !== null && _a !== void 0 ? _a : 0);
-        function updateElement(property) {
-            if (data[property])
-                elements[property].value = data[property];
-            else
-                elements[property].value = '';
+        if (formRef.current) {
+            const elements = formRef.current.elements;
+            updateElement('begin_date');
+            updateElement('end_date');
+            updateElement('number');
+            updateElement('main');
+            updateElement('percents');
+            updateElement('fee');
+            updateElement('penalties');
+            setBailiff(data.bailiff);
+            setStatusId((_a = data.status_id) !== null && _a !== void 0 ? _a : 0);
+            function updateElement(property) {
+                if (data[property])
+                    elements[property].value = data[property];
+                else
+                    elements[property].value = '';
+            }
         }
     };
     return (<CustomModal customStyles={{ width: 500 }} setShow={setShow}>

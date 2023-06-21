@@ -6,17 +6,18 @@ namespace App\Models\Contract;
 
 use App\Models\Auth\User;
 use App\Models\Base\BaseModel;
-use App\Models\File;
+use App\Models\CommentFile;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id;
- * @property string $comment;
+ * @property string $comments;
  * @property Contract $contract;
  * @property User $user;
- * @property File $file;
+ * @property CommentFile $file;
  * @property Carbon $created_at;
  * @property Carbon $updated_at;
  */
@@ -24,7 +25,7 @@ class ContractComment extends BaseModel
 {
 
     protected $fillable = [
-        'comment',
+        'comments',
     ];
 
     public $timestamps = true;
@@ -42,6 +43,6 @@ class ContractComment extends BaseModel
 
     function file(): BelongsTo
     {
-        return $this->belongsTo(File::class);
+        return $this->belongsTo(CommentFile::class);
     }
 }

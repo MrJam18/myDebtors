@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon $updated_at;
  */
 
-class File extends BaseModel
+class CommentFile extends BaseModel
 {
     use HasFactory;
 

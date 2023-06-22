@@ -20,6 +20,7 @@ const types = [{name: 'Судебный приказ', id: 1}, {name: 'Испо�
 
 
 const ExecutiveDocChanger = ({setShow, update}) => {
+
     const [docLoading, setDocLoading] = useState(true);
     const [executiveDoc, setExecutiveDoc] = useState({});
     const formRef = useRef();
@@ -32,12 +33,10 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     const [court, setCourt] = useState(executiveDoc.court);
     const showCourtCreator = useModal();
     const showEnforcementProceedings = useModal();
-    const [enforcementProceedings, setEnforcementProceedings] = useState([]);
+    const [lastEnforcementProceedings, setLastEnforcementProceedings] = useState();
     const onClickCreateBailiff = () => {
         setShowCreateBailiff(true);
     }
-
-    let lastProceeding = enforcementProceedings.length > 0 ? enforcementProceedings[enforcementProceedings.length - 1] : null;
 
     const onSubmit = async (ev) => {
         ev.preventDefault();
@@ -98,9 +97,9 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                 </div>
                 <div className={styles.contentBlock}>
                     <div className={styles.contentBlock}>Исполнительное производство:</div>
-                    {enforcementProceedings.length > 0 ? (
+                    {lastEnforcementProceedings ? (
                         <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>
-                            {`№: ${lastProceeding.number}, Дата: ${lastProceeding.begin_date}`}
+                            {`№: ${lastEnforcementProceedings.number}, Дата: ${lastEnforcementProceedings.begin_date}`}
                         </div>
                     ) : (
                         <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Нет данных об исполнительном производстве</div>
@@ -117,7 +116,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
             {error && <div className="error">{error}</div>}
             <ButtonInForm loading={loading} />
             </form>
-                    {showEnforcementProceedings.show && <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} enforcementProceedingsArr={enforcementProceedings} />
+                    {showEnforcementProceedings.show && <EnforcementProceedings executiveDocId={executiveDoc.id} setShow={showEnforcementProceedings.setShow} />
                     }
                 </>
             }

@@ -98,7 +98,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     }, []);
 
     const updateInputs = (data)=>{
-        console.log("updateInputs has been called with data:", data);
+      //  console.log("updateInputs has been called with data:", data);
         let elements
         if (formRef.current) {
             elements = formRef.current.elements;
@@ -114,7 +114,6 @@ const ExecutiveDocChanger = ({setShow, update}) => {
         }
         if (data.enforcementProceedings.length>0){
             let lastIndex = data.enforcementProceedings.length -1;
-            console.log(lastIndex);
             setLastEnforcementProceeding(data.enforcementProceedings[lastIndex])
         }else setLastEnforcementProceeding(undefined)
         setActiveDoc(data);

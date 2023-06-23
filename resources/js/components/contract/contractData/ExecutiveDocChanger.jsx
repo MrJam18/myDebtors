@@ -178,12 +178,12 @@ const ExecutiveDocChanger = ({setShow, update}) => {
             {error && <div className="error">{error}</div>}
 
 
-                    {showEnforcementProceedings.show && <EnforcementProceedings executiveDocId={activeDoc.id} setShow={showEnforcementProceedings.setShow} />
-                    }
+
         </CustomFormStepper>
                 </>
             }
-
+            {showEnforcementProceedings.show && <EnforcementProceedings executiveDocId={activeDoc.id} setShow={showEnforcementProceedings.setShow} />
+            }
         </CustomModal>
 
     );

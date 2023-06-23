@@ -26,7 +26,7 @@ use Illuminate\Support\Collection;
  * @property string $resolution_date;
  * @property Contract $contract;
  * @property int $type_id;
- * @property int $bailiff_id
+ * @property int $bailiff_department_id
  * @property int $court_id;
  * @property MoneySum $moneySum;
  * @property Collection $ipInitStatements;

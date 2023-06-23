@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Contract;
 use App\Exceptions\ShowableException;
 use App\Http\Controllers\Controller;
 use App\Models\Contract\Contract;
+use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
 use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\MoneySum;
 use App\Models\Subject\Bailiff\BailiffDepartment;
 use App\Models\Subject\Court\Court;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class ExecutiveDocumentsController extends Controller
@@ -43,31 +45,43 @@ class ExecutiveDocumentsController extends Controller
         $exDoc->save();
     }
 
-    public function getOne(Contract $contract): ?array
+    public function getOne(Contract $contract):Collection
     {
-        $executiveDocument = $contract->executiveDocument;
-        $bailiffDepartment = BailiffDepartment::find($executiveDocument->bailiff_id);
-        if($bailiffDepartment) {
-            $data = $executiveDocument->toArray();
-            $data['bailiff'] = [
-                'name' => $bailiffDepartment->name,
-                'id' => $bailiffDepartment->id
+        $list = $contract->executiveDocuments;
+        return $list->map(function (ExecutiveDocument $document){
+            $returned = $document->toArray();
+            $bailiffDepartment = BailiffDepartment::find($document->bailiff_department_id);
+            $court = Court::find($document->court_id);
+            $docType = ExecutiveDocumentType::find($document->type_id);
+            $returned['bailiffDepartment'] = [
+                'name'=>$bailiffDepartment->name,
+                'id'=>$bailiffDepartment->id
             ];
-        }
-        $court = Court::find($executiveDocument->court_id);
-        if($court) {
-            $data['court'] = [
-                'name' => $court->name,
-                'id' => $court->id
+            $returned['court'] = [
+                'name'=>$court->name,
+                'id'=>$court->id
             ];
-        }
-        $data = array_merge($data, $executiveDocument->moneySum->toArray());
-        $type = ExecutiveDocumentType::find($executiveDocument->type_id);
-        if($type){
-            $data['typeId'] = $type->id;
-            $data['id'] = $executiveDocument->id;
-            return $data;
-        }
-        else return null;
+            $returned['docType'] = [
+                'name'=>$docType->name,
+                'id'=>$docType->id
+            ];
+            $returned['main'] = $document->moneySum->main;
+            $returned['percents'] = $document->moneySum->percents;
+            $returned['penalties'] = $document->moneySum->penalties;
+            $enforcementProceedingsList = $document->enforcementProceedings;
+            $proceedingsArray = $enforcementProceedingsList->map(function (EnforcementProceeding $proceeding){
+                $item = $proceeding->toArray();
+                $item['bailiff'] = [
+                    'name' => $proceeding->bailiff->name->getFull(),
+                    'id' => $proceeding->bailiff->id
+                ];
+                return $item;
+            })->toArray();
+            $returned['enforcementProceedings'] = $proceedingsArray;
+           // Log::info(print_r($returned, true));
+            return $returned;
+        });
     }
+
+
 }

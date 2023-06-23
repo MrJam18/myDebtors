@@ -108,5 +108,9 @@ class Contract extends BaseModel
     {
         return $this->hasMany(Action::class);
     }
+    function comments(): HasMany | CustomBuilder
+    {
+        return $this->hasMany(ContractComment::class);
+    }
 
 }

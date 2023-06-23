@@ -9,7 +9,7 @@ use App\Http\Requests\PaginateRequest;
 use App\Models\Contract\Contract;
 use App\Models\Contract\ContractComment;
 use App\Models\CommentFile;
-use App\Models\Subject\Name;
+use App\Models\Subject\People\Name;
 use App\Providers\Database\Contracts\ContractCommentsProvider;
 use App\Services\CommentFileService;
 use Illuminate\Http\JsonResponse;
@@ -33,7 +33,7 @@ class ContractCommentsController extends AbstractController
                 'created_at' => $comment->created_at->format(RUS_DATE_FORMAT),
                 'text' => $comment->comments,
                 'author' => Name::find($comment->user->id)->name,
-                'comment_file'=> $comment->file,
+                'comment_file'=> CommentFile::find($comment->file->id)->url,
                 'idd' => $comment->id
             ];
         });
@@ -47,7 +47,7 @@ class ContractCommentsController extends AbstractController
 
             $groupId = getGroupId();
             $comment = new ContractComment();
-            $comment->comment = $data['comment'];
+            $comment->comments = $data['comment'];
             $comment->user()->associate(Auth::user());
             $contract = Contract::query()->byGroupId($groupId)->find(['contractId'], ['id']);
             if(!$contract) throw new Exception('cant find contract');
@@ -63,17 +63,19 @@ class ContractCommentsController extends AbstractController
     /**
      * @throws Exception
      */
-    public function show(Request $request, ContractCommentsProvider $provider, Contract $contract): array | JsonResponse
+    public function show($id): array | JsonResponse
     {
-        $data = $request->validated();
-        $paginator = $provider->getList($data, $contract);
-        $list = $paginator->items()->search(function (ContractComment $comment) {
-            return [
-                    'comment' => $comment->comments,
+        $commentId = (int)$id;
+        /**
+         * @var ContractComment $comment;
+         */
+        $comment = ContractComment::findWithGroupId($commentId);
+
+        return [
+                    'text' => $comment->comments,
                     'comment_file' => $comment->file,
+                    'idd' => $comment->id,
             ];
-        });
-        return $paginator->jsonResponse($list);
     }
 
     /**

@@ -30,17 +30,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = new User();
-        $user->email = 'amd@ya.ru';
+        $user->email = 'yaya@ya.ru';
         $user->password = '123';
-        $user->phone = '89821174497';
+        $user->phone = '89821174488';
         $username = new Name();
-        $username->name = 'Джамиль';
-        $username->surname = 'Мамедов';
-        $username->patronymic = 'Рафигович';
+        $username->name = 'Дмитрий';
+        $username->surname = 'Анатолич';
+        $username->patronymic = 'Тыгодин';
         $username->save();
         $user->name_id = $username->id;
         $group = new Group();
-        $group->name = 'test';
+        $group->name = 'test2';
         $group->save();
         $user->group_id = $group->id;
         $userRole = new UserRole();

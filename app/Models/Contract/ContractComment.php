@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ContractComment extends BaseModel
 {
 
+    public mixed $comment;
     protected $fillable = [
         'comments',
     ];

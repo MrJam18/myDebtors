@@ -16,8 +16,7 @@ class ContractCommentsProvider extends AbstractProvider
 
     public function __construct()
     {
-        parent::__construct();
-        $this->model = ContractComment::class;
+        parent::__construct(ContractComment::class);
     }
 
     /**

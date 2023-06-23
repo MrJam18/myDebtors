@@ -16,6 +16,9 @@ import api from "../../../http";
 import actions from "../Actions";
 import {useDispatch} from "react-redux";
 import {alertHandler} from "../../../utils/errorHandler";
+import CustomInput from "../../dummyComponents/CustomInput";
+import {TextField} from "@mui/material";
+import {values} from "../../../../../public/dist/js/app";
 
 
 function contractComment() {
@@ -29,7 +32,7 @@ function contractComment() {
     const update = useUpdate();
     const [commentId, setCommentId] = useState(null)
     const [showModal, setShowModal] = useState(false)
-    const [commentText, setCommentText] = useState('')
+    const [comment, setComment] = useState(null)
     const {header, setHeader} = useState();
     // const list = useList(`contracts/${contractId}/contract-comments/show/${commentId}`)
     // const showComments = useShow(ContractCommentChanger, {commentId, update: update.set});
@@ -49,17 +52,18 @@ function contractComment() {
     const onClickRow = (id) => {
         setShowModal(true)
         setCommentId(id);
-        getCommentText(commentId)
+        getCommentText(id)
+    }
+
+    const onChange = (event) => {
+        setComment(event.target.value)
     }
 
 
     const getCommentText = async (commentId) => {
         try {
             const {data} = await api.get('contracts/contract-comments/show/' + commentId);
-            setHeader(data.comment);
-            // delete data.name;
-            // dispatch(actions.setInfoRows(data));
-            console.log(data)
+            setComment(data.text);
             return header;
         } catch (e) {
             alertHandler(e, 'Ошибка получения комментария!');
@@ -72,18 +76,19 @@ function contractComment() {
                 headers={headers}
                 serverAddress={`contracts/${contractId}/contract-comments/index`}
                 onClickRow={onClickRow}
-                update={update.state}/>
+                update={update.state}
+                setElement={getCommentText}/>
                 <CustomModal
                     header='Редактировать комментарий'
                     customStyles={{width: 500}}
                     show = {showModal}
                     setShow={setShowModal}>
-                     <EasyInput defaultValue={header} />
+                    <TextField value={comment} onChange={onChange}/>
+
                 </CustomModal>
         </div>
     )
 }
-
 
 
 export default contractComment;

@@ -72,7 +72,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     useEffect(() => {
         setDocLoading(true);
 
-        api.get(`contracts/${contractId}/executive-documents/get-one`)
+        api.get(`contracts/${contractId}/executive-documents/get-all`)
             .then(({data}) => {
                 if(data) {
                     const lastIndex = data.length - 1;

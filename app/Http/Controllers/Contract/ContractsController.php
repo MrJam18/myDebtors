@@ -13,6 +13,7 @@ use App\Models\Contract\Contract;
 use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
 use App\Models\CourtClaim\CourtClaim;
+use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\People\Debtor;
 use App\Providers\Database\ContractsProvider;
@@ -23,6 +24,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ContractsController
@@ -98,13 +100,16 @@ class ContractsController
          * @var Contract $contract
          */
         $contract = Contract::findWithGroupId($contractId);
+       // Log::info(print_r($contract->executiveDocument, true));
         if (!$contract) throw new Exception('cant find contract by id');
         $now  = Carbon::now();
         $countService = new LimitedLoanCountService();
         $result = $countService->count($contract, $now);
         $delayDays = $now->diffInDays($contract->due_date);
         if($contract->executiveDocument) {
-            $executiveDocName = $contract->executiveDocument->type->name . ' №' . $contract->executiveDocument->number . ' от ' . $contract->executiveDocument->issued_date->format(RUS_DATE_FORMAT) . ' г.';
+            $lastDocument = $contract->executiveDocument->sortByDesc('id')->first();
+            $typeName = ExecutiveDocumentType::find($lastDocument->type_id);
+            $executiveDocName = $typeName->name . ' №' . $lastDocument->number . ' от ' . $lastDocument->issued_date->format(RUS_DATE_FORMAT) . ' г.';
         }
         else $executiveDocName = 'Отсутствует';
         if($contract->cession) {
@@ -147,7 +152,7 @@ class ContractsController
                 'paymentsCount' => $contract->payments->count(),
                 'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
                 'executiveDocName' => $executiveDocName,
-                'executiveDocId' => $contract->executiveDocument?->id,
+                'executiveDocId' => $typeName?->id,
                 'id' => $contract->id,
                 'month_due_date' => $contract->month_due_date,
                 'month_due_sum' => $contract->month_due_sum,

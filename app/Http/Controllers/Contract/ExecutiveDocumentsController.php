@@ -45,9 +45,9 @@ class ExecutiveDocumentsController extends Controller
         $exDoc->save();
     }
 
-    public function getOne(Contract $contract):Collection
-    {
-        $list = $contract->executiveDocuments;
+    public function getAll(Contract $contract):Collection
+    {   Log::info(print_r($contract, true));
+        $list = $contract->executiveDocument;
         return $list->map(function (ExecutiveDocument $document){
             $returned = $document->toArray();
             $bailiffDepartment = BailiffDepartment::find($document->bailiff_department_id);

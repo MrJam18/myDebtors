@@ -31,13 +31,13 @@ const Contract = () => {
             case 'data':
                 return <ContractData update={update.set} contractId={contractId}/>
             case 'payments':
-                return <ContractPayments update={update.set} />
+                return <ContractPayments />
             case 'actions':
                 return <Actions />
             case 'files':
                 return  <Files />
             case 'documents':
-                return <Documents update={update.set} />
+                return <Documents />
         }
     }
 

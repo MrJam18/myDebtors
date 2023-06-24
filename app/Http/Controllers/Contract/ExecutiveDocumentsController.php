@@ -37,29 +37,26 @@ class ExecutiveDocumentsController extends Controller
         $court = Court::find($data['courtId']);
         $exDoc->court()->associate($court);
         $bailiff = BailiffDepartment::find($data['bailiffId']);
-        $exDoc->bailiffDepartment()->associate($bailiff);
+        $exDoc->bailiff()->associate($bailiff);
         $exDoc->contract()->associate($contract);
         $exDoc->save();
     }
 
-    public function getOne(Contract $contract): ?array
+    public function getOne(Contract $contract): array
     {
         $executiveDocument = $contract->executiveDocument;
-        if($executiveDocument) {
-            $returned = $executiveDocument->toArray();
-            $returned['bailiff'] = [
-                'name' => $executiveDocument->bailiffDepartment->name,
-                'id' => $executiveDocument->bailiffDepartment->id
-            ];
-            $returned['court'] = [
-                'name' => $executiveDocument->court->name,
-                'id' => $executiveDocument->court->id
-            ];
-            $returned = array_merge($returned, $executiveDocument->moneySum->toArray());
-            $returned['typeId'] = $executiveDocument->type->id;
-            $returned['id'] = $executiveDocument->id;
-            return $returned;
-        }
-        else return null;
+        $returned = $executiveDocument->toArray();
+        $returned['bailiff'] = [
+            'name' => $executiveDocument->bailiff->name,
+            'id' => $executiveDocument->bailiff->id
+        ];
+        $returned['court'] = [
+            'name' => $executiveDocument->court->name,
+            'id' => $executiveDocument->court->id
+        ];
+        $returned = array_merge($returned, $executiveDocument->moneySum->toArray());
+        $returned['typeId'] = $executiveDocument->type->id;
+        $returned['id'] = $executiveDocument->id;
+        return $returned;
     }
 }

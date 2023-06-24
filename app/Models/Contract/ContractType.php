@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Models\Contract;
 
-use App\Enums\Database\ContractTypeEnum;
 use App\Models\Base\BaseModel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class ContractType extends BaseModel
 {
-
     protected $fillable = [
         'name'
     ];
@@ -25,9 +23,4 @@ class ContractType extends BaseModel
     {
         return $this->hasMany(Contract::class);
     }
-    function dativeIncline(): string
-    {
-        return $this->id === ContractTypeEnum::Loan->value ? 'договору займа' : "кредитному договору";
-    }
-
 }

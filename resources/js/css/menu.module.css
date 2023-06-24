@@ -1,13 +1,14 @@
 .main {
     display: flex;
     justify-content: right;
-    background-color: #b7f4a0;
+    background-color: #00a86b;
     margin: 0;
     padding: 8px 0;
     height: 30px;
 }
 .element {
     list-style-type: none;
+    background-image:   #00a86b;
     margin-right: 30px;
     z-index: 5;
 }

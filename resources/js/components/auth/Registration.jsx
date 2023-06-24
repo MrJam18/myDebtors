@@ -52,6 +52,7 @@ const Registration = ({}) => {
             <ButtonInForm loading={loading.state}/>
                 {error.Comp()}
         </form>
+        <script src="js/classes/footer.js"></script>
     </Content>);
 };
 export default Registration;

@@ -1,11 +1,14 @@
 .contentBox {
     padding: 20px 30px;
     border-radius: 15px;
-    background-color: white;
+    background-color: #f3fef7;
     padding-left: 30px;
 }
 .firstWindow {
     position: relative;
+    background-position: center;
+    background-size: no-repeat;
+    background-image: url(https://foni.club/uploads/posts/2023-01/1674396670_foni-club-p-yuridicheskii-fon-1.jpg);
 }
 .background {
     display: flex;
@@ -23,3 +26,5 @@
     margin-bottom: 10px;
     text-align: center;
 }
+
+    

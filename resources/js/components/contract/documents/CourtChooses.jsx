@@ -3,7 +3,7 @@ import { makeStyles } from '@mui/styles';
 import React, { useEffect, useRef, useState } from 'react';
 import { setCourtsList } from '../../../store/courts/actions';
 import getISODate from '../../../utils/getISODate';
-import CourtCreator from '../contractData/CourtCreator';
+import CourtCreator from '../contractData/CourtCreator';;
 import { useDispatch } from 'react-redux';
 import styles from '../../../css/contract.module.css';
 import EasySearch from "../../dummyComponents/search/EasySearch";
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
     }
 })
 
-const CourtChooses = ({contractId, selectedDoc, setError, setLoading, update}) => {
+const CourtChooses = ({contractId, selectedDoc, setError, setLoading}) => {
     const dispatch = useDispatch();
     const [showCourtCreator, setShowCourtCreator] = useState(false);
     const [agent, setAgent] = useState();
@@ -49,7 +49,7 @@ const CourtChooses = ({contractId, selectedDoc, setError, setLoading, update}) =
     }, []);
     const onSubmit = async (ev) => {
         ev.preventDefault();
-        const dispatcher = new CreateCourtClaimDispatcher(setError, setLoading, formRef, null, update);
+        const dispatcher = new CreateCourtClaimDispatcher(setError, setLoading, formRef);
         dispatcher.addNoReqData('contractId', contractId);
         dispatcher.data = {
             ...dispatcher.data,
@@ -65,13 +65,12 @@ const CourtChooses = ({contractId, selectedDoc, setError, setLoading, update}) =
             <form id='submitSelectDocument' ref={formRef} onSubmit={onSubmit}>
             <TextField type='date' name='date' label='Дата расчета' defaultValue={getISODate()} variant='standard' InputLabelProps={{shrink: true}} required fullWidth size='small' className={classes.input} />
                 <div className={styles.data__toolbar__courtBox}>
-                    <SearchAndAddButton serverAddress={'courts/search-list'} setValue={setCourt} value={court} onClickAddButton={changeShowCourtCreator} required label={'Название суда'} />
+                    <SearchAndAddButton serverAddress={'courts/findByName'} setValue={setCourt} value={court} onClickAddButton={changeShowCourtCreator} required label={'Название суда'} />
                 </div>
                 <EasySearch label={'Представитель'} setValue={setAgent} value={agent} serverAddress={'agents/search-list'} required />
                 <div className={styles.documents__checkboxesContainer}>
                     <EasyCheckBox label="Договорная подсудность" name={'is_contract_jurisdiction'} />
                     <EasyCheckBox label="Игнорировать платежи при ограничении процентов" name='is_ignored_payments' />
-                    <EasyCheckBox label="Создать судебный иск" name='isCourtClaimCreated' />
                 </div>
                 </form>
         </div>

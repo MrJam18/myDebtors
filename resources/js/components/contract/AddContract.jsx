@@ -86,7 +86,7 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
             setCession(defaultCession);
     }
     return (
-    <CustomModal customStyles={{ width: '500px' }} header={"Создание договора"} setShow={setShow} show>
+    <CustomModal customStyles={{ width: '500px' }} setShow={setShow} show>
          <form ref={formRef} onSubmit={formHandler}>
              <div>
                  <div className={styles.header + ' ' + 'marginTop_0'}>Данные о договоре</div>

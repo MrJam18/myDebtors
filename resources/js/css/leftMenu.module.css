@@ -1,6 +1,7 @@
 .main {
     height: 100%;
-    background-color: #e5ffa6;
+   
+    background: #00a86b; 
 }
 .link {
     font-family: 'Roboto_slab', serif;

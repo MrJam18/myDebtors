@@ -2,20 +2,14 @@ button {
   outline: 0;
   border: 0;
 }
-body {
-  margin: 0 !important;
-}
-h1,h2,h3,h4,h5 {
-  margin: 0;
-  padding: 0;
-}
 
 #root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 1200px;
   background-size: 100%;
   font-family: 'Roboto_slab', serif;
+  background-color:#f3fef7;
 }
 .header {
   font-family: 'Roboto_slab', serif;
@@ -34,6 +28,8 @@ h1,h2,h3,h4,h5 {
   /* background-color: rgb(187, 185, 185); */
   flex-grow: 1;
   width: 100%;
+  background-image: url(https://foni.club/uploads/posts/2023-01/1674396670_foni-club-p-yuridicheskii-fon-1.jpg);
+  background-position: center;
 }
 html {
   background: rgb(187, 185, 185) no-repeat center center fixed;
@@ -45,8 +41,9 @@ html {
 .contentBox {
   padding: 20px 30px;
   border-radius: 15px;
-  background-color: white;
+  padding-left: 30px;
   width:500px;
+  background:white;
 }
 .details__close {
   position: absolute;
@@ -58,17 +55,17 @@ html {
   display: block;
   transform: translate(0px);
   transition: transform .3s;
-  background-color: #fff;
+  background-color: #f3fef7;;
 }
 .details {
   position: relative;
-  background-color: #fff;
+  background-color: #f3fef7;;
   
 }
 .detailsHeader {
   display: flex;
   justify-content: space-between;
-  background-color: #fff !important;
+  background-color: #f3fef7 !important;
   opacity: 1;
   z-index: 3;
 }
@@ -97,6 +94,7 @@ html {
 }
 .xmark {
   position: absolute;
+  right: 10px;
   right: -17px;
   bottom: -5px;
 }
@@ -118,9 +116,6 @@ html {
 }
 .marginTop_0 {
   margin-top: 0 !important;
-}
-.margin-top_10 {
-  margin-top: 10px;
 }
 .fullWidth {
   width: 100% !important;
@@ -172,7 +167,8 @@ html {
 .contentBox__fixedCenter {
   padding: 20px 30px;
   border-radius: 15px;
-  background-color: white;
+  background-color:#f3fef7;
+  padding-left: 30px;
   position: fixed;
   width: 400px;
   min-height: 200px;
@@ -216,7 +212,7 @@ html {
 }
 @keyframes slideOut {
   from {
-    right: 0;
+    right: 0px;
   }
   to {
     right: 80%;
@@ -225,11 +221,11 @@ html {
 @keyframes slideIn {
   from {
     left: 80%;
-    right: 0;
+    right: 0px;
   }
   to {
-    left: 0;
-    right: 0;
+    left: 0px;
+    right: 0px;
   }
 }
 .small-inputs-box {
@@ -252,3 +248,11 @@ html {
   text-align: center;
   margin-bottom: 5px;
 }
+.footer {
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 26px;
+  color:white;
+  }

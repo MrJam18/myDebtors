@@ -1,6 +1,7 @@
-import axios, {AxiosInstance, AxiosResponse} from 'axios';
+import axios, {AxiosInstance} from 'axios';
 import { serverApi } from '../utils/serverApi';
 import { saveAs } from 'file-saver';
+import {redirect} from "react-router";
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 const api: AxiosInstance = axios.create({
@@ -11,50 +12,59 @@ const api: AxiosInstance = axios.create({
     headers: {
         'Accept': 'application/json'
     }
-});
+})
 
 api.interceptors.request.use((conf)=> {
     conf.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
     return conf;
 })
 api.interceptors.response.use((conf) => conf, async (err) => {
-    if (err.response.status === 401 && err.config.url !== "users/get") return window.location.replace('/login');
+    const origReq = err.config;
+    if (err.response.status === 401 && origReq && !origReq._isRetry) {
+        origReq._isRetry = true;
+        try{
+            return redirect('/login');
+            // const res = await axios.get(`${serverApi}users/refresh`, {withCredentials: true});
+            // localStorage.setItem('token', res.data.token);
+            // return api.request(origReq);
+        }
+        catch(e){
+            throw new Error('Ошибка авторизации!');
+        }
+    }
     throw err;
-});
+})
 
 
-
-export const saveFile =  async (path): Promise<AxiosResponse> => {
-    return handleBlobRequest(path, 'get');
+export const saveFile =  async (path, fileName): Promise<{ status: string }> => {
+    const {data} = await api.get(path, {responseType: 'blob'});
+    const blob = new Blob([data]);
+    console.log(data);
+    saveAs(blob, fileName);
+    return {status: 'ok'}
 }
-export const saveFilePost = async (path: string, body: Record<string, any>): Promise<AxiosResponse> => {
-    return handleBlobRequest(path, 'post', body);
-}
-
-const handleBlobRequest = async (path, method, body = null): Promise<AxiosResponse> => {
+export const saveFilePost = async (path: string, body: Record<string, any>): Promise<{ status: string}> => {
     try {
-        let response;
-        if(method === 'put' || method === 'post') response = await api[method](path, body, {responseType: 'blob'});
-        else response = await api[method](path, {responseType: 'blob'});
+        const response = await api.post(path, body, {responseType: 'blob'});
         const parts = response.headers['content-disposition'].split(';');
         let filename;
-        if (parts[2]) {
+        if(parts[2]) {
             filename = parts[2]?.split('=')[1];
             filename = decodeURIComponent(filename.replace('utf-8\'\'', ''));
-        } else filename = parts[1]?.split('=')[1];
+        }
+        else filename = parts[1]?.split('=')[1];
         const blob = new Blob([response.data]);
         saveAs(blob, filename);
-        return response
-    } catch (e) {
+        return {status: 'ok'}
+    }
+    catch (e) {
+        console.dir(e);
         if(e.response?.data) {
             const blob = new Blob([e.response.data]);
-            const data = await JSON.parse(await blob.text());
-            console.dir(data);
-            throw data;
+            console.log(await JSON.parse(await blob.text()));
         }
-        console.dir(e);
-        throw e;
     }
+
 }
 
 export default api;

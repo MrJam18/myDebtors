@@ -12,7 +12,6 @@ use App\Models\Cession\CessionGroup;
 use App\Models\Contract\Contract;
 use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
-use App\Models\CourtClaim\CourtClaim;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\People\Debtor;
 use App\Providers\Database\ContractsProvider;
@@ -115,14 +114,6 @@ class ContractsController
 
         }
         else $firstCreditor = $contract->creditor;
-        /**
-         * @var CourtClaim $lastClaim;
-         */
-        $lastClaim = $contract->courtClaims()->orderBy('created_at', 'desc')->first();
-        if($lastClaim) {
-            $lastClaimName = "{$lastClaim->type->name} от {$lastClaim->created_at->format(RUS_DATE_FORMAT)} г.";
-        }
-        else $lastClaimName = 'Отсутствует';
         return [
             'contract' => [
                 'name'=>$contract->type->name,
@@ -147,13 +138,9 @@ class ContractsController
                 'paymentsCount' => $contract->payments->count(),
                 'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
                 'executiveDocName' => $executiveDocName,
-                'executiveDocId' => $contract->executiveDocument?->id,
                 'id' => $contract->id,
                 'month_due_date' => $contract->month_due_date,
-                'month_due_sum' => $contract->month_due_sum,
-                'typeId' => $contract->type->id,
-                'courtClaimName' => $lastClaimName,
-                'courtClaimId' => $lastClaim->id
+                'month_due_sum' => $contract->month_due_sum
             ]
         ];
     }

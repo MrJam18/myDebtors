@@ -8,6 +8,11 @@ import { Link } from 'react-router-dom';
 import styles from '../../css/auth.module.css';
 import { tryLogin } from '../../store/users/actions';
 import { formDataConverter } from '../../utils/formDataConverter';
+
+
+
+
+
 const useStyles = makeStyles({
     input: {
         marginBottom: '10px',
@@ -43,19 +48,20 @@ const Login = () => {
         }
     };
     return (<div className='background firstWindow'>
-            <div className="header">Войдите для использования приложения.</div>
-            <form onSubmit={onSubmit}>
+        <div className="header">Войдите для использования приложения.</div>
+        <form onSubmit={onSubmit}>
             <div className={'contentBox' + ' ' + styles.main}>
                 <div className={styles.header}>Введите email и пароль.</div>
-                <TextField label='Email' name='email' fullWidth size='small' type='email' required className={classes.input}/>
-                <TextField label='Пароль' type='password' name='password' fullWidth size='small' required className={classes.input}/>
+                <TextField label='Email' name='email' fullWidth size='small' type='email' required className={classes.input} />
+                <TextField label='Пароль' type='password' name='password' fullWidth size='small' required className={classes.input} />
                 <LoadingButton loading={loading} className={classes.button} variant='contained' type='submit'>Войти
                 </LoadingButton>
                 <Link to='/registration' className={styles.regLink + ' ' + 'antiLink'}>Регистрация</Link>
                 {error && <div className="error">{error}</div>}
             </div>
-            </form>
-        </div>);
+        </form>
+    </div>
+);
 };
 export default Login;
 //# sourceMappingURL=Login.jsx.map

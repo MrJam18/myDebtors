@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Contract;
 
 use App\Http\Controllers\Controller;
-use App\Models\Contract\Contract;
 use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\EnforcementProceeding\EnforcementProceedingStatus;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
@@ -20,26 +19,6 @@ class EnforcementProceedingsController extends Controller
         return EnforcementProceedingStatus::query()->get();
     }
 
-    function getLastIdAndName(Contract $contract): ?array
-    {
-        /**
-         * @var EnforcementProceeding $enforcementProceeding;
-         * @var ExecutiveDocument $executiveDoc;
-         */
-        $executiveDoc = $contract->executiveDocument()->orderBy('issued_date', 'desc')->first();
-        if($executiveDoc) {
-            $enforcementProceeding = $executiveDoc->enforcementProceedings()->orderBy('begin_date', 'desc')->first();
-        }
-        else return null;
-        if($enforcementProceeding) {
-            return [
-                'id' => $enforcementProceeding->id,
-                'name' => "№ $enforcementProceeding->number от {$enforcementProceeding->begin_date->format(RUS_DATE_FORMAT)} г."
-            ];
-        }
-        return null;
-    }
-
     public function create(Request $request)
     {
         /**
@@ -52,7 +31,7 @@ class EnforcementProceedingsController extends Controller
         $enforcementProceeding->begin_date= $data['beginDate'];
         $enforcementProceeding->end_date = $data['endDate'] ?? null;
         $enforcementProceeding->number = $data['number'];
-        $enforcementProceeding->status_date = now();
+
         $proceedingStatus = EnforcementProceedingStatus::query()->find($data['enforcementProceedingStatus']);
         $enforcementProceeding->proceedingStatus()->associate($proceedingStatus);
 

@@ -6,9 +6,10 @@ import { Provider } from 'react-redux';
 import { StyledEngineProvider } from '@mui/material/styles';
 import './index.css';
 import Router from './components/Router';
+import Footer from './components/footer/Footer';
 export const store = setupStore();
 const root = createRoot(document.getElementById('root'));
-root.render(<StrictMode>
+root.render(<><StrictMode>
         <Provider store={store}>
             <StyledEngineProvider injectFirst>
                 <ErrorsCatcher>
@@ -16,6 +17,8 @@ root.render(<StrictMode>
                 </ErrorsCatcher>
             </StyledEngineProvider>
         </Provider>
-    </StrictMode>);
+    </StrictMode>
+<Footer/>
+    </>);
 export const dispatch = store.dispatch;
 export const getState = store.getState;

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Models\CourtClaim;
 
-use App\Models\Auth\User;
 use App\Models\Base\BaseModel;
 use App\Models\Contract\Contract;
 use App\Models\MoneySum;
@@ -27,8 +26,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property MoneySum $moneySum;
  * @property boolean $is_contract_jurisdiction;
  * @property boolean $is_ignored_payments;
- * @property User $user;
- * @property null|Carbon $sending_date;
  *
  */
 class CourtClaim extends BaseModel
@@ -38,18 +35,9 @@ class CourtClaim extends BaseModel
         'count_date',
         'status_date',
         'is_contract_jurisdiction',
-        'is_ignored_payments',
-        'sending_date'
+        'is_ignored_payments'
     ];
     public $timestamps = true;
-
-    protected $casts = [
-      'count_date' => RUS_DATE_CAST,
-      'status_date' => RUS_DATE_CAST,
-      'sending_date' => RUS_DATE_CAST,
-      'is_contract_jurisdiction' => 'boolean',
-      'is_ignored_payments' => 'boolean'
-    ];
 
     function status(): BelongsTo
     {
@@ -74,9 +62,5 @@ class CourtClaim extends BaseModel
     function moneySum(): BelongsTo
     {
         return $this->belongsTo(MoneySum::class);
-    }
-    function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }

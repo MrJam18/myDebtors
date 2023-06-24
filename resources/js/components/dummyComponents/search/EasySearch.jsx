@@ -45,12 +45,10 @@ const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 
     const classes = useStyles();
     const input = useRef(null);
     const debouncedSearch = useDebounce(onSearch, delay);
-    const [shrink, setShrink] = useState(false);
     const changeInputHandler = async (ev) => {
         const val = ev.target.value;
-        if (val !== '') {
+        if (val !== '')
             debouncedSearch(val);
-        }
         if (value)
             setValue(null);
     };
@@ -66,7 +64,6 @@ const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 
     }, []);
     useEffect(() => {
         if (value) {
-            setShrink(true);
             input.current.value = value.name;
             setResults([]);
             input.current.setCustomValidity('');
@@ -78,16 +75,8 @@ const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 
     const Results = results.map((result) => {
         return (<MenuItem key={result.id} className={classes.result} tabIndex={0} focusVisibleClassName={styles.selected} data-id={result.id} onClick={chooseHandler}> {result.name} </MenuItem>);
     });
-    const onFocus = () => {
-        if (!shrink)
-            setShrink(true);
-    };
-    const onBlur = (ev) => {
-        if (!ev.target.value)
-            setShrink(false);
-    };
     return (<div style={customStyles} className={styles.main + (className ? ' ' + className : '')}>
-      <TextField disabled={disabled} onBlur={onBlur} onFocus={onFocus} onChange={changeInputHandler} size='small' onKeyDown={onKeyDown} label={label} required={required} InputLabelProps={{ shrink }} defaultValue={value === null || value === void 0 ? void 0 : value.name} variant='standard' inputRef={input} fullWidth/>
+      <TextField disabled={disabled} onChange={changeInputHandler} size='small' onKeyDown={onKeyDown} label={label} required={required} InputLabelProps={{ shrink: true }} defaultValue={value === null || value === void 0 ? void 0 : value.name} variant='standard' inputRef={input} fullWidth/>
       <div className={styles.results}>{Results}</div>
      </div>);
 };

@@ -15,7 +15,7 @@ import Loading from './dummyComponents/Loading';
 import HidingAlert from './dummyComponents/HidingAlert';
 import Start from './start/Start';
 import Creditors from './creditors/Creditors';
-import {getGlobalError, setGlobalError} from '../store/global';
+import { getGlobalError, setGlobalError } from '../store/global';
 import { setAlert } from '../store/alert/actions';
 import usersSlice from '../store/users/reducer';
 import LeftMenu from './LeftMenu';
@@ -24,6 +24,8 @@ import Debtor from "./debtor/Debtor";
 import Registration from "./auth/Registration";
 import Cessions from "./cessions/Cessions";
 import Test from "./Test";
+
+
 
 function Router() {
     const dispatch = useDispatch();
@@ -41,7 +43,6 @@ function Router() {
         setAlert('Ошибка', error, 'error');
         dispatch(setGlobalError(false));
     }, [error]);
-
     // @ts-expect-error TS(2686): 'React' refers to a UMD global, but the current fi... Remove this comment to see the full error message
     if (loading)
         return <Loading />;
@@ -63,7 +64,8 @@ function Router() {
                 <Route path='/' element={<PrivateAccess Wrapped={<Start />}/>}/>
                 <Route path={'test2'} element={<Test />} />
             </Routes>
-      </BrowserRouter>);
+      </BrowserRouter>
+      );
 }
 export default Router;
 //# sourceMappingURL=Router.jsx.map

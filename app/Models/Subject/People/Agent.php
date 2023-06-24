@@ -25,15 +25,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Collection $courtClaims;
  * @property Address $address
  * @property Passport $passport
- * @property string $phone
  */
 class Agent extends BaseModel
 {
     protected $fillable = [
         'enclosure',
         'is_default',
-        'no_show_group',
-        'phone'
+        'no_show_group'
     ];
     public $timestamps = true;
 

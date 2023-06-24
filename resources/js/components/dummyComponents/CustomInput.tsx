@@ -1,5 +1,5 @@
 ``
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import TextField, {BaseTextFieldProps, } from "@mui/material/TextField";
 import {useForwardRef} from "../../hooks/useForwardRef";
 import {MUITextFieldVariant} from "../../Types/Mui/MUITextFieldVariant";
@@ -8,7 +8,7 @@ import {validityHandler} from "../../utils/inputs/validityHandler";
 
 let suggestionsHandler = null;
 
-interface Props {
+type Props = {
     autofocus?: boolean,
     disabled?: boolean,
     defaultValue?: string,
@@ -19,12 +19,12 @@ interface Props {
     type?: BaseTextFieldProps["type"],
     size?: BaseTextFieldProps["size"],
     fullwidth?: boolean,
+    className?: string,
     customValidity?: string,
     noSubmit?: boolean,
     placeholder?: string,
     name?: string,
-    onEnter?: (ev: InputEvent) => void,
-    className?: string
+    onEnter?: (ev: InputEvent) => void
 }
 
 

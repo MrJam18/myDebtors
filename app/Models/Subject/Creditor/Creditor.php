@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Models\Subject\Creditor;
 
-use App\Enums\Database\CreditorTypeEnum;
 use App\Models\Address\Address;
 use App\Models\Auth\User;
 use App\Models\Base\BaseModel;
@@ -11,7 +10,6 @@ use App\Models\Cession\Cession;
 use App\Models\Cession\CessionGroup;
 use App\Models\Contract\Contract;
 use App\Models\Requisites\Requisites;
-use App\Models\Subject\GenitiveTrait;
 use App\Models\Traits\RusTimeStamps;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -36,7 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Creditor extends BaseModel
 {
-    use RusTimeStamps, GenitiveTrait;
+    use RusTimeStamps;
     protected $fillable = [
         'short',
         'name',
@@ -80,17 +78,5 @@ class Creditor extends BaseModel
     function shortOrName(): string
     {
         return $this->short ? $this->short : $this->name;
-    }
-    function getGenitiveName(): string
-    {
-        if($this->type->id === CreditorTypeEnum::Individual->value) {
-            $names = explode(' ', $this->name);
-            $fullName = '';
-            foreach($names as $name) {
-                $fullName .= $this->getGenitiveCase($name) . ' ';
-            }
-            return rtrim($fullName, ' ');
-        }
-        return $this->name;
     }
 }

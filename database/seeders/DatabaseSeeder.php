@@ -74,8 +74,7 @@ class DatabaseSeeder extends Seeder
         $this->setNameAndSave($executiveDocType, 'Исполнительный лист');
         $model = new CourtLevel();
         $model = $this->setNameAndSave($model, 'Мировой суд');
-        $model = $this->setNameAndSave($model, 'Районный суд');
-        $model = $this->setNameAndSave($model, 'Мировой суд');
+        $model = $this->setNameAndSave($model, 'Районный/городской суд');
         $model = $this->setNameAndSave($model, 'Верховный суд субъекта');
         $model = $this->setNameAndSave($model,  'Суд апелляционной инстанции');
         $model = $this->setNameAndSave($model, 'Cуд кассационной инстанции');
@@ -116,10 +115,7 @@ class DatabaseSeeder extends Seeder
         $model = $this->setNameAndSave($model, 'Иск отправлен');
         $model = $this->setNameAndSave($model, "Вынесено решение");
         $model = $this->setNameAndSave($model, 'Решение получено');
-        $model = $this->setNameAndSave($model, 'Исполнительный лист получен');
-        $model = $this->setNameAndSave($model, 'Исп. документ отправлен СПИ');
-        $model = $this->setNameAndSave($model, 'ИП возбуждено');
-        $this->setNameAndSave($model, 'ИП окончено');
+        $this->setNameAndSave($model, 'Исполнительный лист получен');
         $model = new ContractType();
         $model = $this->setNameAndSave($model, 'Договор займа');
         $this->setNameAndSave($model, "Кредитный договор");

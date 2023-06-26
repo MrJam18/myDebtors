@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SearchRequest;
 use App\Models\Subject\Bailiff\BailiffDepartment;
 use App\Services\AddressService;
+use App\Services\Excel\Readers\CreateBailiffDepartmentsExcelService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -37,6 +38,12 @@ class BailiffDepartmentsController extends Controller
                 'id' => $bailiff->id
             ];
         });
+    }
+    function createFromExcel(Request $request): void
+    {
+        $file = $request->file('table');
+        $service = CreateBailiffDepartmentsExcelService::createFromPath($file->getRealPath());
+        $service->handle();
     }
 
 }

@@ -9,7 +9,13 @@ import {useShow} from "../../hooks/useShow";
 import ListSearcher from "../dummyComponents/search/ListSearcher";
 
 
-const headers = [{key: 'cession_groups.name', name: 'Название'}, {key: 'assignor_table.short', name: 'Цедент'}, {key: 'assignee_table.short', name: 'Цессионарий'}, {key: 'ranked_table.transfer_date', name: 'Дата цессии', type: 'date'}, {key: 'cession_groups.created_at', name: "Дата создания"}];
+const headers = [
+    {key: 'cession_groups.id', name: 'Ид.'},
+    {key: 'cession_groups.name', name: 'Название'},
+    {key: 'assignor_table.short', name: 'Цедент'},
+    {key: 'assignee_table.short', name: 'Цессионарий'},
+    {key: 'ranked_table.transfer_date', name: 'Дата цессии', type: 'date'},
+    {key: 'cession_groups.created_at', name: "Дата создания"}];
 
 const Cessions = () => {
     const update = useUpdate();

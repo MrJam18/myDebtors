@@ -7,10 +7,11 @@ type Props = {
     Button: React.ReactElement
     title?: string,
     multiple?:boolean,
-    maxFileSize?: number
+    maxFileSize?: number,
+    name?: string
 }
 
-const FileChooseHandler = ({extensions, setFile, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760}: Props) => {
+const FileChooseHandler = ({extensions, setFile, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760, name = 'file'}: Props) => {
     const inputRef = useRef<HTMLInputElement>();
     const accept = useMemo(()=> {
         let acceptString = '';
@@ -46,7 +47,7 @@ const FileChooseHandler = ({extensions, setFile, Button, title = 'Загрузи
   <>
       {/*@ts-ignore*/}
       <button type='button' className={'antibutton'} title={title} style={{padding: '0 2px'}} onClick={()=> inputRef.current.click()} > <Button /> </button>
-      <input onChange={onChange} multiple={multiple} ref={inputRef}  accept={accept} style={{display:'none'}} type="file" id="file" name="file" />
+      <input onChange={onChange} multiple={multiple} ref={inputRef}  accept={accept} style={{display:'none'}} type="file" id="file" name={name} />
   </>
  );
 };

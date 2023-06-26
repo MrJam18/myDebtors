@@ -15,7 +15,7 @@ const NoBorderTable = ({ rows = [], headers = [], sortHandler = null, focus = nu
         Headers = headers.map((header, index) => <th style={header.styles ? header.styles : null} key={index} className={styles.header}>{header.name} <SortButton sortHandler={sortHandler} header={header} focus={focus}/></th>);
     };
     const doRows = () => {
-        if (!loading && rows.length !== 0) {
+        if (!loading) {
             setRows(rows.map((row, index) => {
                 let array = [];
                 const cellId = row.id;

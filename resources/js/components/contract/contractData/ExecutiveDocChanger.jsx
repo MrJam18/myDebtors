@@ -85,7 +85,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                     <CustomInput size={'small'} customValidity={'номер в формате ББ№ЧЧЧЧЧЧЧЧ или Ч-ЧЧЧЧ/ЧЧЧЧ где Ч - это число, Б-это буква.'} className={styles.smallInput} pattern='(^[А-Яа-яЁё]{2}№\d+$)|^\d{1}-\d+\/\d{4}$'  defaultValue={executiveDoc.number} name='number' required label='Номер ИД' />
                 </div>
                 <div className={styles.contentBlock}>
-                    <EasySelect name='typeId' onChange={(value)=>setTypeId(value)} variants={types} defaultValue={executiveDoc.typeId} label='Тип исполнительного документа *' />
+                    <EasySelect name='typeId'  onChange={(value)=>setTypeId(value)} variants={types} defaultValue={executiveDoc.typeId} label='Тип исполнительного документа *' />
                 </div>
                 <div className={styles.smallHeader}>Суммы подлежащие взысканию</div>
                 <div className={styles.contentBlock}>

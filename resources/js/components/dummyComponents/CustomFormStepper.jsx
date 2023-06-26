@@ -6,17 +6,17 @@ import React, { useEffect, useState } from "react";
 import styles from "../../css/customStepper.module.css";
 import { useForwardRef } from "../../hooks/useForwardRef";
 import ButtonInForm from "./ButtonInForm";
-const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActiveData, getUpdatedData, children, setDeleteIds, onSubmit, defaultData = {}, leftTopButtons = null, onChangeStep = null, buttonText = 'Сохранить', defaultStep = null, loading = true }, ref) => {
+const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActiveData, getUpdatedData, children, setDeleteIds, onSubmit, defaultData = {}, onDeleteAll = null, onChangeStep = null, buttonText = 'Сохранить', defaultStep = null, loading = true }, ref) => {
     const formRef = useForwardRef(ref);
     const [activeStep, setActiveStep] = useState(defaultStep !== null && defaultStep !== void 0 ? defaultStep : dataArray.length - 1);
+    const [isArrayEmpty, setIsArrayEmpty] = useState(false);
     const stepChanger = (step, changedArr = null) => {
         if (!changedArr)
             changedArr = [...dataArray];
         changedArr[activeStep] = getUpdatedData();
         setDataArray(changedArr);
         setActiveStep(step);
-        const activeData = changedArr[step];
-        changeActiveData(activeData);
+        changeActiveData(changedArr[step]);
     };
     const handleNext = () => {
         if (activeStep < dataArray.length - 1) {
@@ -48,9 +48,7 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
             changedArr.splice(currentStep, 1);
             const length = changedArr.length;
             if (currentStep === 0) {
-                if (length === 0)
-                    changedArr.push(defaultData);
-                else
+                if (length)
                     stepChanger(0, changedArr);
             }
             else if (currentStep > length - 1) {
@@ -73,12 +71,6 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
         const newArr = addNewData();
         stepChanger(newArr.length - 1, newArr);
     };
-    useEffect(() => {
-        if (dataArray.length === 0) {
-            const newArr = addNewData();
-            stepChanger(0, newArr);
-        }
-    }, []);
     const onSubmitForm = (ev) => {
         ev.preventDefault();
         // @ts-ignore
@@ -99,13 +91,29 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
                 break;
         }
     };
+    useEffect(() => {
+        if (dataArray.length === 0) {
+            setIsArrayEmpty(true);
+            const newArr = addNewData();
+            newArr[0].isEmpty = true;
+            changeActiveData(newArr[0]);
+            setActiveStep(0);
+        }
+        else if (dataArray.length > 1 || dataArray.length === 1 && !dataArray[0].isEmpty)
+            setIsArrayEmpty(false);
+    }, [dataArray]);
+    useEffect(() => {
+        if (dataArray.length !== 0)
+            changeActiveData(dataArray[activeStep]);
+    }, []);
     return (<form onSubmit={onSubmitForm} ref={formRef}>
             <div className={styles.toolbar}>
                 <div className={styles.toolbar__leftBox}>
-                    {leftTopButtons}
+                    {onDeleteAll &&
+            <Button variant='contained' type='button' color='error' sx={{ width: '201px' }} onClick={onDeleteAll} className={styles.deleteButton}>удалить всё</Button>}
                 </div>
                 <div className={styles.toolbarBox}>
-                    <Button variant='contained' type='button' sx={{ backgroundColor: '#346a9f' }} disabled={dataArray.length <= 1} onClick={onDelete} className={styles.toolbar__button}>Удалить</Button>
+                    <Button variant='contained' type='button' sx={{ backgroundColor: '#346a9f' }} disabled={isArrayEmpty} onClick={onDelete} className={styles.toolbar__button}>Удалить</Button>
                     <Button variant='contained' type='submit' datatype='add' color='success' className={styles.toolbar__button}>добавить</Button>
                 </div>
             </div>

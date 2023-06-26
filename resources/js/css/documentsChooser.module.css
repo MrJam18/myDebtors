@@ -1,0 +1,8 @@
+.main {
+    width: 100%;
+}
+.flexBetweenBlock {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}

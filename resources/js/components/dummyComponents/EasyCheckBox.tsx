@@ -1,5 +1,5 @@
 import {Checkbox, FormControlLabel, SxProps} from "@mui/material";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 
 const standardFontSize = {
     fontSize: '16px'
@@ -27,23 +27,27 @@ const EasyCheckBox = ({
     tabIndex = null,
     label
                       }: Props) => {
-    const [value, setValue] = useState('f');
+    const [value, setValue] = useState(defaultValue ? 't' : 'f');
     const [checked, setChecked] = useState(defaultValue);
-    const onChangeChecked = (ev: React.SyntheticEvent) => {
-        const target = ev.target as HTMLInputElement;
-        setValue(target.checked ? 't' : 'f');
-        setChecked(target.checked);
-        if(onChange) onChange(target.checked);
+    const ref = useRef<HTMLInputElement>();
+    const onChangeChecked = (ev: InputEvent) => {
+        let targetChecked = (ev.target as HTMLInputElement).checked;
+        if(ev.isTrusted) targetChecked = !targetChecked;
+        setValue(targetChecked ? 't' : 'f');
+        setChecked(targetChecked);
+        if(onChange) onChange(targetChecked);
     }
-    useEffect(() => {
-        setValue(defaultValue ? 't' : 'f');
-        setChecked(defaultValue);
-    }, [defaultValue]);
+    useEffect(()=> {
+        ref.current.addEventListener('change', onChangeChecked);
+        return ()=> {
+            ref.current?.removeEventListener('change', onChangeChecked);
+        }
+    }, [])
     return (
         <>
             {/*
 // @ts-ignore */}
-            <FormControlLabel onChange={onChangeChecked} checked={checked} defaultChecked={defaultValue} control={<Checkbox size={size} value={value} tabIndex={tabIndex} />} sx={{ '& .MuiTypography-root': rootStyles}} label={label} className={className} name={name} />
+            <FormControlLabel control={<Checkbox inputRef={ref} value={value} checked={checked} size={size} tabIndex={tabIndex} name={name} />} sx={{ '& .MuiTypography-root': rootStyles}} label={label} className={className} />
         </>
     );
 }

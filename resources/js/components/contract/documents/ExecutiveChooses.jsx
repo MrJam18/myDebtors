@@ -8,16 +8,21 @@ import ExecutiveDocChanger from "../contractData/ExecutiveDocChanger";
 import {Alert} from "../../../classes/Alert";
 // @ts-ignore
 import {CreateIpInitDispatcher} from "../../../store/Dispatchers/Contracts/CreateIpInitDispatcher";
+import ExecutiveDocChooser from "./choosers/ExecutiveDocChooser";
 
 const ExecutiveChooses = ({setError, setLoading}) => {
     const formRef = useRef();
     const contract = useSelector(contractsSelectors.getCurrent);
     const [agent, setAgent] = useState({});
-    const [showExecutiveDocChanger, setShowExecutiveDocChanger] = useState(false);
+    const [executiveDoc, setExecutiveDoc] = useState({
+        id: contract.executiveDocId,
+        name: contract.executiveDocName
+    });
+    const [showExecutiveDocChooser, setShowExecutiveDocChooser] = useState(false);
     const onSubmit = async (ev) => {
         ev.preventDefault();
         const dispatcher = new CreateIpInitDispatcher(setError, setLoading);
-        dispatcher.addData('executiveDocumentId', contract.executiveDocId);
+        dispatcher.addData('executiveDocumentId', executiveDoc.id);
         dispatcher.addData('agentId', agent.id);
         dispatcher.handle();
     }
@@ -32,7 +37,8 @@ const ExecutiveChooses = ({setError, setLoading}) => {
         }
     }, []);
     const onClickExecutiveDoc = () => {
-        setShowExecutiveDocChanger(true);
+        if(!executiveDoc.id) Alert.set('Нет исп. документа', "Сначала создайте исполнительный документ");
+        else setShowExecutiveDocChooser(true);
     }
     return (
         <>
@@ -46,7 +52,7 @@ const ExecutiveChooses = ({setError, setLoading}) => {
                 </h4>
                 <EasySearch className={'margin-bottom_10 ' + styles.documents__selector} value={agent} setValue={setAgent} serverAddress={'agents/search-list'} required />
             </form>
-                {showExecutiveDocChanger && <ExecutiveDocChanger setShow={setShowExecutiveDocChanger} />}
+                {showExecutiveDocChooser && <ExecutiveDocChooser setExecutiveDoc={setExecutiveDoc} setShow={setShowExecutiveDocChooser}  />}
         </>
     );
 };

@@ -7,6 +7,7 @@ use App\Models\Contract\Contract;
 use App\Models\Contract\ContractType;
 use App\Models\Contract\Payment;
 use App\Models\CourtClaim\CourtClaimType;
+use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\MoneySum;
 use App\Services\Counters\Base\CountBreak;
 use App\Services\Counters\Base\Year;
@@ -149,9 +150,26 @@ abstract class CountService
     }
     public function savePayments(): void
     {
-        $this->payments->each(function(Payment $payment) {
+        $proceedings = new Collection();
+        $this->payments->each(function(Payment $payment) use ($proceedings) {
             $payment->moneySum->save();
+            if($payment->enforcementProceeding) {
+                $proceeding = $payment->enforcementProceeding;
+                $sums = $payment->moneySum;
+                if(!isset($proceedings[$proceeding->id])) {
+                    $proceedings[$proceeding->id] = $proceeding;
+                    $proceeding->sum = 0;
+                    $proceeding->main = 0;
+                    $proceeding->percents = 0;
+                    $proceeding->penalties = 0;
+                }
+                $proceeding->sum += $sums->sum;
+                $proceeding->main += $sums->main;
+                $proceeding->percents += $proceeding->percents;
+                $proceeding->penalties += $proceeding->penalties;
+            }
         });
+        $proceedings->each(fn (EnforcementProceeding $proceeding) => $proceeding->save());
     }
     abstract protected function countPercents(Carbon $startDate, Carbon $endDate): float;
     abstract protected function countPenalties(Carbon $startDate, Carbon $endDate): float;

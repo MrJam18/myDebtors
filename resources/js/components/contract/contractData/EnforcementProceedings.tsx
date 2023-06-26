@@ -1,9 +1,8 @@
-import React, {FormEvent, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useDispatcher} from "../../../hooks/useDispatcher";
 import {useError} from "../../../hooks/useError";
 import {IdNameType} from "../../../Types/IdNameType";
 import {formDataConverter} from "../../../utils/formDataConverter";
-import ButtonInForm from "../../dummyComponents/ButtonInForm";
 import EasyInput from "../../dummyComponents/EasyInput";
 import { makeStyles } from "@mui/styles";
 import { smallInput } from '../../../constants/css';
@@ -62,9 +61,8 @@ const EnforcementProceedings = ({ executiveDocId, setShow}) => {
                     const last = data.length - 1;
                     const lastData = data[last];
                     setEnforcementProceedings(data);
-                    setActiveEnforcementProceeding(lastData);
-                    // setActiveStep(last);
-                    updateInputs(lastData);
+                    // setActiveEnforcementProceeding(lastData);
+                    // updateInputs(lastData);
                 }
             })
             .catch((e) => Alert.setError('Ошибка при получении списка исп. производств', e))
@@ -72,7 +70,7 @@ const EnforcementProceedings = ({ executiveDocId, setShow}) => {
     }, []);
     const updateInputs = (data: Record<string, any>)=> {
         if(formRef.current) {
-            const elements = formRef.current.elements as Record<string, any>;
+            const elements = formRef.current.elements;
             updateElement('begin_date');
             updateElement('end_date');
             updateElement('number');
@@ -82,7 +80,6 @@ const EnforcementProceedings = ({ executiveDocId, setShow}) => {
             updateElement('penalties');
             setBailiff(data.bailiff);
             setStatusId(data.status_id ?? 0);
-
             function updateElement(property: string) {
                 if (data[property]) elements[property].value = data[property];
                 else elements[property].value = '';

@@ -12,7 +12,7 @@ type Props = {
 
 const ListToolbar = ({setOrder, update}: Props) => {
     const showAddDebtor = useShow(AddDebtor, {updateList: update});
-    const showExcelLoader = useShow(ExcelLoader);
+    const showExcelLoader = useShow(ExcelLoader, {update});
     return (
         <div className={styles.utils}>
             {showAddDebtor.Comp()}

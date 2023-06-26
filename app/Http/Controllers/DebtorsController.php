@@ -10,7 +10,7 @@ use App\Models\Passport\PassportType;
 use App\Models\Subject\People\Debtor;
 use App\Models\Subject\People\Name;
 use App\Services\AddressService;
-use Exception;
+use App\Services\Excel\Readers\CreateDebtorsExcelService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -97,7 +97,6 @@ class DebtorsController extends AbstractController
     }
     function changeOne(Request $request, Debtor $debtor): void
     {
-        if(!$debtor->exists() || $debtor->user->group->id !== getGroupId()) throw new Exception('cant find debtor');
         $data = $request->all();
         $column = array_key_first($data);
         $value = $data[$column];
@@ -111,5 +110,11 @@ class DebtorsController extends AbstractController
             return;
         }
         $debtor->updateInnerModel($column, $value);
+    }
+    function createFromExcel(Request $request)
+    {
+        $file = $request->file('table');
+        $service = CreateDebtorsExcelService::createFromPath($file->getRealPath());
+        $service->handle();
     }
 }

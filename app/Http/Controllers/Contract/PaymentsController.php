@@ -10,6 +10,7 @@ use App\Http\Controllers\AbstractControllers\AbstractContractController;
 use App\Http\Requests\PaginateRequest;
 use App\Models\Contract\Contract;
 use App\Models\Contract\Payment;
+use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\MoneySum;
 use App\Services\Counters\CreditCountService;
 use App\Services\Counters\LimitedLoanCountService;
@@ -29,10 +30,11 @@ class PaymentsController extends AbstractContractController
         $data = $request->validated();
         $query = $contract->payments()->orderByData($data->orderBy)
             ->joinRelation('moneySum')
-            ->with('moneySum');
+            ->leftJoinRelation('enforcementProceeding')
+            ->select(['payments.id as payment_id', 'payments.date', 'money_sums.*', 'enforcement_proceedings.number']);
         if($data->search) {
-            if(containRusDate($data->search)) $query->searchByRusDate(['payments.date'], $data->search);
-            else {
+            if(isRusDate($data->search)) $query->searchByRusDate(['payments.date'], $data->search);
+            elseif(is_numeric($data->search)) {
                 $query->searchOne([
                     'money_sums.main',
                     'money_sums.percents',
@@ -40,16 +42,20 @@ class PaymentsController extends AbstractContractController
                     'money_sums.sum'
                 ], $data->search);
             }
+            else {
+                $query->searchOne(['enforcement_proceedings.number'], $data->search);
+            }
         }
         $paginator = $query->paginate($data->perPage, 'payments.*', page: $data->page);
         $list = $paginator->items()->map(function (Payment $payment) {
             return [
-                'money_sums.sum' => $payment->moneySum->sum,
-                'money_sums.main' => $payment->moneySum->main,
-                'money_sums.percents' => $payment->moneySum->percents,
-                'money_sums.penalties' => $payment->moneySum->penalties,
+                'money_sums.sum' => $payment->sum,
+                'money_sums.main' => $payment->main,
+                'money_sums.percents' => $payment->percents,
+                'money_sums.penalties' => $payment->penalties,
+                'enforcement_proceedings.number' => $payment->number,
                 'date' => $payment->date->format(RUS_DATE_FORMAT),
-                'idd' => $payment->id
+                'idd' => $payment->payment_id
             ];
         });
         return $paginator->jsonResponse($list);
@@ -57,18 +63,27 @@ class PaymentsController extends AbstractContractController
     function addOne(Contract $contract, Request $request): void
     {
         $data = $request->all();
+        $formData = $data['formData'];
         $payment = new Payment();
         $payment->moneySum = new MoneySum();
-        $payment->moneySum->sum = (float)$data['sum'];
-        $payment->date = new Carbon($data['date']);
+        $payment->moneySum->sum = (float)$formData['sum'];
+        $payment->date = new Carbon($formData['date']);
         $payment->contract()->associate($contract);
+        if(isset($data['enforcementProceedingId'])) {
+            $proceeding = EnforcementProceeding::find($data['enforcementProceedingId']);
+            if(!$proceeding || $proceeding->executiveDocument->contract_id !== $contract->id) {
+                throw new ShowableException('Не могу найти исполнительное производство');
+            }
+            $payment->enforcementProceeding()->associate($proceeding);
+        }
         $payments = $this->addPaymentInCollection($contract->payments, $payment);
         $this->countPaymentsAndSave($contract, $payments, $payment);
         $this->actionsService->createAction(ActionTypeEnum::Create,'Создан платеж от ' . $payment->date->format(RUS_DATE_FORMAT) . ' г. на сумму ' . $payment->moneySum->sum);
     }
     function changeOne(Contract $contract, string $paymentId, Request $request): void
     {
-        $formData = $request->input('formData');
+        $data = $request->all();
+        $formData = $data['formData'];
         $allPayments = $contract->payments()->orderBy('date')->get();
         $paymentIndex = null;
         /**
@@ -82,6 +97,14 @@ class PaymentsController extends AbstractContractController
             return false;
         });
         if(!$payment) throw new ShowableException('Платеж не найден');
+        if(isset($data['enforcementProceedingId']) && $payment->enforcement_proceeding_id !== $data['enforcementProceedingId']) {
+            $proceeding = EnforcementProceeding::find($data['enforcementProceedingId']);
+            if(!$proceeding || $proceeding->executiveDocument->contract_id !== $contract->id) {
+                throw new ShowableException('Не могу найти исполнительное производство');
+            }
+            $payment->enforcementProceeding()->associate($proceeding);
+        }
+        else $payment->enforcementProceeding()->dissociate();
         $paymentSnapShot = $payment->replicate();
         $paymentSumSnapShot = $payment->moneySum->sum;
         if($payment->date->format(ISO_DATE_FORMAT) !== $formData['date']) {
@@ -92,6 +115,20 @@ class PaymentsController extends AbstractContractController
         $payment->moneySum->sum = $formData['sum'];
         $this->countPaymentsAndSave($contract, $allPayments, $payment);
         $this->actionsService->createAction(ActionTypeEnum::Change, 'Изменен платеж от ' . $paymentSnapShot->date->format(RUS_DATE_FORMAT) . ' на сумму ' . $paymentSumSnapShot . " руб. на дату " . $payment->date->format(RUS_DATE_FORMAT) . " и сумму " . $payment->moneySum->sum . ' руб.');
+    }
+
+    function getOne(Contract $contract, Payment $payment): array
+    {
+        if($payment->contract_id !== $contract->id) throw new ShowableException('Платеж не соотносится с договором');
+        $data = $payment->toArray();
+        $data['sum'] = $payment->moneySum->sum;
+        if($payment->enforcementProceeding) {
+            $data['enforcementProceeding'] = [
+                'id' => $payment->enforcementProceeding->id,
+                'name' => "{$payment->enforcementProceeding->number} от {$payment->enforcementProceeding->begin_date->format(RUS_DATE_FORMAT)} г."
+            ];
+        }
+        return $data;
     }
 
     function deleteOne(Contract $contract, Payment $payment): void

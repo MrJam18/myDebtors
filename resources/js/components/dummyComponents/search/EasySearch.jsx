@@ -22,7 +22,7 @@ const useStyles = makeStyles({
         }
     }
 });
-const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 300, setValue, value = null, required = false, disabled = false, onKeyDown = null, className = null, reqData = null }) => {
+const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 300, setValue, value = null, required = false, disabled = false, onKeyDown = null, className = null, reqData = null, inputVariant = 'standard' }) => {
     const [results, setResults] = useState([]);
     const onSearch = async (val) => {
         try {
@@ -92,7 +92,7 @@ const EasySearch = ({ label = null, customStyles = null, serverAddress, delay = 
             setShrink(false);
     };
     return (<div style={customStyles} className={styles.main + (className ? ' ' + className : '')}>
-      <TextField disabled={disabled} onBlur={onBlur} onFocus={onFocus} onChange={changeInputHandler} size='small' onKeyDown={onKeyDown} label={label} required={required} InputLabelProps={{ shrink }} defaultValue={value === null || value === void 0 ? void 0 : value.name} variant='standard' inputRef={input} fullWidth/>
+      <TextField disabled={disabled} onBlur={onBlur} onFocus={onFocus} onChange={changeInputHandler} size='small' onKeyDown={onKeyDown} label={label} required={required} InputLabelProps={{ shrink }} defaultValue={value === null || value === void 0 ? void 0 : value.name} variant={inputVariant} inputRef={input} fullWidth/>
       <div className={styles.results}>{Results}</div>
      </div>);
 };

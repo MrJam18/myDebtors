@@ -13,12 +13,14 @@ use App\Models\Contract\Contract;
 use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
 use App\Models\CourtClaim\CourtClaim;
+use App\Models\ExecutiveDocument\ExecutiveDocument;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\People\Debtor;
 use App\Providers\Database\ContractsProvider;
 use App\Services\ActionsService;
 use App\Services\Counters\CreditCountService;
 use App\Services\Counters\LimitedLoanCountService;
+use App\Services\Excel\Readers\CreateContractsExcelService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -119,6 +121,10 @@ class ContractsController
          * @var CourtClaim $lastClaim;
          */
         $lastClaim = $contract->courtClaims()->orderBy('created_at', 'desc')->first();
+        /**
+         * @var ExecutiveDocument $lastExecutiveDoc;
+         */
+        $lastExecutiveDoc = $contract->executiveDocuments()->orderBy('issued_date', 'DESC')->first();
         if($lastClaim) {
             $lastClaimName = "{$lastClaim->type->name} от {$lastClaim->created_at->format(RUS_DATE_FORMAT)} г.";
         }
@@ -146,8 +152,8 @@ class ContractsController
                 'penaltyToday' => $result->penalties,
                 'paymentsCount' => $contract->payments->count(),
                 'createdAt' => $contract->created_at->format(RUS_DATE_FORMAT),
-                'executiveDocName' => $executiveDocName,
-                'executiveDocId' => $contract->executiveDocument?->id,
+                'executiveDocName' => $lastExecutiveDoc?->getName() ?? 'Отсутствует',
+                'executiveDocId' => $lastExecutiveDoc?->id,
                 'id' => $contract->id,
                 'month_due_date' => $contract->month_due_date,
                 'month_due_sum' => $contract->month_due_sum,
@@ -246,5 +252,12 @@ class ContractsController
         $contract->creditor()->associate($creditor);
         $contract->cession()->associate($cession);
         $contract->save();
+    }
+
+    function createFromExcel(Request $request): void
+    {
+        $file = $request->file('table');
+        $service = CreateContractsExcelService::createFromPath($file->getRealPath());
+        $service->handle();
     }
 }

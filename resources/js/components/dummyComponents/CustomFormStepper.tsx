@@ -17,7 +17,7 @@ type Props = {
     setDeleteIds: React.Dispatch<React.SetStateAction<Array<number>>>,
     getUpdatedData: () => Data,
     onSubmit: (data: Array<Data>) => void,
-    leftTopButtons?: React.ReactNode | React.ReactNode[],
+    onDeleteAll?: () => Promise<void>
     onChangeStep?: (data: Data) => void,
     defaultData?: Data,
     buttonText?: string,
@@ -35,21 +35,23 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
         setDeleteIds,
         onSubmit,
         defaultData = {},
-        leftTopButtons = null,
+        onDeleteAll = null,
         onChangeStep = null,
         buttonText = 'Сохранить',
         defaultStep = null,
         loading = true
     }: Props, ref) => {
+
     const formRef = useForwardRef(ref);
     const [activeStep, setActiveStep] = useState(defaultStep ?? dataArray.length - 1);
+    const [isArrayEmpty, setIsArrayEmpty] = useState(false);
+
     const stepChanger = (step: number, changedArr: Array<Record<any, any>> = null)=> {
         if(!changedArr) changedArr = [...dataArray];
         changedArr[activeStep] = getUpdatedData();
         setDataArray(changedArr);
         setActiveStep(step);
-        const activeData = changedArr[step];
-        changeActiveData(activeData);
+        changeActiveData(changedArr[step]);
     }
     const handleNext = () => {
         if (activeStep < dataArray.length - 1) {
@@ -81,8 +83,7 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
             changedArr.splice(currentStep, 1);
             const length = changedArr.length;
             if(currentStep === 0) {
-                if(length === 0) changedArr.push(defaultData);
-                else stepChanger(0, changedArr)
+                if(length) stepChanger(0, changedArr)
             }
             else if(currentStep > length - 1) {
                 setActiveStep(length - 1);
@@ -103,12 +104,6 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
         const newArr = addNewData();
         stepChanger(newArr.length - 1, newArr);
     }
-    useEffect(() => {
-        if(dataArray.length === 0) {
-            const newArr = addNewData();
-            stepChanger(0, newArr);
-        }
-    }, []);
     const onSubmitForm = (ev: FormEvent) => {
         ev.preventDefault();
         // @ts-ignore
@@ -129,14 +124,29 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
                 break;
         }
     }
+    useEffect(() => {
+        if(dataArray.length === 0) {
+            setIsArrayEmpty(true);
+            const newArr = addNewData();
+            newArr[0].isEmpty = true;
+            changeActiveData(newArr[0]);
+            setActiveStep(0);
+        }
+        else if(dataArray.length > 1 || dataArray.length === 1 && !dataArray[0].isEmpty) setIsArrayEmpty(false);
+    }, [dataArray]);
+    useEffect(()=> {
+        if(dataArray.length !== 0) changeActiveData(dataArray[activeStep]);
+    }, []);
     return (
         <form onSubmit={onSubmitForm} ref={formRef}>
             <div className={styles.toolbar}>
                 <div className={styles.toolbar__leftBox}>
-                    {leftTopButtons}
+                    { onDeleteAll &&
+                        <Button variant='contained' type='button' color='error' sx={{width: '201px'}} onClick={onDeleteAll} className={styles.deleteButton}>удалить всё</Button>
+                    }
                 </div>
                 <div className={styles.toolbarBox}>
-                    <Button variant='contained' type='button' sx={{backgroundColor: '#346a9f'}} disabled={dataArray.length <= 1} onClick={onDelete} className={styles.toolbar__button} >Удалить</Button>
+                    <Button variant='contained' type='button' sx={{backgroundColor: '#346a9f'}} disabled={isArrayEmpty} onClick={onDelete} className={styles.toolbar__button} >Удалить</Button>
                     <Button variant='contained' type='submit' datatype='add' color='success' className={styles.toolbar__button} >добавить</Button>
                 </div>
             </div>

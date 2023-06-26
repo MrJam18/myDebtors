@@ -23,7 +23,7 @@ use Illuminate\Support\Collection;
  * @property string $number;
  * @property Carbon $issued_date;
  * @property string $resolution_number;
- * @property string $resolution_date;
+ * @property Carbon $resolution_date;
  * @property Contract $contract;
  * @property ExecutiveDocumentType $type;
  * @property BailiffDepartment $bailiffDepartment
@@ -75,5 +75,9 @@ class ExecutiveDocument extends BaseModel
     function enforcementProceedings(): HasMany
     {
         return $this->hasMany(EnforcementProceeding::class);
+    }
+    function getName(): string
+    {
+        return "{$this->type->name} № {$this->number} от {$this->issued_date->format(RUS_DATE_FORMAT)} г.";
     }
 }

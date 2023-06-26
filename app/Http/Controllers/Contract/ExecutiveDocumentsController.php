@@ -10,7 +10,9 @@ use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\MoneySum;
 use App\Models\Subject\Bailiff\BailiffDepartment;
 use App\Models\Subject\Court\Court;
+use App\Services\Excel\Readers\CreateExecutiveDocsExcelService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ExecutiveDocumentsController extends Controller
 {
@@ -44,7 +46,10 @@ class ExecutiveDocumentsController extends Controller
 
     public function getOne(Contract $contract): ?array
     {
-        $executiveDocument = $contract->executiveDocument;
+        /**
+         * @var ExecutiveDocument $executiveDocument;
+         */
+        $executiveDocument = $contract->executiveDocuments()->orderBy('issued_date', 'DESC')->first();
         if($executiveDocument) {
             $returned = $executiveDocument->toArray();
             $returned['bailiff'] = [
@@ -61,5 +66,27 @@ class ExecutiveDocumentsController extends Controller
             return $returned;
         }
         else return null;
+    }
+
+    function getListForChooser(Contract $contract): Collection
+    {
+        return $contract->executiveDocuments->map(function (ExecutiveDocument $executiveDocument) {
+            $returned = $executiveDocument->toArray();
+            $returned = array_merge($returned, $executiveDocument->moneySum->getSumsStringArray());
+            $returned['fee'] = $executiveDocument->fee . RUS_ROUBLES_NAME;
+            $returned['id'] = $executiveDocument->id;
+            $returned['bailiffDepartment'] = $executiveDocument->bailiffDepartment->name;
+            $returned['court'] = $executiveDocument->court->name;
+            $returned['issued_date'] = $executiveDocument->issued_date->format(RUS_DATE_FORMAT);
+            $returned['type'] = $executiveDocument->type->name;
+            $returned['name'] = $executiveDocument->getName();
+            return $returned;
+        });
+    }
+
+    function createFromExcel(Request $request): void
+    {
+        $service = CreateExecutiveDocsExcelService::createFromPath($request->file('table')->getRealPath());
+        $service->handle();
     }
 }

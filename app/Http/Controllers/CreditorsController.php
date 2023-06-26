@@ -29,6 +29,7 @@ class CreditorsController
 
         $list = $paginator->items()->map(function (Creditor $creditor) {
             return [
+                'creditors.id' => $creditor->id,
                 'idd' => $creditor->id,
                 'created_at' => $creditor->created_at,
                 'short' => $creditor->short,

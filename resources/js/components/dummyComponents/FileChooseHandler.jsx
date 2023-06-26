@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import { alertHandler } from "../../utils/errorHandler";
-const FileChooseHandler = ({ extensions, setFile, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760 }) => {
+const FileChooseHandler = ({ extensions, setFile, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760, name = 'file' }) => {
     const inputRef = useRef();
     const accept = useMemo(() => {
         let acceptString = '';
@@ -36,7 +36,7 @@ const FileChooseHandler = ({ extensions, setFile, Button, title = 'Загруз�
     return (<>
       {/*@ts-ignore*/}
       <button type='button' className={'antibutton'} title={title} style={{ padding: '0 2px' }} onClick={() => inputRef.current.click()}> <Button /> </button>
-      <input onChange={onChange} multiple={multiple} ref={inputRef} accept={accept} style={{ display: 'none' }} type="file" id="file" name="file"/>
+      <input onChange={onChange} multiple={multiple} ref={inputRef} accept={accept} style={{ display: 'none' }} type="file" id="file" name={name}/>
   </>);
 };
 export default FileChooseHandler;

@@ -58,9 +58,8 @@ const EnforcementProceedings = ({ executiveDocId, setShow }) => {
                 const last = data.length - 1;
                 const lastData = data[last];
                 setEnforcementProceedings(data);
-                setActiveEnforcementProceeding(lastData);
-                // setActiveStep(last);
-                updateInputs(lastData);
+                // setActiveEnforcementProceeding(lastData);
+                // updateInputs(lastData);
             }
         })
             .catch((e) => Alert.setError('Ошибка при получении списка исп. производств', e))

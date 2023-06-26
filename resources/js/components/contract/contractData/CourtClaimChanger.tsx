@@ -1,9 +1,16 @@
-import {useEffect, useState} from "react";
+import {faFile} from "@fortawesome/free-regular-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useEffect, useRef, useState} from "react";
 import {Alert} from "../../../classes/Alert";
-import {useForm} from "../../../hooks/useForm";
+import {useDispatcher} from "../../../hooks/useDispatcher";
+import {useError} from "../../../hooks/useError";
 import {useShow} from "../../../hooks/useShow";
-import api from "../../../http/index";
+import api, {saveFile} from "../../../http/index";
+import {createUpdateElementsFunc} from "../../../utils/createUpdateElementFunc";
+import {formDataConverter} from "../../../utils/formDataConverter";
 import {getContractPath} from "../../../utils/getContractPath";
+import {changeChecked} from "../../../utils/inputs/changeChecked";
+import CustomFormStepper from "../../dummyComponents/CustomFormStepper";
 import CustomInput from "../../dummyComponents/CustomInput";
 import CustomModal from "../../dummyComponents/CustomModal";
 import EasyCheckBox from "../../dummyComponents/EasyCheckBox";
@@ -15,69 +22,136 @@ import ServerSelect from "../../dummyComponents/ServerSelect";
 import styles from '../../../css/contract.module.css';
 import CourtCreator from "./CourtCreator";
 
-const CourtClaimChanger = ({setShow, courtClaimId = null, update}) => {
+const defaultData: Record<string, any> = {
+    status_date: 'Неизвестно'
+}
+
+const CourtClaimChanger = ({setShow, update}) => {
+
+    const [claimsArray, setClaimsArray] = useState([]);
+    const [activeClaim, setActiveClaim] = useState(defaultData);
+    const [deleteIds, setDeleteIds] = useState([]);
     const [court, setCourt] = useState(null);
     const [agent, setAgent] = useState(null);
-    const form = useForm({buttonText: 'Сохранить', setShow, update, alertText: 'Судебный иск успешно сохранен'});
-    const [loading, setLoading] = useState(false);
-    const [courtClaim, setCourtClaim] = useState<Record<string, any>>({
-        status_date: 'Неизвестно'
-    });
+    const [typeId, setTypeId] = useState(null);
+    const [statusId, setStatusId] = useState(null);
+    const formRef = useRef<HTMLFormElement>();
+    const error = useError();
+    const [loading, setLoading] = useState(true);
+    const [buttonLoading, setButtonLoading] = useState(false);
+    const dispatcher = useDispatcher(error.setError, {alertText: 'Судебный иск успешно сохранен', setShow, update, setLoading: setButtonLoading});
     const showAddCourt = useShow(CourtCreator, {setValue: setCourt});
-    useEffect(() => {
-        if(courtClaimId) {
-            setLoading(true);
-            api.get(getContractPath('court-claims/get-one/' + courtClaimId))
-                .then(({data}) => {
-                    if (data) {
-                        setCourtClaim(data);
-                        setCourt(data.court);
-                        setAgent(data.agent);
-                    }
-                })
-                .catch((e) => form.setError(e.message))
-                .finally(() => setLoading(false));
+    const updateInputs = (data: Record<string, any>)=> {
+        if(formRef.current && data) {
+            const elements = formRef.current.elements as Record<any, any>;
+            const updateElements = createUpdateElementsFunc(data, elements as HTMLFormControlsCollection);
+            changeChecked(elements.is_contract_jurisdiction, data.is_contract_jurisdiction);
+            changeChecked(elements.is_ignored_payments, data.is_ignored_payments);
+            updateElements('count_date');
+            updateElements('main');
+            updateElements('percents');
+            updateElements('penalties');
+            updateElements('fee');
+            setTypeId(data.type_id ?? 0);
+            setStatusId(data.status_id ?? 0);
+            setAgent(data.agent);
+            setCourt(data.court);
         }
-        else {
-            api.get('agents/get-default')
-                .then(({data}) => {
-                    if (data) setAgent(data);
-                })
-                .catch((e) => Alert.setError('Ошибка при получении агента по умолчанию', e));
-        }
-    }, []);
-    const onSubmit = (ev)=> {
-        ev.preventDefault();
-        const dispatcher = form.dispatcher;
-        dispatcher.addData('court_id', court.id);
-        dispatcher.addData('agent_id', agent.id);
-        if(courtClaimId) dispatcher.addData('courtClaimId', courtClaimId);
-        dispatcher.handle(getContractPath('court-claims/change-or-create-one'), 'post');
     }
+
+    const onDeleteAll = async ()=> {
+        try {
+            setLoading(true)
+            await api.delete(getContractPath('court-claims/delete-all-by-contract'));
+            update();
+            setShow(false);
+            Alert.set('Успешно', "Все судебные иски удалены");
+        }
+        catch (e) {
+            error.setError(e.message);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
+    const onSubmit = (dataArray)=> {
+        dispatcher.addData('courtClaims', dataArray);
+        dispatcher.addData('deleteIds', deleteIds);
+        dispatcher.handle(getContractPath('court-claims/update-list-by-contract'), 'post');
+        // dispatcher.handle(getContractPath('court-claims/change-or-create-one'), 'post');
+    }
+    const getUpdatedData = (): Record<string, any> => {
+        if(formRef.current) {
+            const data = formDataConverter(formRef.current);
+            data.court = court;
+            data.agent = agent;
+            data.status_date = activeClaim.status_date;
+            if (activeClaim.id) data.id = activeClaim.id;
+            return data;
+        }
+        return null;
+    }
+
+
+    const onDownloadDocument = () => {
+        saveFile('documents/get-court-claim-doc/' + activeClaim.id)
+            .catch((e) => Alert.setError('Ошибка при загрузке файла', e));
+    }
+    useEffect(() => {
+        api.get(getContractPath('court-claims/get-list-by-contract'))
+            .then(({data}) => {
+                if (Array.isArray(data) && data.length !== 0) {
+                    setClaimsArray(data);
+                }
+            })
+            .catch((e) => error.setError(e.message))
+            .finally(() => setLoading(false));
+        api.get('agents/get-default')
+            .then(({data}) => {
+                if (data) defaultData.agent = data;
+            })
+            .catch((e) => Alert.setError('Ошибка при получении агента по умолчанию', e));
+    }, []);
 
     return (
         <CustomModal setShow={setShow} header={'Изменение судебного иска'} customStyles={{width: 500}}>
             {showAddCourt.Comp()}
-            {loading ? <Loading/> :
-                <form onSubmit={onSubmit} ref={form.ref}>
-                    <div className={styles.fullWidthBlock}>
-                        <ServerSelect defaultId={courtClaim.typeId} required label={"Тип судебного иска"} name={'type_id'} serverAddress={'court-claims/get-types'}/>
+            {loading ? <Loading/> : <>
+                <CustomFormStepper
+                    dataArray={claimsArray}
+                    setDataArray={setClaimsArray}
+                    setActiveData={setActiveClaim}
+                    setDeleteIds={setDeleteIds}
+                    getUpdatedData={getUpdatedData}
+                    onSubmit={onSubmit}
+                    loading={buttonLoading}
+                    onChangeStep={updateInputs}
+                    defaultData={defaultData}
+                    onDeleteAll={onDeleteAll}
+                    ref={formRef} >
+                    <div className={styles.fullWidthBlock + ' margin-top_10'}>
+                        <ServerSelect setId={setTypeId} id={typeId} required label={"Тип судебного иска"} name={'type_id'} serverAddress={'court-claims/get-types'}/>
                     </div>
 
                     <div className={styles.flexBetween + ' margin_0'}>
                         <div className={styles.smallBlock}>
-                            <CustomInput type={'date'} defaultValue={courtClaim.count_date} className={styles.fullWidthBlock} label={'Дата расчета иска'}
+                            <CustomInput type={'date'} className={styles.fullWidthBlock} label={'Дата расчета иска'}
                                          name={'count_date'}/>
-                            <ServerSelect required defaultId={courtClaim.statusId} customClassName={styles.fullWidthBlock} name={'status_id'} label={'Cтатус'}
-                                          serverAddress={'court-claims/get-statuses'}/>
+                            <ServerSelect setId={setStatusId} id={statusId} required customClassName={styles.fullWidthBlock} name={'status_id'} label={'Cтатус'} serverAddress={'court-claims/get-statuses'}/>
                             <div className={styles.fullWidthBlock}>
-                                Статус обновлен: {courtClaim.status_date}
+                                Статус обновлен: {activeClaim.status_date}
                             </div>
                         </div>
                         <div className={styles.smallBlock}>
-                            <EasyCheckBox defaultValue={courtClaim.is_ignored_payments} label={'Игнорировать платежи при ограничении процентов'}
+                            <EasyCheckBox label={'Игнорировать платежи при ограничении процентов'}
                                           name={'is_ignored_payments'}/>
-                            <EasyCheckBox defaultValue={courtClaim.is_contract_jurisdiction} label={'Договорная подсудность'} name={'is_contract_jurisdiction'}/>
+                            <EasyCheckBox label={'Договорная подсудность'} name={'is_contract_jurisdiction'}/>
+                            {activeClaim.id &&
+                            <div className={"flex"} onClick={onDownloadDocument} style={{alignItems: 'center', cursor: 'pointer'}}>
+                                {/*@ts-ignore*/}
+                                <FontAwesomeIcon icon={faFile} style={{width: '20px', height: '25px'}} />
+                                <div className={'text'} style={{marginLeft: '10px'}}>Скачать файл</div>
+                            </div> }
                         </div>
                     </div>
                     <SearchAndAddButton required onClickAddButton={showAddCourt.setTrue} value={court} label={'Суд'} serverAddress={'courts/search-list'} setValue={setCourt} className={styles.fullWidthBlock}/>
@@ -85,17 +159,18 @@ const CourtClaimChanger = ({setShow, courtClaimId = null, update}) => {
                                 setValue={setAgent} value={agent}/>
                     <h3 className={'header_small margin-top_10'}>Истребуемые суммы</h3>
                     <div className={styles.flexBetween}>
-                        <EasyInput defaultValue={courtClaim.main} required className={styles.smallInput} name={'main'} pattern={'float'} label={'осн. долг'}/>
-                        <EasyInput defaultValue={courtClaim.percents} required className={styles.smallInput} name={'percents'} pattern={'float'}
+                        <EasyInput required className={styles.smallInput} name={'main'} pattern={'float'} label={'осн. долг'}/>
+                        <EasyInput required className={styles.smallInput} name={'percents'} pattern={'float'}
                                    label={'проценты'}/>
                     </div>
                     <div className={styles.flexBetween}>
-                        <EasyInput required defaultValue={courtClaim.penalties} className={styles.smallInput} name={'penalties'} pattern={'float'}
+                        <EasyInput required className={styles.smallInput} name={'penalties'} pattern={'float'}
                                    label={'неустойка'}/>
-                        <EasyInput defaultValue={courtClaim.fee} required className={styles.smallInput} name={'fee'} pattern={'float'} label={'госпошлина'}/>
+                        <EasyInput required className={styles.smallInput} name={'fee'} pattern={'float'} label={'госпошлина'}/>
                     </div>
-                    {form.Button()}
-                </form>
+                </CustomFormStepper>
+            {error.Comp()}
+            </>
             }
         </CustomModal>
     );

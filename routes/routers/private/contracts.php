@@ -19,3 +19,4 @@ Route::get('get-contract/{id}', [ContractsController::class, 'getOne']);
 Route::get('get-statuses', [ContractsController::class, 'getStatusList']);
 Route::post('change-contract', [ContractsController::class, 'changeContract']);
 Route::post('{contract}/change-creditor', [ContractsController::class, 'changeCreditor']);
+Route::post('create-from-excel', [ContractsController::class, 'createFromExcel']);

@@ -11,6 +11,7 @@ use App\Models\Subject\Court\Court;
 use App\Models\Subject\Court\CourtLevel;
 use App\Models\Subject\Court\CourtType;
 use App\Services\AddressService;
+use App\Services\Excel\Readers\CreateCourtsExcelService;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -85,5 +86,11 @@ class CourtController extends Controller
                 'name' => $requisites->name . ' ' . $requisites->BIK
             ];
         });
+    }
+    function createFromExcel(Request $request): void
+    {
+        $file = $request->file('table');
+        $service = CreateCourtsExcelService::createFromPath($file->getRealPath());
+        $service->handle();
     }
 }

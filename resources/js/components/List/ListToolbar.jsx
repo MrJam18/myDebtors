@@ -5,7 +5,7 @@ import ExcelLoader from "./ExcelLoader";
 import ToolbarButton from "./ToolbarButton";
 const ListToolbar = ({ setOrder, update }) => {
     const showAddDebtor = useShow(AddDebtor, { updateList: update });
-    const showExcelLoader = useShow(ExcelLoader);
+    const showExcelLoader = useShow(ExcelLoader, { update });
     return (<div className={styles.utils}>
             {showAddDebtor.Comp()}
             {showExcelLoader.Comp()}

@@ -34,64 +34,89 @@ class CourtClaimsController extends AbstractContractController
         return CourtClaimStatus::all();
     }
 
-    function getOne(Contract $contract, CourtClaim $claim): array
+    function getListByContract(Contract $contract): Collection
     {
-        if($claim->contract_id !== $contract->id) throw new ShowableException('Связь между судом и договором не совпадает');
-        $returned = $claim->toArray();
-        $returned['count_date'] = $claim->count_date->format(ISO_DATE_FORMAT);
-        $returned['status_date'] = $returned['status_date'] . ' г.';
-        $returned['typeId'] = $claim->type_id;
-        $returned['statusId'] = $claim->status_id;
-        $returned['court'] = [
-            'id' => $claim->court->id,
-            'name' => $claim->court->name
-        ];
-        $returned['agent'] = [
-            'id' => $claim->agent->id,
-            'name' => $claim->agent->name->getFull()
-        ];
-        return array_merge($returned, $claim->moneySum->toArray());
+        $list = $contract->courtClaims;
+        return $list->map(function (CourtClaim $claim) {
+            $returned = $claim->toArray();
+            $returned['count_date'] = $claim->count_date->format(ISO_DATE_FORMAT);
+            $returned['status_date'] = $returned['status_date'] . ' г.';
+            $returned['court'] = [
+                'id' => $claim->court->id,
+                'name' => $claim->court->name
+            ];
+            $returned['agent'] = [
+                'id' => $claim->agent->id,
+                'name' => $claim->agent->name->getFull()
+            ];
+            $returned = array_merge($returned, $claim->moneySum->toArray());
+            $returned['id'] = $claim->id;
+            return $returned;
+        });
     }
-    function changeOrCreateOne(Request $request, Contract $contract): void
+
+    function getListForChooser(Contract $contract): Collection
+    {
+        return $contract->courtClaims->map(function (CourtClaim $claim) {
+            $returned = $claim->toArray();
+            $returned['count_date'] = $claim->count_date->format(RUS_DATE_FORMAT) . ' г.';
+            $returned['status_date'] = $returned['status_date'] . ' г.';
+            $returned['court'] = $claim->court->name;
+            $returned['agent'] = $claim->agent->name->getFull();
+            $returned = array_merge($returned, $claim->moneySum->getSumsStringArray());
+            $returned['fee'] = $claim->fee . RUS_ROUBLES_NAME;
+            $returned['id'] = $claim->id;
+            $returned['type'] = $claim->type->name;
+            $returned['status'] = $claim->status->name;
+            $returned['name'] = "{$claim->type->name} от {$claim->created_at->format(RUS_DATE_FORMAT)} г.";
+            return $returned;
+        });
+    }
+
+    function updateListByContract(Request $request, Contract $contract): void
     {
         $data = $request->all();
-        $formData = $data['formData'];
-        if(isset($data['courtClaimId'])) {
-            $claim = CourtClaim::findWithGroupId($data['courtClaimId']);
-            $actionText = "Изменен";
-            $actionType = ActionTypeEnum::Change;
+        foreach ($data['courtClaims'] as $courtClaimData) {
+            if (isset($courtClaimData['id'])) {
+                toConsole($courtClaimData['id']);
+                $claim = CourtClaim::findWithGroupId($courtClaimData['id']);
+                if ($claim->contract->id !== $contract->id) throw new ShowableException('Договор не соответствует судебному иску');
+            } else {
+                $claim = new CourtClaim();
+                $claim->moneySum = new MoneySum();
+            }
+            $claim->type_id = (int)$courtClaimData['type_id'];
+            $claim->count_date = $courtClaimData['count_date'];
+            if ($claim->status_id !== (int)$courtClaimData['status_id']) {
+                $claim->status_date = now();
+                $claim->status_id = (int)$courtClaimData['status_id'];
+            }
+            $claim->court_id = $courtClaimData['court']['id'];
+            $claim->agent_id = $courtClaimData['agent']['id'];
+            $sums = $claim->moneySum;
+            $sums->main = $courtClaimData['main'];
+            $sums->percents = $courtClaimData['percents'];
+            $sums->penalties = $courtClaimData['penalties'];
+            $sums->countSum();
+            $sums->save();
+            unset($claim->moneySum);
+            $claim->moneySum()->associate($sums);
+            $claim->contract()->associate($contract);
+            $claim->is_contract_jurisdiction = $courtClaimData['is_contract_jurisdiction'];
+            $claim->is_ignored_payments = $courtClaimData['is_ignored_payments'];
+            $claim->user_id = Auth::id();
+            $claim->fee = $courtClaimData['fee'];
+            $claim->save();
         }
-        else {
-            $claim = new CourtClaim();
-            $claim->moneySum = new MoneySum();
-            $actionText = 'Создан';
-            $actionType = ActionTypeEnum::Create;
+        if(count($data['deleteIds']) !== 0) {
+            $contract->courtClaims()->whereIn('id', $data['deleteIds'])->delete();
         }
-        if((int)$formData['type_id'] === CourtClaimTypeEnum::CourtClaim->value) $actionText .= 'о';
-        $claim->type_id = (int)$formData['type_id'];
-        $claim->count_date = $formData['count_date'];
-        if($claim->status_id !== (int)$formData['status_id']) {
-            $claim->status_date = now();
-            $claim->status_id = (int)$formData['status_id'];
-        }
-        $claim->court_id = $data['court_id'];
-        $claim->agent_id = $data['agent_id'];
-        $sums = $claim->moneySum;
-        $sums->main = $formData['main'];
-        $sums->percents = $formData['percents'];
-        $sums->penalties = $formData['penalties'];
-        $sums->countSum();
-        $sums->save();
-        unset($claim->moneySum);
-        $claim->moneySum()->associate($sums);
-        $claim->contract()->associate($contract);
-        $claim->is_contract_jurisdiction = $formData['is_contract_jurisdiction'];
-        $claim->is_ignored_payments = $formData['is_ignored_payments'];
-        $claim->user_id = Auth::id();
-        $claim->fee = $formData['fee'];
-        $claim->save();
-        $actionText .= " {$claim->type->name} от {$claim->created_at->format(RUS_DATE_FORMAT)} г.";
-        $this->actionsService->createAction($actionType, $actionText);
+        $this->actionsService->createAction(ActionTypeEnum::Change, 'Изменены судебные иски');
+    }
+    function deleteAllByContract(Contract $contract)
+    {
+        $contract->courtClaims()->delete();
+        $this->actionsService->createAction(ActionTypeEnum::Delete, 'Удалены судебные иски');
     }
 
 }

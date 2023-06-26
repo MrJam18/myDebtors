@@ -25,9 +25,9 @@ use Illuminate\Support\Collection;
  * @property string $resolution_number;
  * @property Carbon $resolution_date;
  * @property Contract $contract;
- * @property ExecutiveDocumentType $type;
- * @property BailiffDepartment $bailiffDepartment
- * @property Court $court;
+ * @property int $type_id;
+ * @property int $bailiff_department_id
+ * @property int $court_id;
  * @property MoneySum $moneySum;
  * @property Collection $ipInitStatements;
  * @property Collection $enforcementProceedings;

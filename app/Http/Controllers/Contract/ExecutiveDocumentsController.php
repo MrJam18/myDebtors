@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Contract;
 use App\Exceptions\ShowableException;
 use App\Http\Controllers\Controller;
 use App\Models\Contract\Contract;
+use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
 use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\MoneySum;
@@ -44,28 +45,42 @@ class ExecutiveDocumentsController extends Controller
         $exDoc->save();
     }
 
-    public function getOne(Contract $contract): ?array
+    public function getAll(Contract $contract):Collection
     {
-        /**
-         * @var ExecutiveDocument $executiveDocument;
-         */
-        $executiveDocument = $contract->executiveDocuments()->orderBy('issued_date', 'DESC')->first();
-        if($executiveDocument) {
-            $returned = $executiveDocument->toArray();
-            $returned['bailiff'] = [
-                'name' => $executiveDocument->bailiffDepartment->name,
-                'id' => $executiveDocument->bailiffDepartment->id
+        $list = $contract->executiveDocument;
+        return $list->map(function (ExecutiveDocument $document){
+            $returned = $document->toArray();
+            $bailiffDepartment = BailiffDepartment::find($document->bailiff_department_id);
+            $court = Court::find($document->court_id);
+            $docType = ExecutiveDocumentType::find($document->type_id);
+            $returned['bailiffDepartment'] = [
+                'name'=>$bailiffDepartment->name,
+                'id'=>$bailiffDepartment->id
             ];
             $returned['court'] = [
-                'name' => $executiveDocument->court->name,
-                'id' => $executiveDocument->court->id
+                'name'=>$court->name,
+                'id'=>$court->id
             ];
-            $returned = array_merge($returned, $executiveDocument->moneySum->toArray());
-            $returned['typeId'] = $executiveDocument->type->id;
-            $returned['id'] = $executiveDocument->id;
+            $returned['docType'] = [
+                'name'=>$docType->name,
+                'id'=>$docType->id
+            ];
+            $returned['main'] = $document->moneySum->main;
+            $returned['percents'] = $document->moneySum->percents;
+            $returned['penalties'] = $document->moneySum->penalties;
+            $enforcementProceedingsList = $document->enforcementProceedings;
+            $proceedingsArray = $enforcementProceedingsList->map(function (EnforcementProceeding $proceeding){
+                $item = $proceeding->toArray();
+                $item['bailiff'] = [
+                    'name' => $proceeding->bailiff->name->getFull(),
+                    'id' => $proceeding->bailiff->id
+                ];
+                return $item;
+            })->toArray();
+            $returned['enforcementProceedings'] = $proceedingsArray;
+           // Log::info(print_r($returned, true));
             return $returned;
-        }
-        else return null;
+        });
     }
 
     function getListForChooser(Contract $contract): Collection

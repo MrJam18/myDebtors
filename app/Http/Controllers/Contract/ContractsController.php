@@ -14,6 +14,7 @@ use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
 use App\Models\CourtClaim\CourtClaim;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
+use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\People\Debtor;
 use App\Providers\Database\ContractsProvider;
@@ -25,6 +26,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ContractsController
@@ -100,13 +102,16 @@ class ContractsController
          * @var Contract $contract
          */
         $contract = Contract::findWithGroupId($contractId);
+       // Log::info(print_r($contract->executiveDocument, true));
         if (!$contract) throw new Exception('cant find contract by id');
         $now  = Carbon::now();
         $countService = new LimitedLoanCountService();
         $result = $countService->count($contract, $now);
         $delayDays = $now->diffInDays($contract->due_date);
         if($contract->executiveDocument) {
-            $executiveDocName = $contract->executiveDocument->type->name . ' №' . $contract->executiveDocument->number . ' от ' . $contract->executiveDocument->issued_date->format(RUS_DATE_FORMAT) . ' г.';
+            $lastDocument = $contract->executiveDocument->sortByDesc('id')->first();
+            $typeName = ExecutiveDocumentType::find($lastDocument->type_id);
+            $executiveDocName = $typeName->name . ' №' . $lastDocument->number . ' от ' . $lastDocument->issued_date->format(RUS_DATE_FORMAT) . ' г.';
         }
         else $executiveDocName = 'Отсутствует';
         if($contract->cession) {

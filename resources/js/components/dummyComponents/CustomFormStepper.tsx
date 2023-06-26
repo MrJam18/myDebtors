@@ -56,6 +56,7 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
     const handleNext = () => {
         if (activeStep < dataArray.length - 1) {
             stepChanger(activeStep + 1);
+
         }
     };
     const addNewData = () => {
@@ -98,6 +99,7 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
     }
     const changeActiveData = (activeData: Data) => {
         setActiveData(activeData);
+        console.log(activeData);
         if(onChangeStep) onChangeStep(activeData);
     }
     const onAdd = () => {

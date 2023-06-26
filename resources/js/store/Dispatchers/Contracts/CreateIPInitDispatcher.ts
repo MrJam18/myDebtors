@@ -1,14 +1,13 @@
+import {saveFilePost} from "../../../http/index";
+import {getContractPath} from "../../../utils/getContractPath";
 import {Dispatcher} from "../Abstract/Dispatcher";
-import {saveFilePost} from "../../../http";
-import {setAlert} from "../../alert/actions";
 
-export class CreateIPInitDispatcher extends Dispatcher
+export class CreateIpInitDispatcher extends Dispatcher
 {
-    async _handler(data)
+    protected async _handler(dispatcherData)
     {
-        if(!data.agent) throw new Error('Укажите представителя!');
-        if(!this._getState().contracts.executiveDoc.id) throw new Error('Укажите данные исполнительного документа!');
-        // await saveFilePost('documents/createIPInit', {contractId: data.contractId, agentId: data.agent.id}, `ЗВИП по договору ${data.contractId}.docx`);
-        this._dispatch(setAlert('Успешно', "Заявление успешно создано."));
+        if(!dispatcherData.executiveDocumentId) throw new Error('Сначала создайте исполнительный документ');
+        if(!dispatcherData.agentId) throw new Error('Укажите представителя');
+        await saveFilePost(getContractPath('documents/create-ip-init'), dispatcherData);
     }
 }

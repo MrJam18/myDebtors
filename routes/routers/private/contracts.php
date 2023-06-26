@@ -21,7 +21,9 @@ Route::get('get-statuses', [ContractsController::class, 'getStatusList']);
 Route::post('change-contract', [ContractsController::class, 'changeContract']);
 Route::post('{contract}/change-creditor', [ContractsController::class, 'changeCreditor']);
 Route::prefix('{contract}/contract-comments')->group(function () {
-   Route::post('add', [ContractCommentsController::class, 'create'])->name('create');
+   Route::post('create', [ContractCommentsController::class, 'create'])->name('create');
    Route::get('index', [ContractCommentsController::class, 'index'])->name('index');
 });
 Route::get('contract-comments/show/{id}', [ContractCommentsController::class, 'show'])->name('show');
+Route::post('contract-comments/update/{id}', [ContractCommentsController::class, 'update'])->name('update');
+Route::post('contract-comments/delete/{id}', [ContractCommentsController::class, 'delete'])->name('delete');

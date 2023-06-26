@@ -29,11 +29,14 @@ class ContractCommentsController extends AbstractController
         $paginator = $provider->getList($data, $contract);
 
         $list = $paginator->items()->map(function (ContractComment $comment) {
+            if($comment->file) $file = CommentFile::find($comment->file->id)->url;
+            $fileStatus = 'X';
+            if (isset($file)) $fileStatus = 'V';
             return [
                 'created_at' => $comment->created_at->format(RUS_DATE_FORMAT),
                 'text' => $comment->comments,
                 'author' => Name::find($comment->user->id)->name,
-                'comment_file'=> CommentFile::find($comment->file->id)->url,
+                'comment_file'=> $fileStatus,
                 'idd' => $comment->id
             ];
         });
@@ -41,23 +44,22 @@ class ContractCommentsController extends AbstractController
     }
 
 //    function createFile
-    public function create(Request $request): JsonResponse
+
+    /**
+     * @throws Exception
+     */
+    public function create(Request $request): void
     {
         $data = $request->all();
-
-            $groupId = getGroupId();
             $comment = new ContractComment();
-            $comment->comments = $data['comment'];
+            $comment->contract()->associate(Contract::findWithGroupId((int)$data['id']));
+            $comment->comments = $data['commentText'];
             $comment->user()->associate(Auth::user());
-            $contract = Contract::query()->byGroupId($groupId)->find(['contractId'], ['id']);
-            if(!$contract) throw new Exception('cant find contract');
-            $comment->contract()->associate($contract);
-            $file = CommentFile::query()->find($data['CommentFileId'], ['id']);
-            if(!$file) throw new Exception('cant find comment file');
-//            $comment->file()->associate(optional($file));
+//            $file = CommentFile::find($data['file']);
+//            if($file) $comment->file()->associate(optional($file));
             $comment->save();
 
-        return response()->json(['success' => 'Comment created'], 200);
+//        return response()->json(['success' => 'Comment created'], 200);
     }
 
     /**
@@ -65,16 +67,10 @@ class ContractCommentsController extends AbstractController
      */
     public function show($id): array | JsonResponse
     {
-        $commentId = (int)$id;
-        /**
-         * @var ContractComment $comment;
-         */
-        $comment = ContractComment::findWithGroupId($commentId);
+        $comment = ContractComment::find((int)$id);
 
         return [
                     'text' => $comment->comments,
-                    'comment_file' => $comment->file,
-                    'idd' => $comment->id,
             ];
     }
 
@@ -84,22 +80,18 @@ class ContractCommentsController extends AbstractController
     public function update(Request $request): JsonResponse
     {
         $data = $request->all();
-        $comment = ContractComment::query()->find(['id']);
+        $comment = ContractComment::findWithGroupId((int)$data['id']);
         if(!$comment) throw new Exception('cant find contractComment');
-        $comment->comment = $data['comment'];
-        $comment->contract = Contract::query()->find($data['contract_id'], ['id']);
-        if (isset($data['comment_file_id'])) $comment->file = CommentFile::query()->find($data['comment_file_id'], ['id']);
-        $comment->update();
+        $comment->comments = $data['value'];
+        $comment->save();
         return response()->json(['success' => 'Comment updated'], 200);
     }
 
     /**
      * @throws Exception
      */
-    public function destroy(ContractComment $comment): JsonResponse
+    public function delete($id): void
     {
-        if (isset($comment->file)) CommentFileService::query()->find($comment->file)->delete();
-        $comment->delete();
-        return response()->json(['success' => 'Comment deleted'], 200);
+        ContractComment::destroy($id);
     }
 }

@@ -148,12 +148,12 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                 </div>
                 <div className={styles.smallHeader}>Суммы подлежащие взысканию</div>
                 <div className={styles.contentBlock}>
-                    <EasyInput className={styles.smallInput} size={'small'}  name='main' variant='standard' pattern='float' required label='осн. долг' />
-                    <EasyInput className={styles.smallInput} size={'small'}  name='percents' variant='standard' pattern='float'  required label='Проценты' />
+                    <EasyInput shrink className={styles.smallInput} size={'small'}  name='main' variant='standard' pattern='float' required label='осн. долг' />
+                    <EasyInput shrink className={styles.smallInput} size={'small'}  name='percents' variant='standard' pattern='float'  required label='Проценты' />
                 </div>
                 <div className={styles.contentBlock}>
-                    <EasyInput className={styles.smallInput} size={'small'}  name='penalties' variant='standard' pattern='float' required label='Неустойка' />
-                    <EasyInput className={styles.smallInput} size={'small'}  name='fee' variant='standard' pattern='float' required label='Госпошлина' />
+                    <EasyInput shrink className={styles.smallInput} size={'small'}  name='penalties' variant='standard' pattern='float' required label='Неустойка' />
+                    <EasyInput shrink className={styles.smallInput} size={'small'}  name='fee' variant='standard' pattern='float' required label='Госпошлина' />
                 </div>
                 <div className={styles.contentBlock}>
                     <div className={styles.contentBlock}>Исполнительное производство:</div>

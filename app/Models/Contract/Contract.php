@@ -39,7 +39,7 @@ use Illuminate\Support\Collection;
  * @property CessionGroup $cession;
  * @property Creditor $creditor;
  * @property Debtor $debtor;
- * @property Collection executiveDocument;
+ * @property Collection executiveDocuments;
  * @property Collection $payments;
  * @property Collection $courtClaims;
  * @property Collection $actions;
@@ -92,7 +92,7 @@ class Contract extends BaseModel
     {
         return $this->belongsTo(Debtor::class, 'debtor_id');
     }
-    function executiveDocument(): HasMany
+    function executiveDocuments(): HasMany
     {
         return $this->hasMany(ExecutiveDocument::class);
     }

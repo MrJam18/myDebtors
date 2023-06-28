@@ -106,8 +106,8 @@ class ContractsController
         $countService = new LimitedLoanCountService();
         $result = $countService->count($contract, $now);
         $delayDays = $now->diffInDays($contract->due_date);
-        if($contract->executiveDocument) {
-            $lastDocument = $contract->executiveDocument->sortByDesc('id')->first();
+        if($contract->executiveDocuments) {
+            $lastDocument = $contract->executiveDocuments->sortByDesc('id')->first();
             $typeName = ExecutiveDocumentType::find($lastDocument->type_id);
             $executiveDocName = $typeName->name . ' №' . $lastDocument->number . ' от ' . $lastDocument->issued_date->format(RUS_DATE_FORMAT) . ' г.';
         }

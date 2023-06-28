@@ -15,6 +15,7 @@ import CustomFormStepper from "../../dummyComponents/CustomFormStepper";
 import { getContractPath } from "../../../utils/getContractPath";
 import { Alert } from "../../../classes/Alert";
 import Loading from "../../dummyComponents/Loading";
+import CustomInput from "../../dummyComponents/CustomInput";
 const useStyles = makeStyles({
     smallInput
 });
@@ -97,7 +98,7 @@ const EnforcementProceedings = ({ executiveDocId, setShow }) => {
                     <EasyInput shrink autoFocus label='дата окончания исп. производства' className={classes.smallInput} type='date' name='end_date'/>
                 </div>
                 <div className="small-inputs-box">
-                    <EasyInput shrink label='Номер исп. производства' className={classes.smallInput} name='number'/>
+                    <CustomInput customValidity={'номер в формате ЧЧЧЧЧ/ЧЧ/ЧЧЧЧЧ-ИП где Ч - это число'} shrink label='Номер исп. производства' className={classes.smallInput} name='number' pattern={'^\\d{5}\\/\\d{2}\\/\\d{5}-ИП$\n'}/>
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
                     <ServerSelect id={statusId} name={'status_id'} label='Статус исп. производства:' serverAddress='enforcement-proceedings/search-status'/>

@@ -9,15 +9,17 @@ export class SetExecutiveDocumentDispatcher extends Dispatcher
         if(!dispatcherData.court) throw new Error('укажите суд, вынесший решение!');
         if(!dispatcherData.bailiff) throw new Error('Укажите отдел судебных приставов!');
         if(!dispatcherData.typeId) throw new Error('Укажите тип исполнительного документа!');
+        console.log('SEND DATA',dispatcherData);
         const sendData = {
             formData: dispatcherData.formData,
             courtId: dispatcherData.court.id,
             bailiffId: dispatcherData.bailiff.id,
             typeId: dispatcherData.typeId,
-            id: dispatcherData.executiveDocId ?? null
+            id: dispatcherData.executiveDocId ?? null,
+            deleteIds: dispatcherData.deleteIds
         }
-        console.log(sendData);
-        await api.post(`contracts/${this.noReqData.contractId}/executive-documents/set-one`, sendData);
+
+        await api.post(`contracts/${this.noReqData.contractId}/executive-documents/set`, sendData);
         Alert.set('Успешно', "Исполнительный документ успешно изменен");
         this.noReqData.update();
     }

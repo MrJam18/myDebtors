@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import CustomModal from '../../dummyComponents/CustomModal';
 import EasySelect from '../../dummyComponents/EasySelect';
 import styles from '../../../css/contract.module.css';
-import ButtonInForm from '../../dummyComponents/ButtonInForm';
 import { useParams } from 'react-router';
 import CreateBailiff from "./CreateBailiffDepartment";
 import CourtCreator from "./CourtCreator";
@@ -49,9 +48,11 @@ const ExecutiveDocChanger = ({setShow, update}) => {
         dispatcher.addData('court', court);
         dispatcher.addData('bailiff', bailiff);
         dispatcher.addData('typeId', typeId);
-        dispatcher.addData('executiveDocId', executiveDoc.id);
+        dispatcher.addData('id', executiveDoc.id);
+        dispatcher.addData('deleteIds', deleteIds);
         dispatcher.addNoReqData('contractId', contractId);
         dispatcher.addNoReqData('update', update);
+        console.log('DATA',data)
         await dispatcher.handle();
     }
 
@@ -141,7 +142,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                 </div>
                 <div className={styles.contentBlock}>
                     <EasyInput size={'small'}  className={styles.smallInput} pattern='lessThenNow' defaultValue={executiveDoc.issued_date} type='date' name='issued_date' required label='дата ИД' />
-                    <CustomInput size={'small'} customValidity={'номер в формате ББ№ЧЧЧЧЧЧЧЧ или Ч-ЧЧЧЧ/ЧЧЧЧ где Ч - это число, Б-это буква.'} className={styles.smallInput} pattern='(^[А-Яа-яЁё]{2}№\d+$)|^\d{1}-\d+\/\d{4}$'   name='number' required label='Номер ИД' />
+                    <CustomInput shrink size={'small'} customValidity={'номер в формате ББ№ЧЧЧЧЧЧЧЧ или Ч-ЧЧЧЧ/ЧЧЧЧ где Ч - это число, Б-это буква.'} className={styles.smallInput} pattern='(^[А-Яа-яЁё]{2}№\d+$)|^\d{1}-\d+\/\d{4}$'   name='number' required label='Номер ИД' />
                 </div>
                 <div className={styles.contentBlock}>
                     <EasySelect name='typeId' onChange={setTypeId} variants={types} value={typeId} defaultValue={executiveDoc.typeId} label='Тип исполнительного документа *' />

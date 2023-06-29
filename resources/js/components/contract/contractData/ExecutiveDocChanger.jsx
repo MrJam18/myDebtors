@@ -59,13 +59,14 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     const getUpdatedData = () => {
         if (formRef.current) {
             const data = formDataConverter(formRef.current);
+            console.log('getUpdatedData', data);
             data.bailiffDepartment = bailiff;
             data.court = court;
-            data.docType = typeId;
+            data.typeId = typeId;
             data.enforcementProceedings = activeDoc.enforcementProceedings;
             if (activeDoc.id)
                 data.id = activeDoc.id;
-            console.log('getUpdatedData', data);
+
             return data;
         }
     };
@@ -76,8 +77,9 @@ const ExecutiveDocChanger = ({setShow, update}) => {
         api.get(`contracts/${contractId}/executive-documents/get-all`)
             .then(({data}) => {
                 if(data) {
+                    console.log('API',data)
                     const lastIndex = data.length - 1;
-                    const lastDoc = data[lastIndex];
+                    let lastDoc = data[lastIndex];
                     setAllDocs(data);
                     setActiveDoc(lastDoc);
                     setCourt({
@@ -89,7 +91,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                         name: lastDoc.bailiffDepartment.name
                     });
 
-                    setTypeId(lastDoc.docType.id);
+                    setTypeId(lastDoc.type_id);
 
                     updateInputs(lastDoc);
                 }
@@ -99,7 +101,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     }, []);
 
     const updateInputs = (data)=>{
-      //  console.log("updateInputs has been called with data:", data);
+        console.log("updateInputs has been called with data:", data);
         let elements
         if (formRef.current) {
             elements = formRef.current.elements;
@@ -111,6 +113,11 @@ const ExecutiveDocChanger = ({setShow, update}) => {
             updateElement('fee');
             setBailiff(data.bailiffDepartment);
             setCourt(data.court);
+            setTypeId(data.type_id)
+            if (data.type_id===2){
+                updateElement('resolution_number');
+                updateElement('resolution_date');
+            }
 
         }
         if (data.enforcementProceedings.length>0){
@@ -145,7 +152,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                     <CustomInput shrink size={'small'} customValidity={'номер в формате ББ№ЧЧЧЧЧЧЧЧ или Ч-ЧЧЧЧ/ЧЧЧЧ где Ч - это число, Б-это буква.'} className={styles.smallInput} pattern='(^[А-Яа-яЁё]{2}№\d+$)|^\d{1}-\d+\/\d{4}$'   name='number' required label='Номер ИД' />
                 </div>
                 <div className={styles.contentBlock}>
-                    <EasySelect name='typeId' onChange={setTypeId} variants={types} value={typeId} defaultValue={executiveDoc.typeId} label='Тип исполнительного документа *' />
+                    <EasySelect name='typeId' onChange={setTypeId} variants={types} value={typeId}  label='Тип исполнительного документа *' />
                 </div>
                 <div className={styles.smallHeader}>Суммы подлежащие взысканию</div>
                 <div className={styles.contentBlock}>
@@ -168,8 +175,8 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                 </div>
                 {typeId === 2 &&
                     <div className={styles.contentBlock}>
-                        <EasyInput className={styles.smallInput} required defaultValue={activeDoc.resolutionNumber} name='resolutionNumber' size={'small'} variant='standard' label='номер решения' />
-                        <EasyInput size={'small'} className={styles.smallInput} required defaultValue={activeDoc.resolutionDate} InputLabelProps={{shrink: true}} name='resolutionDate' type='date' pattern='lessThenNow' variant='standard' label='дата решения' />
+                        <EasyInput shrink className={styles.smallInput} required name='resolution_number' size={'small'} variant='standard' label='номер решения' />
+                        <EasyInput size={'small'} className={styles.smallInput} required InputLabelProps={{shrink: true}} name='resolution_date' type='date' pattern='lessThenNow' variant='standard' label='дата решения' />
                     </div>
                 }
 

@@ -25,12 +25,17 @@ class ExecutiveDocumentsController extends Controller
             $exDoc = ExecutiveDocument::find($data['id']);
             if($exDoc->contract->id !== $contract->id) throw new ShowableException('id исполнительного документа не соответствует с запросом');
         }if(count($data['deleteIds']) !== 0){
-            Log::info('delete ids exist');
             $contract->executiveDocuments()->whereIn('id',  $data['deleteIds'])->delete();
             return;
-            //ExecutiveDocument::whereIn('id',  $data['deleteIds'])->delete();
         }
         else $exDoc = new ExecutiveDocument();
+        if(isset($formData['resolution_date'])){
+            $exDoc->resolution_date = $formData['resolution_date'];
+
+        }
+        if(isset($formData['resolution_number'])){
+            $exDoc->resolution_number = $formData['resolution_number'];
+        }
         $exDoc->issued_date = $formData['issued_date'];
         $exDoc->number = $formData['number'];
         $type = ExecutiveDocumentType::find($data['typeId']);
@@ -69,10 +74,10 @@ class ExecutiveDocumentsController extends Controller
                 'name'=>$court->name,
                 'id'=>$court->id
             ];
-            $returned['docType'] = [
-                'name'=>$docType->name,
-                'id'=>$docType->id
-            ];
+//            $returned['docType'] = [
+//                'name'=>$docType->name,
+//                'id'=>$docType->id
+//            ];
             $returned['main'] = $document->moneySum->main;
             $returned['percents'] = $document->moneySum->percents;
             $returned['penalties'] = $document->moneySum->penalties;
@@ -86,7 +91,7 @@ class ExecutiveDocumentsController extends Controller
                 return $item;
             })->toArray();
             $returned['enforcementProceedings'] = $proceedingsArray;
-           // Log::info(print_r($returned, true));
+            Log::info(print_r($returned, true));
             return $returned;
         });
     }

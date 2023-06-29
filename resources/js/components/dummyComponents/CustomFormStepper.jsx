@@ -66,7 +66,6 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
     };
     const changeActiveData = (activeData) => {
         setActiveData(activeData);
-        console.log(activeData);
         if (onChangeStep)
             onChangeStep(activeData);
     };

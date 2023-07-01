@@ -81,7 +81,6 @@ class EnforcementProceedingsController extends Controller
                 'name' => $proceeding->bailiff->name->getFull(),
                 'id' => $proceeding->bailiff->id
                 ];
-            Log::info(print_r($returned, true));
             return $returned;
         });
     }

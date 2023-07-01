@@ -39,6 +39,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     const showCourtCreator = useModal();
     const showEnforcementProceedings = useModal();
     const [lastEnforcementProceeding, setLastEnforcementProceeding] = useState();
+    const [isNewDoc, setIsNewDoc] = useState(true)
     const onClickCreateBailiff = () => {
         setShowCreateBailiff(true);
     }
@@ -89,6 +90,7 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                         id: lastDoc.bailiffDepartment.id,
                         name: lastDoc.bailiffDepartment.name
                     });
+                    setIsNewDoc(false);
 
                     setTypeId(lastDoc.type_id);
 
@@ -123,7 +125,6 @@ const ExecutiveDocChanger = ({setShow, update}) => {
         setActiveDoc(data);
         function updateElement(property) {
             if (data[property]) {
-                console.log('ELEMENTS PROPERTY',elements[property] , 'value:', elements[property].value);
                 elements[property].value = data[property];
             }
             else
@@ -141,10 +142,11 @@ const ExecutiveDocChanger = ({setShow, update}) => {
 
     }, [activeDoc])
 
+
     return (
         <CustomModal customStyles={{width: 500}} show setShow={setShow}>
             {docLoading ? <Loading /> : <>
-        <CustomFormStepper loading={loading} onChangeStep={updateInputs} dataArray={allDocs} setDataArray={setAllDocs} setActiveData={setActiveDoc} setDeleteIds={setDeleteIds} getUpdatedData={getUpdatedData} onSubmit={onSubmit} ref={formRef}>
+        <CustomFormStepper setIsNewDoc={setIsNewDoc} loading={loading} onChangeStep={updateInputs} dataArray={allDocs} setDataArray={setAllDocs} setActiveData={setActiveDoc} setDeleteIds={setDeleteIds} getUpdatedData={getUpdatedData} onSubmit={onSubmit} ref={formRef}>
         <div className={'header_small'}>Изменение исполнительного документа</div>
 
             <div className={styles.executiveChoises__main}>
@@ -174,12 +176,14 @@ const ExecutiveDocChanger = ({setShow, update}) => {
                 </div>
                 <div className={styles.contentBlock}>
                     <div className={styles.contentBlock}>Исполнительное производство:</div>
-                    {lastEnforcementProceeding ? (
-                        <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>
-                            {`№: ${lastEnforcementProceeding.number}, Дата: ${lastEnforcementProceeding.begin_date}`}
-                        </div>
-                    ) : (
-                        <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Нет данных об исполнительном производстве</div>
+                    {!isNewDoc && (
+                        lastEnforcementProceeding ? (
+                            <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>
+                                {`№: ${lastEnforcementProceeding.number}, Дата: ${lastEnforcementProceeding.begin_date}`}
+                            </div>
+                        ) : (
+                            <div className={styles.content__link} onClick={() => showEnforcementProceedings.setShow(true)}>Нет данных об исполнительном производстве</div>
+                        )
                     )}
                 </div>
                 {((typeId == 2) || (activeDoc.type_id == 2)) && (

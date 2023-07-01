@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../../css/customStepper.module.css";
 import { useForwardRef } from "../../hooks/useForwardRef";
 import ButtonInForm from "./ButtonInForm";
-const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActiveData, getUpdatedData, children, setDeleteIds, onSubmit, defaultData = {}, leftTopButtons = null, onChangeStep = null, buttonText = 'Сохранить', defaultStep = null, loading = true }, ref) => {
+const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActiveData, getUpdatedData, children, setDeleteIds, onSubmit, defaultData = {}, leftTopButtons = null, onChangeStep = null, buttonText = 'Сохранить', defaultStep = null, loading = true, setIsNewDoc }, ref) => {
     const formRef = useForwardRef(ref);
     const [activeStep, setActiveStep] = useState(defaultStep !== null && defaultStep !== void 0 ? defaultStep : dataArray.length - 1);
     const stepChanger = (step, changedArr = null) => {
@@ -71,6 +71,8 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
             onChangeStep(activeData);
     };
     const onAdd = () => {
+        if (setIsNewDoc)
+            setIsNewDoc(true);
         const newArr = addNewData();
         stepChanger(newArr.length - 1, newArr);
     };

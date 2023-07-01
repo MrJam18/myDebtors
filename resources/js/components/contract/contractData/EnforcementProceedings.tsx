@@ -80,6 +80,7 @@ const EnforcementProceedings = ({ executiveDocId, setShow}) => {
             updateElement('percents');
             updateElement('fee');
             updateElement('penalties');
+            updateElement('status_date');
             setBailiff(data.bailiff);
             setStatusId(data.status_id ?? 0);
 
@@ -115,9 +116,12 @@ const EnforcementProceedings = ({ executiveDocId, setShow}) => {
                     <EasyInput shrink label='Номер исп. производства'
                                className={classes.smallInput}
                                name='number'/>
+                    <EasyInput editable={false} shrink  autoFocus label='дата статуса'
+                               className={classes.smallInput} type='date' name='status_date'/>
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
                     <ServerSelect id={statusId} name={'status_id'} label='Статус исп. производства:' serverAddress='enforcement-proceedings/search-status'/>
+
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
                     <SearchAndAddButton label='Судебный пристав:' required serverAddress='bailiffs/search'

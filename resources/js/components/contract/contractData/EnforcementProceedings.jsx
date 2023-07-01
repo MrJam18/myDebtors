@@ -107,12 +107,12 @@ const EnforcementProceedings = ({ executiveDocId, setShow }) => {
                 </div>
                 <div className={styles.smallHeader}>Взысканные суммы</div>
                 <div className={styles.contentBlock}>
-                    <EasyInput shrink className={styles.smallInput} size={'small'} name='main' variant='standard' pattern='float' required label='осн. долг'/>
-                    <EasyInput shrink className={styles.smallInput} size={'small'} name='percents' variant='standard' pattern='float' required label='Проценты'/>
+                    <EasyInput editable={false} shrink className={styles.smallInput} size={'small'} name='main' variant='standard' pattern='float' label='осн. долг'/>
+                    <EasyInput editable={false} shrink className={styles.smallInput} size={'small'} name='percents' variant='standard' pattern='float' label='Проценты'/>
                 </div>
                 <div className={styles.contentBlock}>
-                    <EasyInput shrink className={styles.smallInput} size={'small'} name='penalties' variant='standard' pattern='float' required label='Неустойка'/>
-                    <EasyInput shrink className={styles.smallInput} size={'small'} name='fee' variant='standard' pattern='float' required label='Госпошлина'/>
+                    <EasyInput editable={false} shrink className={styles.smallInput} size={'small'} name='penalties' variant='standard' pattern='float' label='Неустойка'/>
+                    <EasyInput editable={false} shrink className={styles.smallInput} size={'small'} name='fee' variant='standard' pattern='float' label='Госпошлина'/>
                 </div>
                 </CustomFormStepper>
                 {error.Comp()}

@@ -18,10 +18,11 @@ type Props = {
     variant?: MUITextFieldVariant,
     size?: MUISize,
     onBlur?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>,
-    shrink?: boolean
+    shrink?: boolean,
+    editable?: boolean
 }
 
-const EasyInput = React.forwardRef<HTMLInputElement, Props>(({ label = null, name, className, type='text', autoFocus=false, required = false, pattern = null, defaultValue = null, disabled=false, variant='standard', size='medium', onBlur=null, shrink = undefined }: Props, ref) => {
+const EasyInput = React.forwardRef<HTMLInputElement, Props>(({ editable = true, label = null, name, className, type='text', autoFocus=false, required = false, pattern = null, defaultValue = null, disabled=false, variant='standard', size='medium', onBlur=null, shrink = undefined }: Props, ref) => {
     label = label ? capitalizeFirstLetter(label) : null;
     const inputRef = useRef();
     let suggestionsHandler;
@@ -52,7 +53,7 @@ const EasyInput = React.forwardRef<HTMLInputElement, Props>(({ label = null, nam
     }, [inputRef.current]);
 
     return (
-        <TextField autoFocus={autoFocus} onBlur={onBlur} disabled={disabled} defaultValue={defaultValue} label={label} onChange={suggestionsHandler} inputProps={{pattern: currentPattern}} inputRef={inputRef} variant={variant} required={required} InputLabelProps={{shrink: type === 'date' ?  true : shrink}} className={className} name={name} fullWidth type={type} size={size} />
+        <TextField disabled={disabled || !editable} autoFocus={autoFocus} onBlur={onBlur} defaultValue={defaultValue} label={label} onChange={suggestionsHandler} inputProps={{pattern: currentPattern}} inputRef={inputRef} variant={variant} required={required} InputLabelProps={{shrink: type === 'date' ?  true : shrink}} className={className} name={name} fullWidth type={type} size={size} />
     );
 });
 

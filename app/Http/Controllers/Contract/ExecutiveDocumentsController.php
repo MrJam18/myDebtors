@@ -74,7 +74,7 @@ class ExecutiveDocumentsController extends Controller
                 'name'=>$court->name,
                 'id'=>$court->id
             ];
-//            $returned['docType'] = [
+//            $returned['typeId'] = [
 //                'name'=>$docType->name,
 //                'id'=>$docType->id
 //            ];

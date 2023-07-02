@@ -54,8 +54,6 @@ class ExecutiveDocumentsController extends Controller
         $exDoc->bailiffDepartment()->associate($bailiff);
         $exDoc->contract()->associate($contract);
         $exDoc->save();
-
-
     }
 
     public function getAll(Contract $contract):Collection

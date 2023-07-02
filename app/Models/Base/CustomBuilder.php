@@ -41,12 +41,13 @@ class CustomBuilder extends Builder
      * @param array<string, string> $attributes
      * @return $this
      */
-    function search(array $attributes): static
+    function search(array $attributes, bool $notLike = false): static
     {
-        $this->where(function(CustomBuilder $query) use(&$attributes) {
+        $operator = $notLike ? 'NOT LIKE' : 'LIKE';
+        $this->where(function(CustomBuilder $query) use(&$attributes, $operator) {
             foreach ($attributes as $column => $searchString)
             {
-                $query->orWhereRaw("LOWER($column) LIKE LOWER(?)", ['%' . $searchString . '%']);
+                $query->orWhereRaw("LOWER($column) $operator LOWER(?)", ['%' . $searchString . '%']);
             }
         });
         return $this;
@@ -80,7 +81,7 @@ class CustomBuilder extends Builder
         return $this;
     }
 
-    function searchByFullName(string $fullName): static
+    function searchByFullName(string $fullName, string $table = null): static
     {
         $namesArray = explode(' ', $fullName, 3);
         $length = count($namesArray);
@@ -108,7 +109,8 @@ class CustomBuilder extends Builder
                 ->where('names.name', $namesArray[1])
                 ->whereRaw($this->getSearchWhereRaw('names.patronymic'), $this->getSearchBinding($namesArray[2]));
         }
-        $this->join('names', 'names.id', '=', $this->model->getTable() . '.name_id')->select($this->model->getTable() . '.*');
+        $joinTable = $table ?? $this->model->getTable();
+        $this->join('names', 'names.id', '=', $joinTable . '.name_id');
         return $this;
     }
     private function getSearchWhereRaw(string $column): string

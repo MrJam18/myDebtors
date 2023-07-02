@@ -52,6 +52,10 @@ abstract class AbstractProvider
     {
         return "DATE_FORMAT($value, '%d.%m.%Y') as `$value`";
     }
+    protected function getRusDate(string $value, string $as): string
+    {
+        return "DATE_FORMAT($value, '%d.%m.%Y') as `$as`";
+    }
 
 
     /** @noinspection PhpUndefinedMethodInspection */

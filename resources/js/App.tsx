@@ -9,6 +9,7 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import './index.css';
 import Router from './components/Router';
 
+
 export const store = setupStore();
 const root = createRoot(document.getElementById('root'));
 root.render(
@@ -16,7 +17,7 @@ root.render(
         <Provider store ={store}>
             <StyledEngineProvider injectFirst>
                 <ErrorsCatcher>
-                    <Router />
+                    <Router/>
                 </ErrorsCatcher>
             </StyledEngineProvider>
         </Provider>

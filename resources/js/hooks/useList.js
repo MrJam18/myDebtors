@@ -5,21 +5,17 @@ const defaultOptions = {
     order: ['created_at', "DESC"],
     perPage: 10,
     page: 1,
+    method: 'get'
 };
 function useList(serverUrl, options = defaultOptions, search = null) {
     options = useMemo(() => {
-        if (options !== defaultOptions) {
-            const changedOptions = {};
-            for (let key in defaultOptions) {
-                if (options[key])
-                    changedOptions[key] = options[key];
-                else
-                    changedOptions[key] = defaultOptions[key];
-            }
-            return changedOptions;
+        const changedOptions = options;
+        for (let key in defaultOptions) {
+            if (!changedOptions[key])
+                changedOptions[key] = defaultOptions[key];
         }
-        return defaultOptions;
-    }, []);
+        return changedOptions;
+    }, [options.filter]);
     const [list, setList] = useState([]);
     const [page, setPage] = useState(options.page);
     const [order, setOrder] = useState(options.order);
@@ -29,10 +25,23 @@ function useList(serverUrl, options = defaultOptions, search = null) {
     const [loading, setLoading] = useState(true);
     const update = () => {
         setLoading(true);
-        let url = `${serverUrl}?perPage=${perPage}&page=${page}&order[]=${order[0]}&order[]=${order[1]}`;
+        const config = {
+            method: options.method
+        };
+        const params = {
+            perPage,
+            page,
+            order
+        };
         if (search)
-            url += '&search=' + search;
-        api.get(url)
+            params.search = search;
+        if (options.filter)
+            params.filter = options.filter;
+        if (options.method === 'get')
+            config.params = params;
+        else
+            config.data = params;
+        api(serverUrl, config)
             .then((response) => {
             if (response.data.list) {
                 setList(response.data.list);
@@ -47,12 +56,12 @@ function useList(serverUrl, options = defaultOptions, search = null) {
         })
             .finally(() => setLoading(false));
     };
-    useEffect(update, [order, perPage, page, search, serverUrl]);
+    useEffect(update, [order, perPage, page, search, serverUrl, options.filter]);
     const goToPage = useCallback(function (pageNumber) {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
             setPage(pageNumber);
         }
-    }, []);
+    }, [totalPages]);
     const changeItemsPerPage = useCallback(function (newItemsPerPage) {
         if (newItemsPerPage >= 1) {
             setPage(1);

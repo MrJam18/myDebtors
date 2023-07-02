@@ -7,6 +7,18 @@
 .listBox {
     width: 80%;
     margin-top: 30px;
+    max-width: 1200px;
+}
+.header {
+    font-size: 16px;
+    font-family: Roboto-slab, sans-serif;
+    display: inline-block;
+}
+.headerBox {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    margin-bottom: 10px;
 }
 .birthDate {
     justify-content: center;
@@ -26,6 +38,21 @@
 .issuingOrg {
     margin-left: 0 auto;
     flex: 1
+}
+
+.contracts__elementBlock {
+    width: 20%;
+}
+.contracts__elementBlock_number {
+    width: 15%;
+}
+.contracts__elementBlock_big {
+    width: 25%;
+}
+
+.contracts__rightElementBlock {
+    width: 15%;
+    text-align: right;
 }
 .utils {
     display: flex;
@@ -104,6 +131,24 @@
     margin-bottom: 10px;
     width: 100%;
 }
-/* .status {
-    flex: 1
-} */
+.filter__row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+.filter__selector  {
+    width: 25% !important;
+    margin-bottom: 6px;
+}
+.filter__input {
+    width: 44%;
+    margin-bottom: 1px;
+}
+.filter__checkbox {
+    width: 25%;
+    margin: 0;
+}
+.filter__button {
+    width: 35% !important;
+}

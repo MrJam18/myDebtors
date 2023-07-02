@@ -36,7 +36,7 @@ const usersSlice = createSlice({
             state.isOnline = true;
             state.user = action.payload;
         },
-        logout(state, action) {
+        logout(state) {
             state.isOnline = false;
             state.user = {};
         },

@@ -12,12 +12,15 @@ const MinPagination = ({ total, pageUpdater, limit = 10 }) => {
     const [page, setPage] = useState(0);
     const pageChanger = (ev, page) => {
         setPage(page);
-        pageUpdater(limit, page + 1);
+        pageUpdater(page + 1);
     };
+    function defaultLabelDisplayedRows({ from, to, count }) {
+        return `${from}–${to} из ${count !== -1 ? count : `более чем ${to}`} записей`;
+    }
     return (<table className={styles.main}>
             <tbody>
                 <tr>
-                <TablePagination count={total} style={{ paddingLeft: 0 }} rowsPerPage={limit} className={classes.main} onPageChange={pageChanger} rowsPerPageOptions={[limit]} page={page}/>
+                <TablePagination count={total} style={{ paddingLeft: 0 }} labelDisplayedRows={defaultLabelDisplayedRows} rowsPerPage={limit} className={classes.main} onPageChange={pageChanger} rowsPerPageOptions={[limit]} page={page}/>
                 </tr>
             </tbody>
         </table>);

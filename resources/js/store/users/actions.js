@@ -2,7 +2,7 @@ import AuthService from "../../services/authService";
 import usersSlice from "./reducer";
 import api from "../../http";
 const actions = usersSlice.actions;
-export const tryLogin = (data) => async (dispatch) => {
+export const tryLogin = (data) => async (dispatch, getState) => {
     var _a, _b;
     try {
         const result = await api.post('users/login', data);
@@ -12,8 +12,9 @@ export const tryLogin = (data) => async (dispatch) => {
             localStorage.setItem('token', result.data.token);
         else
             throw new Error('cant take token from server response');
-        if (result.data.user)
+        if (result.data.user) {
             dispatch(actions.login(result.data.user));
+        }
         else
             throw new Error('cant take user from server response');
     }
@@ -30,7 +31,6 @@ export const tryLogout = () => async (dispatch) => {
         const response = await AuthService.logout();
         if (response.status === 250) {
             localStorage.removeItem('token');
-            // @ts-expect-error TS(2554): Expected 1 arguments, but got 0.
             dispatch(actions.logout());
             // @ts-expect-error TS(2554): Expected 1 arguments, but got 0.
             dispatch(actions.fetchSuccess());

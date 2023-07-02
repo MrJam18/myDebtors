@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import styles from '../../css/orgs.module.css';
+import styles from '../../css/leftList.module.css';
 import CreditorsToolBar from './CreditorsToolBar';
 import CustomList from "../dummyComponents/CustomList";
 import ChangeCreditor from "./ChangeCreditor";
@@ -28,7 +28,6 @@ const Creditors = () => {
         <div className="firstWindow background">
              <div className="header">Управление кредиторами</div>
             <div className={"contentBox" + ' ' + styles.main}>
-                <div className="header_small">Список</div>
                 <CreditorsToolBar setSearch={setSearch} setUpdate={setUpdate} />
                 <CustomList search={search} update={update} onClickRow={onClickRow} setUpdate={setUpdate} headers={headers} serverAddress={'creditors/list'} />
             </div>

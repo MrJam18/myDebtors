@@ -14,16 +14,18 @@ type Props = {
     update?: number,
     search?: string,
     setElement?: (el: Record<string, any>) => void,
-    defaultOrder?: Order
+    defaultOrder?: Order,
+    defaultPerPage?: number
 }
-export default function CustomList({headers, defaultOrder=null,  serverAddress, onClickRow = null, update = null, search=null, setElement = null}: Props) {
-    const list = useList(serverAddress, {perPage: 25, order: defaultOrder}, search);
+export default function CustomList({headers, defaultOrder=null,  serverAddress, onClickRow = null, update = null, search=null, setElement = null, defaultPerPage = 25 }: Props) {
+    const list = useList(serverAddress, {perPage: defaultPerPage, order: defaultOrder}, search);
     useEffect(() => {
         if(update) list.update();
     }, [update]);
     const clickRowHandler = (index: number)=> {
         const currentEl = list.get[index];
-        onClickRow(currentEl.idd);
+        const id = currentEl.id ?? currentEl.idd;
+        onClickRow(id);
         if(setElement) setElement(currentEl);
     }
     return(

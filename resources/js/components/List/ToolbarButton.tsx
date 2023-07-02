@@ -1,7 +1,7 @@
 import {
     faArrowDownAZ,
     faArrowUpAZ,
-    faFileCirclePlus, faFilter,
+    faFileCirclePlus, faFilter, faPlus,
     faSortDown,
     faSortUp,
     faUserPlus
@@ -17,11 +17,8 @@ type Props = {
 const iconTypes = {
     circlePlus: faFileCirclePlus,
     userPlus: faUserPlus,
-    arrowDown: faArrowDownAZ,
-    arrowUp: faArrowUpAZ,
-    sortDown: faSortDown,
-    sortUp: faSortUp,
-    filter: faFilter
+    filter: faFilter,
+    plus: faPlus
 }
 
 const ToolbarButton = ({onClick, iconName, title}: Props) => {

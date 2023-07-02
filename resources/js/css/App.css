@@ -8,18 +8,19 @@ body {
 h1,h2,h3,h4,h5,h6 {
   margin: 0;
   padding: 0;
+  font-family: Roboto-slab, sans-serif;
 }
 
 #root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   background-size: 100%;
   font-family: 'Roboto_slab', serif;
 }
 .header {
-  font-family: 'Roboto_slab', serif;
-  font-size: 24px;
+  font-family: 'Roboto-slab', serif;
+  font-size: 21px;
   font-weight: 600;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -207,6 +208,12 @@ html {
 }
 .margin-bottom_5 {
   margin-bottom: 5px;
+}
+.margin-left_5 {
+  margin-left: 5px;
+}
+.margin-left_2 {
+  margin-left: 2px;
 }
 .fullWidthFlexBlock {
   display: flex;

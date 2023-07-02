@@ -31,6 +31,9 @@
 .header {
     border-bottom: 1px solid #c7c7c7;
     padding: 4px 8px;
+    font-family: Roboto-slab, sans-serif;
+    font-size: 15.5px;
+    font-weight: 500;
 }
 .rowContainer {
     display: flex;

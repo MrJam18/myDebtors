@@ -1,30 +1,25 @@
-import { useMemo} from 'react';
-import { useDispatch } from 'react-redux';
-import NoBorderTable from '../dummyComponents/NoBorderTable';
 import styles from '../../css/start.module.css';
-import { recieveAndSaveDocument } from '../../store/actions/actions';
-import MinPagination from '../dummyComponents/MinPagination';
-import { addLinksForSaveFile } from '../../utils/addLinkForSaveFile.jsx';
+import {useNavigate} from "react-router";
 import useList from "../../hooks/useList";
+import NoBorderTable from "../dummyComponents/NoBorderTable";
+import React from "react"
+import MinPagination from "../dummyComponents/MinPagination";
+
+const headers = [{ name: "Дата", key: 'createdAt', type: 'date/time' }, { name: "Действие", key: 'actionType' }, { name: "Объект", key: 'actionObject' }, { name: "Результат", key: 'result', styles: { minWidth: '200px' } }];
+
 const LastActions = () => {
-    const dispatch = useDispatch();
-    const focus = false;
-    const headers = [{ name: "Дата/время", key: 'createdAt', type: 'date/time' }, { name: "Действие", key: 'actionType' }, { name: "Объект", key: 'actionObject' }, { name: "Результат", key: 'result', styles: { minWidth: '200px' } }];
-    let list = useList('actions/lastActions', {perPage: 8});
-    list.get = useMemo(() => addLinksForSaveFile(list.get, onClickDocumentLink), [list.get]);
-    const onClickDocumentLink = (ev) => {
-        const path = ev.currentTarget.getAttribute('data-path');
-        const object = ev.currentTarget.getAttribute('data-object');
-        const id = ev.currentTarget.getAttribute('data-id');
-        dispatch(recieveAndSaveDocument(path, object + ' ' + id + '.docx'));
-    };
-    const sortHandler = async () => {
-    };
+    const navigate = useNavigate();
+    const list = useList('actions/lastActions', {perPage: 10});
+    const onClickRow = (index) => {
+        const element = list.get[index];
+        if(element) navigate(`/contracts/${element.contractId}`);
+    }
+
     return (<div className={styles.element}>
             <div className="header">Мои последние действия</div>
             <div className={styles.flexWrapper}>
-               <NoBorderTable loading={list.loading} headers={headers} rows={list.get} focus={focus} sortHandler={sortHandler}/>
-               <MinPagination pageUpdater={list.setPage} total={list.totalItems}/>
+                <NoBorderTable onClickRow={onClickRow} headers={headers} loading={list.loading} rows={list.get} focus={list.order[0]} />
+                <MinPagination pageUpdater={list.setPage} limit={10} total={list.totalItems}/>
            </div>
         </div>);
 };

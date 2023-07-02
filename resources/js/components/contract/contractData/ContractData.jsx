@@ -10,6 +10,7 @@ import {changeContract} from "../../../store/contracts/actions";
 import {useShow} from "../../../hooks/useShow";
 import CreditorChanger from "./CreditorChanger";
 import CourtClaimChanger from "./CourtClaimChanger";
+import ChangeDebtor from "../../debtor/ChangeDebtor";
 
 
 const ContractData = ({contractId, update}) => {
@@ -25,13 +26,15 @@ const ContractData = ({contractId, update}) => {
     }
     const showCreditorChanger = useShow(CreditorChanger, {update});
     const showCourtClaimChanger = useShow(CourtClaimChanger, {update, courtClaimId: contract.courtClaimId});
+    const showDebtorChanger = useShow(ChangeDebtor, {update, debtorId: contract.debtorId});
     const requestFunction = async (column, value) => {
        await dispatch(changeContract(column, value, contractId));
     }
-    const setters = [{
+    const setters = [
+        {
         colName: 'executiveDocName',
         func: onClickExecutiveDoc
-    },
+        },
         {
             colName: 'creditor',
             func: showCreditorChanger.setTrue
@@ -39,6 +42,10 @@ const ContractData = ({contractId, update}) => {
         {
             colName: 'courtClaimName',
             func: showCourtClaimChanger.setTrue
+        },
+        {
+            colName: 'debtorName',
+            func: showDebtorChanger.setTrue
         }
     ];
     return (
@@ -46,6 +53,7 @@ const ContractData = ({contractId, update}) => {
             {showExecutiveDocChanger && <ExecutiveDocChanger update={update} setShow={setShowExecutiveDocChanger}/>}
             {showCreditorChanger.Comp()}
             {showCourtClaimChanger.Comp()}
+            {showDebtorChanger.Comp()}
                 <div className={styles.header_small}>Информация о договоре.</div>
                 <Toolbar />
                 <div className={styles.content__text}>

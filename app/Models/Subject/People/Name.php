@@ -28,7 +28,9 @@ class Name extends BaseModel
 
     function getFull(): string
     {
-        return $this->surname . ' ' . $this->name . ' ' . $this->patronymic;
+        $full = $this->surname . ' ' . $this->name;
+        if($this->patronymic) $full .= " $this->patronymic";
+        return $full;
     }
     function initials(): string
     {

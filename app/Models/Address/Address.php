@@ -74,4 +74,43 @@ class Address extends BaseModel
         if($this->flat) $fullAddress .= ', ' . $this->flat;
         return $fullAddress;
     }
+    function getFullByNested(): string
+    {
+        $fullAddress = $this->postal_code . ', ';
+        if($this->country_id !== 1) $fullAddress .= $this->country->name . ', ';
+        $fullAddress .= $this->region->name . ', ';
+        if($this->area_id) $fullAddress .= $this->area->name . ', ';
+        $fullAddress .= $this->settlement->name . ', ' . $this->street->name . ', ' . $this->house;
+        if($this->block) $fullAddress .= ', ' . $this->block;
+        if($this->flat) $fullAddress .= ', ' . $this->flat;
+        return $fullAddress;
+    }
+    function getShort(): string
+    {
+        /**
+         * @var Address $data;
+         */
+        $data = self::query()->where('addresses.id', $this->id)
+            ->leftJoinRelation('area')
+            ->rightJoinRelation('settlement')
+            ->joinRelation('street')
+            ->select(['areas.name as area_name',
+                'settlements.name as settlement_name', 'streets.name as street_name'])
+            ->first();
+        $fullAddress = '';
+        if($data->area_name) $fullAddress .= $data->area_name . ', ';
+        $fullAddress .= $data->settlement_name . ', ' . $data->street_name . ', ' . $this->house;
+        if($this->block) $fullAddress .= ', ' . $this->block;
+        if($this->flat) $fullAddress .= ', ' . $this->flat;
+        return $fullAddress;
+    }
+    function getShortByNested(): string
+    {
+        $fullAddress = '';
+        if($this->area_id) $fullAddress .= $this->area->name . ', ';
+        $fullAddress .= $this->settlement->name . ', ' . $this->street->name . ', ' . $this->house;
+        if($this->block) $fullAddress .= ', ' . $this->block;
+        if($this->flat) $fullAddress .= ', ' . $this->flat;
+        return $fullAddress;
+    }
 }

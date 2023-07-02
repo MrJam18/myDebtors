@@ -9,3 +9,5 @@ Route::get('get-one/{debtor}', [DebtorsController::class, 'getOne']);
 Route::get('passport-types', [DebtorsController::class, 'getPassportTypes']);
 Route::post('change-one/{debtor}', [DebtorsController::class, 'changeOne']);
 Route::post('create-from-excel', [DebtorsController::class, 'createFromExcel']);
+Route::get('search-list', [DebtorsController::class, 'getSearchList']);
+Route::get('list', [DebtorsController::class, 'getList']);

@@ -6,11 +6,12 @@ import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import {addModalQuantity, subtractModalQuantity} from "../../store/global/index";
 
 const defaultHeaderStyles = {maxWidth: '400px', display: 'none'}
+export type SetShow = (show: boolean)=> void;
 
 type Props = {
     children: React.ReactNode
     show?: boolean,
-    setShow: (show: boolean)=> void,
+    setShow: SetShow,
     onClose?: ()=> void,
     customStyles?: React.CSSProperties,
     fixedStyles?: React.CSSProperties,

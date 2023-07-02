@@ -1,5 +1,6 @@
 ``
-import React, {useEffect} from 'react';
+import {InputBaseComponentProps, InputProps} from "@mui/material";
+import React, {useEffect, useMemo} from 'react';
 import TextField, {BaseTextFieldProps, } from "@mui/material/TextField";
 import {useForwardRef} from "../../hooks/useForwardRef";
 import {MUITextFieldVariant} from "../../Types/Mui/MUITextFieldVariant";
@@ -12,7 +13,7 @@ interface Props {
     autofocus?: boolean,
     disabled?: boolean,
     defaultValue?: string,
-    label: string,
+    label?: string,
     pattern?: string,
     variant?: MUITextFieldVariant,
     required?: boolean,
@@ -24,12 +25,16 @@ interface Props {
     placeholder?: string,
     name?: string,
     onEnter?: (ev: InputEvent) => void,
-    className?: string
+    className?: string,
+    inputProps?: InputBaseComponentProps
 }
 
 
-const CustomInput = React.forwardRef<HTMLInputElement, Props>(({autofocus = false, disabled= false, defaultValue=null, label, pattern=null, variant='standard', required=true, type = 'text', size = null, fullwidth=true, className=null, name=null, customValidity=null, noSubmit = false, onEnter=null, placeholder=null,}: Props, ref) => {
-  label = capitalizeFirstLetter(label);
+const CustomInput = React.forwardRef<HTMLInputElement, Props>(({autofocus = false, disabled= false, defaultValue=null, label = null, pattern=null, variant='standard', required=true, type = 'text', size = null, fullwidth=true, className=null, name=null, customValidity=null, noSubmit = false, onEnter=null, placeholder=null, inputProps = null}: Props, ref) => {
+  const changedLabel = useMemo(()=> {
+      if(label) return capitalizeFirstLetter(label);
+      else return null;
+  }, [label]);
   const onKeyDown = (ev) => {
       if(ev.keyCode === 13) {
           if(noSubmit) ev.preventDefault();
@@ -48,7 +53,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, Props>(({autofocus = fals
   }, [customValidity])
     // @ts-ignore
  return (
-  <TextField placeholder={placeholder} onKeyDown={onKeyDown} autoFocus={autofocus} disabled={disabled} defaultValue={defaultValue} label={label} inputProps={{pattern}} inputRef={inputRef} variant={variant} required={required} InputLabelProps={type === 'date' ? { shrink: true } : null} className={className} name={name} fullWidth type={type} size={size} />
+  <TextField placeholder={placeholder} onKeyDown={onKeyDown} autoFocus={autofocus} disabled={disabled} defaultValue={defaultValue} label={changedLabel} inputProps={{...inputProps, pattern}} inputRef={inputRef} variant={variant} required={required} InputLabelProps={type === 'date' ? { shrink: true } : null} className={className} name={name} fullWidth type={type} size={size} />
  );
 });
 

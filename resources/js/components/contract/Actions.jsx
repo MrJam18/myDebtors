@@ -13,10 +13,10 @@ const Actions = () => {
     const [search, setSearch] = useState('');
     return (
         <div className={styles.actions}>
+            <div className={styles.header_small}>Действия договора</div>
             <div className={styles.actionsList__toolbar}>
             <ListSearcher setSearch={setSearch} />
             </div>
-            <div className={styles.header_small}>Действия договора</div>
             <CustomList headers={headers} search={search} serverAddress={`contracts/${contractId}/actions/list`} />
         </div>
     );

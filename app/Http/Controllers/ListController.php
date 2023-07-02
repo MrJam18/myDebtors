@@ -8,6 +8,7 @@ use App\Http\Requests\PaginateRequest;
 use App\Models\Auth\User;
 use App\Models\Contract\Contract;
 use App\Models\Subject\People\Debtor;
+use App\Providers\Database\ContractsProvider;
 use App\Providers\Database\DebtorsProvider;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +58,25 @@ class ListController extends AbstractController
                 ];
             });
         }
+        return $paginator->jsonResponse($list);
+    }
+
+    function getContractList(PaginateRequest $request, ContractsProvider $provider): array {
+        $paginator = $provider->getList($request->validated());
+        $list = $paginator->items()->map(function (Contract $contract) {
+            $debtorName = "$contract->surname $contract->name";
+            if($contract->patronymic) $debtorName .= ' ' . $contract->patronymic;
+            $creditorName = $contract->short;
+            if(!$creditorName) $creditorName = $contract->creditor_name;
+            return [
+                'number' => $contract->number,
+                'issued_date' => $contract->issued_date->format(RUS_DATE_FORMAT) . ' г.',
+                'id' => $contract->id,
+                'debtor' => $debtorName,
+                'creditor' => $creditorName,
+                'status' => $contract->status_name
+            ];
+        });
         return $paginator->jsonResponse($list);
     }
 }

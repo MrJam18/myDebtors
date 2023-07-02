@@ -6,7 +6,7 @@ const getContractStatuses = async () => {
     return data;
 };
 export const contractColumns = [
-    new Column('Должник', 'debtorName', 'ref', { ref: '/debtors', refColName: 'debtorId', style: 'fullString' }),
+    new Column('Должник', 'debtorName', 'setter', { style: 'fullString' }),
     new Column('Действующий кредитор', 'creditor', 'setter', { style: 'fullString' }),
     new Column('Первоначальный кредитор', 'firstCreditor', undefined, { noChange, style: 'fullString' }),
     new Column('Договор цессии', 'cession', undefined, { noChange, style: 'fullString' }),

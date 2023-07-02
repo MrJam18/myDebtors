@@ -11,7 +11,7 @@ type Props = {
     label: string,
     className?: string,
     defaultValue?: boolean,
-    onChange?:  (state: boolean) => void,
+    onChange?:  (state: boolean, ev: InputEvent) => void,
     name: string,
     tabIndex?: number,
     rootStyles?: SxProps
@@ -35,7 +35,7 @@ const EasyCheckBox = ({
         if(ev.isTrusted) targetChecked = !targetChecked;
         setValue(targetChecked ? 't' : 'f');
         setChecked(targetChecked);
-        if(onChange) onChange(targetChecked);
+        if(onChange) onChange(targetChecked, ev);
     }
     useEffect(()=> {
         ref.current.addEventListener('change', onChangeChecked);

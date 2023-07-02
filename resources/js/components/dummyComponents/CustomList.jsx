@@ -2,15 +2,17 @@ import React, { useEffect } from "react";
 import useList from "../../hooks/useList";
 import NoBorderTable from "./NoBorderTable";
 import Pagination from "./Pagination";
-export default function CustomList({ headers, defaultOrder = null, serverAddress, onClickRow = null, update = null, search = null, setElement = null }) {
-    const list = useList(serverAddress, { perPage: 25, order: defaultOrder }, search);
+export default function CustomList({ headers, defaultOrder = null, serverAddress, onClickRow = null, update = null, search = null, setElement = null, defaultPerPage = 25 }) {
+    const list = useList(serverAddress, { perPage: defaultPerPage, order: defaultOrder }, search);
     useEffect(() => {
         if (update)
             list.update();
     }, [update]);
     const clickRowHandler = (index) => {
+        var _a;
         const currentEl = list.get[index];
-        onClickRow(currentEl.idd);
+        const id = (_a = currentEl.id) !== null && _a !== void 0 ? _a : currentEl.idd;
+        onClickRow(id);
         if (setElement)
             setElement(currentEl);
     };

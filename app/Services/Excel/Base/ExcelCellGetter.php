@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services\Excel\Base;
 
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ExcelCellGetter extends ExcelCellHelper
@@ -24,18 +25,11 @@ class ExcelCellGetter extends ExcelCellHelper
         $this->column++;
         return $data;
     }
-    function getFormattedValueAndNext(): string
-    {
-        $data = $this->activeSheet->getCell($this->getCell())->getFormattedValue();
-        $this->column++;
-        return $data;
-    }
 
-    function getDateAndNext(): Carbon
+    function getDateAndNext(): \DateTime
     {
-        $value = $this->getFormattedValueAndNext();
-        if(str_contains($value, '/')) return Carbon::createFromFormat('d/m/Y', $value);
-        return Carbon::createFromFormat(RUS_DATE_FORMAT, $value);
+        $value = $this->getValueAndNext();
+        return Date::excelToDateTimeObject($value);
     }
 
     /**

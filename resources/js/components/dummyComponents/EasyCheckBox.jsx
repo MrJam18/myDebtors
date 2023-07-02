@@ -14,7 +14,7 @@ const EasyCheckBox = ({ name, onChange, defaultValue = false, className = null, 
         setValue(targetChecked ? 't' : 'f');
         setChecked(targetChecked);
         if (onChange)
-            onChange(targetChecked);
+            onChange(targetChecked, ev);
     };
     useEffect(() => {
         ref.current.addEventListener('change', onChangeChecked);

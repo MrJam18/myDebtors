@@ -9,15 +9,6 @@ const SortButton = ({sortHandler, header, focus}) => {
             setReverse(false);
         }
     }
-    const changeReverseHandler = () => {
-        if(reverse === true) {
-            setArrow(true)
-        }
-        else {
-            setArrow(false)
-        }
-
-    }
     useEffect(changeFocusHandler, [focus]);
     const clickHandler = (ev) => {
         if (focus === header.key) setArrow(!arrow);
@@ -29,9 +20,9 @@ const SortButton = ({sortHandler, header, focus}) => {
         sortHandler([colKey, type]);
         setReverse(!reverse);
     }
-    return (   
+    return (
            // @ts-expect-error TS(2322): Type '{ children: Element; className: string; styl... Remove this comment to see the full error message
-           <button className='antibutton' style={{color: focus !== header.key ? 'grey' : null, padding: 0, paddingLeft: '2px'}} datakey={header.key} onClick={clickHandler}><ArrowDirection arrow={arrow} /></button> 
+           <button className='antibutton margin-left_2' style={{color: focus !== header.key ? 'grey' : null, padding: 0, paddingLeft: '2px'}} datakey={header.key} onClick={clickHandler}><ArrowDirection arrow={arrow} /></button>
     );
 };
 

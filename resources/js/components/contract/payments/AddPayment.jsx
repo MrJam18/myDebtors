@@ -1,45 +1,27 @@
 import React, {useRef, useState} from 'react';
-import {useParams} from "react-router";
-import {useDispatch, useSelector} from "react-redux";
-import {formDataConverter} from "../../../utils/formDataConverter";
-import {addPayment} from "../../../store/contracts/payments/actions";
-import {setAlert} from "../../../store/alert/actions";
 import CustomModal from "../../dummyComponents/CustomModal";
 import Payment from "./Payment";
 import ButtonInForm from "../../dummyComponents/ButtonInForm";
-import {contractsSelectors} from "../../../store/contracts/selectors";
-import {compareDatesBool} from "../../../utils/dates/compareDatesBool";
+import {useError} from "../../../hooks/useError";
+import {useDispatcher} from "../../../hooks/useDispatcher";
+import {getContractPath} from "../../../utils/getContractPath";
 
 const AddPayment = ({ setModal, update })=> {
- const { contractId } = useParams();
- const contract = useSelector(contractsSelectors.getCurrent);
- const dispatch = useDispatch();
+ const [enforcementProceeding, setEnforcementProceeding] = useState(null);
  const form = useRef();
- const [error, setError] = useState(false);
+ const error = useError();
  const [loading, setLoading] = useState(false);
- const formHandler = async (ev) => {
+ const dispatcher = useDispatcher(error.setError, {setShow: setModal, update, setLoading, alertText: "платеж успешно добавлен", formRef: form});
+ const formHandler = (ev) => {
   ev.preventDefault();
-  setLoading(true);
-  setError(false);
-  const payment = formDataConverter(form.current);
-  try {
-   if(compareDatesBool(contract.date_issue, payment.date)) throw new Error('Дата платежа не может быть меньше даты выдачи договора.');
-   await dispatch(addPayment(payment, contractId));
-   dispatch(setAlert('Успешно!', 'Платеж успешно добавлен!'));
-   update();
-   setModal(false);
-  } catch (e) {
-   console.dir(e);
-   setError(e.message)
-  } finally {
-   setLoading(false);
-  }
+  if(enforcementProceeding) dispatcher.addData('enforcementProceedingId', enforcementProceeding.id);
+  dispatcher.handle(getContractPath('payments/add-one'), 'post');
  }
  return <CustomModal customStyles={{width: '300px'}} setShow={setModal} >
      <form onSubmit={formHandler} ref={form}>
-     <Payment />
+     <Payment enforcementProceeding={enforcementProceeding} setEnforcementProceeding={setEnforcementProceeding} />
       <ButtonInForm loading={loading} />
-      <div className="error">{error}</div>
+      {error.Comp()}
      </form>
    </CustomModal>
 }

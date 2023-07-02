@@ -10,7 +10,6 @@ class StandardDocService extends DocumentService
 {
     public function __construct(BaseDocView $view)
     {
-        parent::__construct();
         $this->view = $view;
         $view->buildDocument();
     }

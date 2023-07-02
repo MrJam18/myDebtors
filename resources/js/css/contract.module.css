@@ -296,6 +296,14 @@
     text-align: center;
     margin-bottom: 5px;
 }
+.addEnforcementProceeding{
+    width: 50% !important;
+}
+.buttonBlock {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
 .flexBetween {
     display: flex;
     justify-content: space-between;

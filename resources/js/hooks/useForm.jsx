@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import ButtonInForm from "../components/dummyComponents/ButtonInForm";
 import { EasyDispatcher } from "../store/Dispatchers/EasyDispatcher";
 import { useError } from "./useError";
-export function useForm({ buttonText = null, setShow = null, noDispatcher = false, update = null, alertText = 'Успешно' } = {}) {
+export function useForm({ buttonText = null, setShow = null, noDispatcher = false, update = null, alertText = null } = {}) {
     const form = useRef();
     const error = useError();
     const [loading, setLoading] = useState(false);

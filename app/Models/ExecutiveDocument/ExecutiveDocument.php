@@ -13,7 +13,7 @@ use App\Models\Subject\Court\Court;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Ramsey\Collection\Collection;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id;
@@ -23,13 +23,14 @@ use Ramsey\Collection\Collection;
  * @property string $number;
  * @property Carbon $issued_date;
  * @property string $resolution_number;
- * @property string $resolution_date;
+ * @property Carbon $resolution_date;
  * @property Contract $contract;
- * @property ExecutiveDocumentType $type;
- * @property BailiffDepartment $bailiffDepartment
- * @property Court $court;
+ * @property int $type_id;
+ * @property int $bailiff_department_id
+ * @property int $court_id;
  * @property MoneySum $moneySum;
  * @property Collection $ipInitStatements;
+ * @property Collection $enforcementProceedings;
  */
 class ExecutiveDocument extends BaseModel
 {
@@ -74,5 +75,9 @@ class ExecutiveDocument extends BaseModel
     function enforcementProceedings(): HasMany
     {
         return $this->hasMany(EnforcementProceeding::class);
+    }
+    function getName(): string
+    {
+        return "{$this->type->name} № {$this->number} от {$this->issued_date->format(RUS_DATE_FORMAT)} г.";
     }
 }

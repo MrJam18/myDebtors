@@ -11,7 +11,6 @@ class IpInitStatementDocument extends DocumentService
 {
     public function __construct(IpInitStatement $statement)
     {
-        parent::__construct();
         $this->view = new IpInitDocView($statement);
         $this->view->buildDocument();
     }

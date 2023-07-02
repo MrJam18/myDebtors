@@ -1,3 +1,5 @@
+// @ts-ignore
+// @ts-ignore
 import { SelectorCreator } from "../base/selectorCreator";
 import { SelectExisting } from "../../classes/SelectExisting";
 export const contractsSelectors = new SelectorCreator('contracts');

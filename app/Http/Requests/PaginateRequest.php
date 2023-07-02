@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 
 use App\Http\Requests\Base\BaseRequest;
+use App\Http\Requests\Base\FilterElement;
 use App\Http\Requests\Base\ListRequestData;
 use App\Providers\Database\AbstractProviders\Components\enums\OrderDirection;
 use App\Providers\Database\AbstractProviders\Components\OrderBy;
@@ -27,6 +28,12 @@ class PaginateRequest extends BaseRequest
             $data->orderBy = new OrderBy($this->order[0], constant(OrderDirection::class . "::$direction"));
         }
         if($this->search) $data->search = $this->search;
+        if($this->filter) {
+            $filter = array_map(function (array $el) {
+                return new FilterElement($el);
+            }, $this->filter);
+            $data->filter = $filter;
+        }
         return $data;
     }
 

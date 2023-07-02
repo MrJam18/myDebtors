@@ -6,6 +6,7 @@ use App\Models\Base\BaseModel;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
 use App\Models\Subject\Bailiff\Bailiff;
 use App\Models\Subject\Bailiff\BailiffDepartment;
+use App\Models\Traits\SumsTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -28,9 +29,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class EnforcementProceeding extends BaseModel
 {
+    use SumsTrait;
     protected $fillable = [
         'begin_date',
         'end_date',
+        'status_date',
         'sum',
         'percents',
         'penalties',
@@ -38,20 +41,13 @@ class EnforcementProceeding extends BaseModel
         'fee',
         'number'
     ];
+
     protected $casts = [
-        'begin_date' => RUS_DATE_CAST,
-        'end_date' => RUS_DATE_CAST
+        'begin_date' => 'date',
+        'end_date' => 'date',
+        'status_date' => 'date'
     ];
 
-//    public static function boot() {
-//        parent::boot();
-//
-//        // При каждом сохранении или обновлении модели
-//        static::saving(function($model) {
-//            // Обновляем поле status_date текущей датой и временем
-//            $model->status_date = Carbon::now();
-//        });
-//    }
 
     function proceedingStatus(): BelongsTo
     {

@@ -6,12 +6,8 @@ export const useForwardRef = <T,>(
 ) => {
     const targetRef = useRef<T>(initialValue);
     useEffect(() => {
-        if (!ref) return;
-        if (typeof ref === 'function') {
-            ref(targetRef.current);
-        } else {
-            targetRef.current = ref.current;
-        }
+        // @ts-expect-error TS(2339): Property 'current' does not exist on type 'Forward... Remove this comment to see the full error message
+        if(ref) ref.current = targetRef.current;
     }, [ref]);
     return targetRef;
 };

@@ -20,7 +20,7 @@ class CreditorsProvider extends AbstractProvider
         if($data->search) {
             $search = $data->search;
             if(is_numeric($search)) {
-                $query->search(['court_identifier'  => $search]);
+                $query->searchOne(['court_identifier', 'creditors.id'], $search);
             }
             else {
                 $query->search([
@@ -29,7 +29,6 @@ class CreditorsProvider extends AbstractProvider
                 ]);
             }
         }
-        toConsole($query->toSql());
         return $query->paginate($data->perPage, page: $data->page);
     }
 }

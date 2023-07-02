@@ -16,7 +16,7 @@ import Files from "./files/Files";
 import {contractsSlice} from "../../store/contracts/reducer";
 import Documents from "./documents/Documents";
 import {useUpdate} from "../../hooks/useUpdate";
-import ContractComment from "./contractComments/ContractComment";
+import ContractComment from './contractComments/ContractComment';
 
 
 const Contract = () => {

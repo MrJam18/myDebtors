@@ -18,16 +18,13 @@
 }
 
 .link {
-    font-family: 'Roboto_slab', serif;
+    font-family: 'Roboto-slab', sans-serif;
     color: black;
     text-decoration: none;
     border-bottom: 4px solid transparent;
     transition: border-color 0.3s linear;
     font-weight: 600;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 5px;
-    padding-bottom: 16px;
+    padding: 5px 2px 11px;
     font-size: 18px;
 }
 .link:hover {

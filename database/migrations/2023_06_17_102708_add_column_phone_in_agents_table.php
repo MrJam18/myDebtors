@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('agents', function (Blueprint $table) {
-            $table->string('phone')->nullable();
-        });
+//        Schema::table('agents', function (Blueprint $table) {
+//            $table->foreignId('passport_id')->constrained();
+//        });
     }
 
     /**
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('agents', function (Blueprint $table) {
-            $table->dropColumn('phone');
+            $table->dropConstrainedForeignId('passport_id');
         });
     }
 };

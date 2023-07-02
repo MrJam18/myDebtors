@@ -51,7 +51,7 @@ const Search = () => {
   const inputSearch = useRef();
   const onSubmit = (ev) =>  {
     ev.preventDefault();
-    navigate('list', {state: inputSearch.current.value})
+    navigate('list/contracts', {state: inputSearch.current.value})
   };
 
     return (

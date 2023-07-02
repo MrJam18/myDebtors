@@ -4,13 +4,16 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AbstractControllers\AbstractController;
+use App\Http\Requests\PaginateRequest;
+use App\Http\Requests\SearchRequest;
 use App\Models\Contract\Contract;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
 use App\Models\Subject\People\Debtor;
 use App\Models\Subject\People\Name;
+use App\Providers\Database\DebtorsProvider;
 use App\Services\AddressService;
-use Exception;
+use App\Services\Excel\Readers\CreateDebtorsExcelService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -56,39 +59,14 @@ class DebtorsController extends AbstractController
     }
     function getOne(Debtor $debtor): array
     {
-        $nameColums = $debtor->name;
-        $passport = $debtor->passport;
-        $data = [
-            'name.surname' => $nameColums->surname,
-            'name.name' => $nameColums->name,
-            'name.patronymic' => $nameColums->patronymic,
-            'birth_date' => $debtor->birth_date->format(RUS_DATE_FORMAT),
-            'birth_place' => $debtor->birth_place,
-            'countContracts' => Contract::query()->where('debtor_id', '=', $debtor->id)->count(),
-            'fullAddress' => $debtor->address->getFull(),
-            'created_at' => $debtor->created_at->format(RUS_DATE_FORMAT),
-            'updated_at' => $debtor->updated_at->format(RUS_DATE_FORMAT),
-            'initials' => $debtor->name->initials()
-        ];
-        if($passport) $data['passport'] = [
-          'type' => [
-              'value' => $passport->type->name,
-              'id' => $passport->type->id
-          ],
-          'seriesAndNumber' => [
-              'series' => $passport->series,
-              'number' => $passport->number
-          ],
-            ];
-        if($passport->issued_date) {
-           $otherFields = [
-               'issued_date' => $passport->issued_date->format(RUS_DATE_FORMAT),
-               'issued_by' => $passport->issued_by,
-               'gov_unit_code' => $passport->gov_unit_code,
-               'updated_at' => $passport->updated_at->format(RUS_DATE_FORMAT)
-           ];
-            $data['passport'] = array_merge($data['passport'], $otherFields);
+        $data = array_merge($debtor->toArray(), $debtor->name->toArray());
+        $data['address'] = $debtor->address->getFull();
+        $data['birth_date'] = $debtor->birth_date->format(ISO_DATE_FORMAT);
+        if($debtor->passport) {
+            $data = array_merge($data, $debtor->passport->toArray());
         }
+        unset($data['user']);
+        $data['id'] = $debtor->id;
         return $data;
     }
     function getPassportTypes(): array | Collection
@@ -97,19 +75,72 @@ class DebtorsController extends AbstractController
     }
     function changeOne(Request $request, Debtor $debtor): void
     {
-        if(!$debtor->exists() || $debtor->user->group->id !== getGroupId()) throw new Exception('cant find debtor');
         $data = $request->all();
-        $column = array_key_first($data);
-        $value = $data[$column];
-        if($column === 'address') {
-            $addressService = new AddressService();
-            $address = $addressService->addAddress($value);
-            $oldAddress = $debtor->address;
-            $debtor->address()->associate($address);
+        DB::transaction(function () use ($data, $debtor) {
+            $formData = $data['formData'];
+            if(isset($data['address'])) {
+                $addressService = new AddressService();
+                $address = $addressService->addAddress($data['address']);
+                $oldAddress = $debtor->address;
+                $debtor->address()->associate($address);
+            }
+            $name = $debtor->name;
+            if($name->surname !== $formData['surname'] || $name->name !== $formData['name'] || $name->patronymic !== $formData['patronymic']) {
+                $name->surname = $formData['surname'];
+                $name->name = $formData['name'];
+                $name->patronymic = $formData['patronymic'];
+                $name->save();
+            }
+            $debtor->birth_place = $formData['birthPlace'];
+            $debtor->birth_date = $formData['birthDate'];
+            $passport = $debtor->passport;
+            $passport->series = $formData['series'];
+            $passport->number = $formData['number'];
+            if(isset($formData['issue'])) {
+                $passport->issued_by = $formData['issue'];
+                $passport->issued_date = $formData['issueDate'];
+                $passport->gov_unit_code = $formData['govCode'];
+            }
+            $type = PassportType::find($formData['typeId']);
+            $passport->type()->associate($type);
+            $passport->save();
+            $debtor->user()->associate(Auth::user());
             $debtor->save();
-            $oldAddress->delete();
-            return;
-        }
-        $debtor->updateInnerModel($column, $value);
+            if(isset($oldAddress)) $oldAddress->delete();
+        });
+    }
+    function createFromExcel(Request $request)
+    {
+        $file = $request->file('table');
+        $service = CreateDebtorsExcelService::createFromPath($file->getRealPath());
+        $service->handle();
+    }
+    function getSearchList(SearchRequest $request): Collection
+    {
+        $list = Debtor::query()->searchByFullName($request->validated())
+            ->byGroupId(getGroupId())
+            ->limit(5)->get();
+        return $list->map(function (Debtor $debtor) {
+            $name = getFullName($debtor);
+            return [
+                'id' => $debtor->id,
+                'name' => "$name {$debtor->birth_date->format(RUS_DATE_FORMAT)} г. р."
+            ];
+        });
+    }
+    function getList(PaginateRequest $request, DebtorsProvider $provider): array
+    {
+        $paginator = $provider->getList($request->validated());
+        $list = $paginator->items()->map(function (Debtor $debtor) {
+            $name = getFullName($debtor);
+            return [
+                'debtors.created_at' => $debtor->created_at->format(RUS_DATE_FORMAT) . ' г.',
+                'names.surname' => $name,
+                'debtors.birth_date' => $debtor->birth_date->format(RUS_DATE_FORMAT) . ' г.',
+                'settlements.name' => $debtor->address->getShortByNested(),
+                'id' => $debtor->id
+            ];
+        });
+        return $paginator->jsonResponse($list);
     }
 }

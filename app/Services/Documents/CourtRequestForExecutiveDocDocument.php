@@ -11,7 +11,6 @@ class CourtRequestForExecutiveDocDocument extends DocumentService
 {
     public function __construct(CourtClaim $claim)
     {
-        parent::__construct();
         $this->view = new CourtRequestForExecutiveDocDocViewCourt($claim);
         $this->view->buildDocument();
     }

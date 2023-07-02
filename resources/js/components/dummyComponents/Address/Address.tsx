@@ -9,8 +9,10 @@ import AddressManually from "./AddressManually";
 import {daDataToken} from "../../../constants/daDataToken";
 import addressManuallyIMG from '../../../img/address-manually.svg';
 
+export type SetAddressForDB = React.Dispatch<React.SetStateAction<AddressFields>>;
+
 type Props = {
-    setAddressForDB: React.Dispatch<React.SetStateAction<AddressFields>>,
+    setAddressForDB: SetAddressForDB,
     defaultValue?: string,
     showHeader?: boolean
 }

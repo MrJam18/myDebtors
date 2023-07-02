@@ -4,7 +4,8 @@ const initState = {
     modal: false,
     error: false,
     openLeftMenu: false,
-    modalQuantity: 0
+    modalQuantity: 0,
+    oldURL: null
 };
 export const globalReducer = (state = initState, action) => {
     switch (action.type) {
@@ -26,6 +27,9 @@ export const globalReducer = (state = initState, action) => {
             if (quantity === 0)
                 document.body.style.overflow = 'initial';
             return Object.assign(Object.assign({}, state), { modalQuantity: quantity });
+        case "GLOBAL::SET_OLD_URL":
+            const oldURL = action.payload;
+            return Object.assign(Object.assign({}, state), { oldURL });
         default:
             return state;
     }
@@ -61,8 +65,13 @@ export const errorWithAlert = (errorAction, error) => dispatch => {
     dispatch(setAlert('Ошибка', error.message, 'error'));
     dispatch(errorAction(error.message));
 };
+export const setOldURL = (oldURL) => ({
+    type: "GLOBAL::SET_OLD_URL",
+    payload: oldURL
+});
 export const getLoading = state => state.global.loading;
 export const getModal = state => state.global.modal;
 export const getGlobalError = state => state.global.error;
 export const getOpenLeftMenu = state => state.global.openLeftMenu;
 export const getModalQuantity = state => state.global.modalQuantity;
+export const getOldURL = state => state.global.oldURL;

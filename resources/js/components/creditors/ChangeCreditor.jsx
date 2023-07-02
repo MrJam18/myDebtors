@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import {deleteOrganization} from '../../store/creditors/actions';
 import Creditor from "./Creditor";
 import {useError} from "../../hooks/useError";
-import styles from '../../css/orgs.module.css';
+import styles from '../../css/leftList.module.css';
 import DefaultCessionChanger from "./DefaultCessionChanger";
 import Loading from "../dummyComponents/Loading";
 import api from "../../http/index";

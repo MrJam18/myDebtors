@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import styles from "../../css/orgs.module.css";
+import styles from "../../css/leftList.module.css";
 import {TextField} from "@mui/material";
 import Address from "../dummyComponents/Address/Address";
 import {makeStyles} from "@mui/styles";

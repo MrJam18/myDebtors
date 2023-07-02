@@ -41,12 +41,13 @@ class CustomBuilder extends Builder
      * @param array<string, string> $attributes
      * @return $this
      */
-    function search(array $attributes): static
+    function search(array $attributes, bool $notLike = false): static
     {
-        $this->where(function(CustomBuilder $query) use(&$attributes) {
+        $operator = $notLike ? 'NOT LIKE' : 'LIKE';
+        $this->where(function(CustomBuilder $query) use(&$attributes, $operator) {
             foreach ($attributes as $column => $searchString)
             {
-                $query->orWhereRaw("LOWER($column) LIKE LOWER(?)", ['%' . $searchString . '%']);
+                $query->orWhereRaw("LOWER($column) $operator LOWER(?)", ['%' . $searchString . '%']);
             }
         });
         return $this;
@@ -80,36 +81,36 @@ class CustomBuilder extends Builder
         return $this;
     }
 
-    function searchByFullName(string $fullName): static
+    function searchByFullName(string $fullName, string $table = null): static
     {
         $namesArray = explode(' ', $fullName, 3);
         $length = count($namesArray);
         if($length === 1) {
-            $in = Name::query()->searchOne(['name', 'surname', 'patronymic'], $fullName)->select('id');
+            $this->searchOne(['names.name', 'names.surname', 'names.patronymic'], $fullName);
         }
         elseif($length === 2) {
-            $in = Name::query()->where(function (CustomBuilder $builder) use (&$namesArray) {
+            $this->where(function (CustomBuilder $builder) use (&$namesArray) {
                 $builder->orWhere(function (CustomBuilder $builder) use (&$namesArray) {
-                   $builder->whereRaw($this->getSearchWhereRaw('name'), $this->getSearchBinding($namesArray[0]));
-                   $builder->whereRaw($this->getSearchWhereRaw('surname'), $this->getSearchBinding($namesArray[1]));
+                   $builder->whereRaw($this->getSearchWhereRaw('names.name'), $this->getSearchBinding($namesArray[0]));
+                   $builder->whereRaw($this->getSearchWhereRaw('names.surname'), $this->getSearchBinding($namesArray[1]));
                 });
                 $builder->orWhere(function (CustomBuilder $builder) use (&$namesArray) {
-                    $builder->whereRaw($this->getSearchWhereRaw('name'), $this->getSearchBinding($namesArray[1]));
-                    $builder->whereRaw($this->getSearchWhereRaw('surname'), $this->getSearchBinding($namesArray[0]));
+                    $builder->whereRaw($this->getSearchWhereRaw('names.name'), $this->getSearchBinding($namesArray[1]));
+                    $builder->whereRaw($this->getSearchWhereRaw('names.surname'), $this->getSearchBinding($namesArray[0]));
                 });
                 $builder->orWhere(function (CustomBuilder $builder) use (&$namesArray) {
-                    $builder->whereRaw($this->getSearchWhereRaw('name'), $this->getSearchBinding($namesArray[0]));
-                    $builder->whereRaw($this->getSearchWhereRaw('patronymic'), $this->getSearchBinding($namesArray[1]));
+                    $builder->whereRaw($this->getSearchWhereRaw('names.name'), $this->getSearchBinding($namesArray[0]));
+                    $builder->whereRaw($this->getSearchWhereRaw('names.patronymic'), $this->getSearchBinding($namesArray[1]));
                 });
-            })->select('id');
+            });
         }
         else {
-            $in = Name::query()->where('surname', $namesArray[0])
-                ->where('name', $namesArray[1])
-                ->where('patronymic', $namesArray[2])
-                ->select('id');
+           $this->where('names.surname', $namesArray[0])
+                ->where('names.name', $namesArray[1])
+                ->whereRaw($this->getSearchWhereRaw('names.patronymic'), $this->getSearchBinding($namesArray[2]));
         }
-        $this->query->whereIn('name_id', $in);
+        $joinTable = $table ?? $this->model->getTable();
+        $this->join('names', 'names.id', '=', $joinTable . '.name_id');
         return $this;
     }
     private function getSearchWhereRaw(string $column): string

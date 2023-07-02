@@ -41,10 +41,10 @@ const Debtors = ({debtor, setAddContract}) => {
     {debtor.contracts?.map(contract =>
       <Link to={`/contracts/${contract.id}`} key= {contract.id} className='antiLink'>
           <ListItemButton component= 'div' className={classes.debtorBlock}>
-      <ListItemText primary={contract.text} className={classes.debtorName}/>
-      <div className={styles.issuingOrg}>{contract.creditor}</div>
-      <div className={styles.status}>{contract.status}</div>
-    </ListItemButton>
+            <div className={styles.contracts__leftElementBlock}>{contract.text}</div>
+            <div className={styles.contracts__middleElementBlock}>{contract.creditor}</div>
+            <div className={styles.contracts__rightElementBlock}>{contract.status}</div>
+        </ListItemButton>
     </Link>
     )}
     <div className={styles.addContract__block}>

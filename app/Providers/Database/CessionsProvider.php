@@ -28,10 +28,12 @@ class CessionsProvider extends AbstractProvider
             ->joinSub($this->getLastCessionQuery(), 'ranked_table', 'ranked_table.cession_group_id', 'cession_groups.id')
             ->join('creditors as assignee_table', 'ranked_table.assignee_id', 'assignee_table.id')
             ->join('creditors as assignor_table', 'ranked_table.assignor_id', 'assignor_table.id')
-            ->selectRaw("{$this->getAsEquals('cession_groups.name')}, {$this->getAsEquals('assignee_table.short')}, {$this->getAsEquals('assignor_table.short')}, {$this->getAsEqualsRusDate('ranked_table.transfer_date')}, cession_groups.id as idd, {$this->getAsEqualsRusDate('cession_groups.created_at')}");
-        if ($data->search) $builder->searchOne(['cession_groups.name'], $data->search);
+            ->selectRaw("{$this->getAsEquals('cession_groups.name')}, {$this->getAsEquals('assignee_table.short')}, {$this->getAsEquals('assignor_table.short')}, {$this->getAsEqualsRusDate('ranked_table.transfer_date')}, cession_groups.id as idd, {$this->getAsEquals('cession_groups.id')}, {$this->getAsEqualsRusDate('cession_groups.created_at')}");
+        if ($data->search) {
+            if(!is_numeric($data->search)) $builder->searchOne(['cession_groups.name'], $data->search);
+            else $builder->searchOne(['cession_groups.id'], $data->search);
+        }
         return $builder->paginate($data->perPage,
-            [$this->getAsEquals('cession_groups.name'),$this->getAsEquals('assignee_table.short'),$this->getAsEquals('assignor_table.short'), $this->getAsEqualsRusDate('ranked_table.transfer_date'), 'cession_groups.id as idd', $this->getAsEqualsRusDate('cession_groups.created_at')],
             page: $data->page);
     }
     function getSearchList(string $search, ?int $creditorId = null): Collection

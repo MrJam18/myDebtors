@@ -1,6 +1,5 @@
 import '../css/App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ListOld from './List';
+import {BrowserRouter, Routes, Route,} from "react-router-dom";
 import Menu from './Menu';
 import Claim from './Claim';
 import Contract from './contract/Contract';
@@ -23,7 +22,10 @@ import Agents from './agents/Agents';
 import Debtor from "./debtor/Debtor";
 import Registration from "./auth/Registration";
 import Cessions from "./cessions/Cessions";
-import Test from "./Test";
+import ContractList from "./List/ContractList";
+import DebtorsList from "./debtor/DebtorsList";
+
+
 
 function Router() {
     const dispatch = useDispatch();
@@ -50,18 +52,17 @@ function Router() {
         <Menu />
         <LeftMenu />
         <HidingAlert></HidingAlert>
-            <Routes>
+            <Routes >
                 <Route path={'registration'} element={<PublicAccess wrapped={<Registration />}/>} />
                 <Route path='login' exact element={<PublicAccess wrapped={<Login />}/>}/>
-                <Route path='list' exact element={<PrivateAccess Wrapped={<ListOld />}/>}/>
                 <Route path='claim' exact element={<PrivateAccess Wrapped={<Claim />}/>}/>
                 <Route path='creditors' exact element={<PrivateAccess Wrapped={<Creditors />}/>}/>
                 <Route path='agents' exact element={<PrivateAccess Wrapped={<Agents />}/>}/>
                 <Route path='contracts/:contractId' element={<PrivateAccess Wrapped={<Contract />}/>}/>
-                <Route path='debtors/:debtorId' element={<PrivateAccess Wrapped={<Debtor />}/>}/>
+                <Route path='debtors' element={<PrivateAccess Wrapped={<DebtorsList />}/>}/>
                 <Route path={'cessions'} element={<PrivateAccess Wrapped={<Cessions />}/>}/>
                 <Route path='/' element={<PrivateAccess Wrapped={<Start />}/>}/>
-                <Route path={'test2'} element={<Test />} />
+                <Route path='list/contracts' exact element={<PrivateAccess Wrapped={<ContractList />}/>}/>
             </Routes>
       </BrowserRouter>);
 }

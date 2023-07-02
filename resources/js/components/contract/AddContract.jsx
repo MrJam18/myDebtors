@@ -59,6 +59,7 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
     const [cession, setCession] = useState(defaultCession);
     const [creditor, setCreditor] = useState(null);
     const [statusId, setStatusId] = useState(1);
+    const [debtor, setDebtor] = useState(null);
     const typeInput = useInput('1');
     const startHandler = () => {
         error.noError();
@@ -72,7 +73,7 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
         data.cessionId = cession.id;
         data.creditorId = creditor?.id;
         data.statusId = statusId;
-        data.debtorId = debtorId;
+        data.debtorId = debtorId ?? debtor.id;
         await controller.handle();
         updateList();
     };
@@ -112,6 +113,11 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
                         </>
                      }
                  </div>
+                 { !debtorId &&
+                     <div className={styles.selectMargin}>
+                         <EasySearch label='Должник по договору' value={debtor} getValue='default_cession' required serverAddress={'debtors/search-list'} setValue={setDebtor} />
+                     </div>
+                 }
                  <div className={styles.selectMargin}>
                      <EasySearch label='кредитор, которому принадлежит заем' value={creditor} getValue='default_cession' required serverAddress={'creditors/search-list-with-cession'} setValue={onChangeCreditor} />
                  </div>

@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon $updated_at;
  * @property string $name;
  * @property Address $address;
+ * @property CourtType $type;
+ * @property CourtLevel $level;
  * @property int $level_id;
  * @property int $type_id;
  * @property Collection $executiveDocuments;

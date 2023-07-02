@@ -34,7 +34,7 @@ const ChangeAgent = ({setShow, agentId, setUpdate}) => {
         dispatcher.addData('id', agentId);
         dispatcher.addData('address', address);
         await dispatcher.handle();
-        setUpdate(true);
+        setUpdate();
     }
     const deleteHandler = async () => {
         const dispatcher = new DeleteAgentDispatcher(setError, setLoading, null, setShow);

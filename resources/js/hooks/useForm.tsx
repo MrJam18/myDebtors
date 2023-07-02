@@ -10,7 +10,7 @@ type Options = {
     update?: ()=> void,
     alertText?: string
 }
-export function useForm({buttonText = null, setShow = null, noDispatcher = false, update = null, alertText = 'Успешно'}: Options = {}) {
+export function useForm({buttonText = null, setShow = null, noDispatcher = false, update = null, alertText = null}: Options = {}) {
     const form: React.MutableRefObject<HTMLFormElement> = useRef();
     const error = useError();
     const [loading, setLoading] = useState(false);

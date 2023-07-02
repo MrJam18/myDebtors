@@ -5,6 +5,7 @@ namespace App\Models;
 
 use App\Models\Base\BaseModel;
 use App\Models\Casts\Money;
+use App\Models\Traits\SumsTrait;
 use Carbon\Carbon;
 
 /**
@@ -18,6 +19,7 @@ use Carbon\Carbon;
  */
 class MoneySum extends BaseModel
 {
+    use SumsTrait;
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -40,12 +42,6 @@ class MoneySum extends BaseModel
         'penalties' => Money::class,
         'main' => Money::class
     ];
-
-    public function countSum(): float
-    {
-        $this->sum = $this->main + $this->percents + $this->penalties;
-        return $this->sum;
-    }
 }
 
 

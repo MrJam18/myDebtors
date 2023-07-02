@@ -1,6 +1,9 @@
 import axios from 'axios';
+import { dispatch } from "../App";
+import { setOldURL } from "../store/global/index";
 import { serverApi } from '../utils/serverApi';
 import { saveAs } from 'file-saver';
+import usersSlice from "../store/users/reducer";
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 const api = axios.create({
     withCredentials: true,
@@ -16,8 +19,13 @@ api.interceptors.request.use((conf) => {
     return conf;
 });
 api.interceptors.response.use((conf) => conf, async (err) => {
-    if (err.response.status === 401 && err.config.url !== "users/get")
-        return window.location.replace('/login');
+    if (err.response.status === 401 && err.config.url !== "users/get") {
+        const oldUrl = window.location.pathname;
+        if (oldUrl !== '/login') {
+            dispatch(setOldURL(oldUrl));
+        }
+        dispatch(usersSlice.actions.logout());
+    }
     throw err;
 });
 export const saveFile = async (path) => {

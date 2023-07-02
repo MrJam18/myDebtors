@@ -7,6 +7,7 @@ use App\Models\Action\Action;
 use App\Models\Auth\User;
 use App\Models\Base\BaseModel;
 use App\Models\Base\CustomBuilder;
+use App\Models\Base\CustomBuilder;
 use App\Models\Casts\Money;
 use App\Models\Cession\CessionGroup;
 use App\Models\CourtClaim\CourtClaim;
@@ -39,7 +40,7 @@ use Illuminate\Support\Collection;
  * @property CessionGroup $cession;
  * @property Creditor $creditor;
  * @property Debtor $debtor;
- * @property ExecutiveDocument $executiveDocument;
+ * @property Collection $executiveDocuments;
  * @property Collection $payments;
  * @property Collection $courtClaims;
  * @property Collection $actions;
@@ -92,9 +93,9 @@ class Contract extends BaseModel
     {
         return $this->belongsTo(Debtor::class, 'debtor_id');
     }
-    function executiveDocument(): HasOne
+    function executiveDocuments(): HasMany | CustomBuilder
     {
-        return $this->hasOne(ExecutiveDocument::class);
+        return $this->hasMany(ExecutiveDocument::class);
     }
     function payments(): HasMany| CustomBuilder
     {

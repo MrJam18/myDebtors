@@ -9,6 +9,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { makeStyles } from '@mui/styles';
 import { setOpenLeftMenu } from '../store/global';
 
+const changeActiveStyles = ({isActive}) => isActive ? styles.link + ' ' + styles.link_active : styles.link;
+
 const useStyles = makeStyles({
   leftMenu: {
     paddingLeft: '20px',
@@ -33,20 +35,30 @@ const useStyles = makeStyles({
       dispatch(setOpenLeftMenu(true));
     }
     const AuthButton = () => <li className= {styles.element + ' ' + styles.element_left}>
-          {isOnline ? <button style={{paddingBottom: '13px', paddingTop: '1px'}} className={styles.link + ' ' + 'antibutton'} onClick={onLogout} >Выйти</button> :  <NavLink to='login' className = {({isActive}) => isActive ? styles.link + ' ' + styles.link_active : styles.link } >Войти
-         </NavLink>}
+          {
+              isOnline ?
+              <button style={{paddingBottom: '13px', paddingTop: '1px'}} className={styles.link + ' ' + 'antibutton'} onClick={onLogout} >
+                  Выйти
+              </button>
+              :
+              <NavLink to='login' className={changeActiveStyles} >
+                  Войти
+              </NavLink>
+          }
         </li>
         return (
-          <ul className= {styles.main}>
+          <ul className={styles.main}>
             <button className='antibutton' onClick={onClickLeftMenuButton}>
             <MenuIcon className={classes.leftMenu} />
             </button>
             <AuthButton />
         <Search/>
-        <li className= { styles.element}><NavLink to='/' className = {({isActive}) => isActive ? styles.link + ' ' + styles.link_active : styles.link } >На главную
-         </NavLink></li>
-                 <li className= { styles.element}><NavLink to='list' className = {({isActive}) => isActive ? styles.link + ' ' + styles.link_active : styles.link } >Список договоров
-         </NavLink></li>
+        <li className={styles.element}>
+            <NavLink to='/' className={changeActiveStyles} >На главную </NavLink>
+        </li>
+          <li className={styles.element}>
+              <NavLink to='list/contracts' className={changeActiveStyles}>Список договоров</NavLink>
+          </li>
      </ul>
       );
   };

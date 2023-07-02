@@ -1,77 +1,107 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatcher } from "../../../hooks/useDispatcher";
+import { useError } from "../../../hooks/useError";
+import { formDataConverter } from "../../../utils/formDataConverter";
 import EasyInput from "../../dummyComponents/EasyInput";
 import { makeStyles } from "@mui/styles";
 import { smallInput } from '../../../constants/css';
-import { useDispatch } from "react-redux";
 import styles from "../../../css/contract.module.css";
 import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
 import CreateBailiff from "./CreateBailiff";
 import ServerSelect from "../../dummyComponents/ServerSelect";
-import ButtonInForm from "../../dummyComponents/ButtonInForm";
 import api from "../../../http";
-import {setAlert} from "../../../store/alert/actions";
 import CustomModal from "../../dummyComponents/CustomModal";
-import {useError} from "../../../hooks/useError";
-
+import CustomFormStepper from "../../dummyComponents/CustomFormStepper";
+import { getContractPath } from "../../../utils/getContractPath";
+import { Alert } from "../../../classes/Alert";
+import Loading from "../../dummyComponents/Loading";
 const useStyles = makeStyles({
     smallInput
-})
-
-const EnforcementProceedings = ({ data = {}, executiveDocId, setShow}) => {
-    const [loading, setLoading] = useState(false);
-    const error = useError();
+});
+const EnforcementProceedings = ({ executiveDocId, setShow }) => {
+    const [activeEnforcementProceeding, setActiveEnforcementProceeding] = useState({});
+    const [statusId, setStatusId] = useState(null);
+    const [enforcementProceedings, setEnforcementProceedings] = useState([]);
+    const [deleteIds, setDeleteIds] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [buttonLoading, setButtonLoading] = useState(false);
     const classes = useStyles();
-    const dispatch = useDispatch();
+    const error = useError();
     const formRef = useRef();
-    const [enforcementProceedingStatus, setEnforcementProceedingStatus] = useState();
-    const [bailiff, setBailiff] = useState();
+    const dispatcher = useDispatcher(error.setError, { setLoading: setButtonLoading, setShow, alertText: 'Исполнительное производство успешно сохранено' });
+    const [bailiff, setBailiff] = useState(null);
     const [showCreateBailiff, setShowCreateBailiff] = useState(false);
-
-
-
-
-    const onClickCreateBailiff = ()=>{
-        setShowCreateBailiff(true)
-    }
-
-
-    const formSubmitHandler = async () => {
-        setLoading(true);
-        error.setError(false);
-        try {
-            const formData = new FormData(formRef.current);
-            formData.append('enforcementProceedingStatus', enforcementProceedingStatus);
-            formData.append('bailiff', bailiff.id);
-            formData.append('executiveDocId', executiveDocId);
-
-            //console.log(Object.fromEntries(formData.entries()));
-            await api.post('enforcement-proceedings/create', formData);
-            dispatch(setAlert('Успешно'));
-            setShow(false);
-
-        } catch (error) {
-            //console.log(error);
-            error.setError(error.message);
-        } finally {
-            setLoading(false);
+    const onSubmit = async (data) => {
+        // const sendingEnforcementProceedings = [...enforcementProceedings];
+        // sendingEnforcementProceedings[activeStep] = getUpdatedData();
+        // dispatcher.addData('enforcementProceedings', sendingEnforcementProceedings);
+        dispatcher.addData('enforcementProceedings', data);
+        dispatcher.addData('deleteIds', deleteIds);
+        dispatcher.handle(getContractPath('enforcement-proceedings/set-all-by-executive-doc/' + executiveDocId), 'post');
+    };
+    const getUpdatedData = () => {
+        if (formRef.current) {
+            const data = formDataConverter(formRef.current);
+            data.bailiff = bailiff;
+            if (activeEnforcementProceeding.id)
+                data.id = activeEnforcementProceeding.id;
+            return data;
         }
-    }
-
-
-
-    return (
-        <CustomModal customStyles={{width: 500}} setShow={setShow}>
-            <form ref={formRef}>
-                {showCreateBailiff && <CreateBailiff setShow={setShowCreateBailiff} setNewItem={setBailiff} /> }
+    };
+    const onClickCreateBailiff = () => {
+        setShowCreateBailiff(true);
+    };
+    useEffect(() => {
+        api.get(getContractPath('enforcement-proceedings/get-list-by-executive-doc/' + executiveDocId))
+            .then(({ data }) => {
+            if (Array.isArray(data) && data.length !== 0) {
+                const last = data.length - 1;
+                const lastData = data[last];
+                setEnforcementProceedings(data);
+                // setActiveEnforcementProceeding(lastData);
+                // updateInputs(lastData);
+            }
+        })
+            .catch((e) => Alert.setError('Ошибка при получении списка исп. производств', e))
+            .finally(() => setLoading(false));
+    }, []);
+    const updateInputs = (data) => {
+        var _a;
+        if (formRef.current) {
+            const elements = formRef.current.elements;
+            updateElement('begin_date');
+            updateElement('end_date');
+            updateElement('number');
+            updateElement('main');
+            updateElement('percents');
+            updateElement('fee');
+            updateElement('penalties');
+            updateElement('status_date');
+            setBailiff(data.bailiff);
+            setStatusId((_a = data.status_id) !== null && _a !== void 0 ? _a : 0);
+            function updateElement(property) {
+                if (data[property])
+                    elements[property].value = data[property];
+                else
+                    elements[property].value = '';
+            }
+        }
+    };
+    return (<CustomModal customStyles={{ width: 500 }} setShow={setShow}>
+            {loading ? <Loading /> : <>
+                <CustomFormStepper loading={buttonLoading} onChangeStep={updateInputs} getUpdatedData={getUpdatedData} dataArray={enforcementProceedings} setDataArray={setEnforcementProceedings} setActiveData={setActiveEnforcementProceeding} setDeleteIds={setDeleteIds} onSubmit={onSubmit} ref={formRef}>
+                {showCreateBailiff &&
+                <CreateBailiff setShow={setShowCreateBailiff} setNewItem={setBailiff}/>}
                 <div className="small-inputs-box">
-                    <EasyInput autoFocus label='дата начала исп. производства' className={classes.smallInput}  type='date' name='beginDate' required />
-                    <EasyInput autoFocus label='дата окончания исп. производства' className={classes.smallInput}  type='date' name='endDate'  />
+                    <EasyInput shrink autoFocus label='дата начала исп. производства' className={classes.smallInput} type='date' name='begin_date' required/>
+                    <EasyInput shrink autoFocus label='дата окончания исп. производства' className={classes.smallInput} type='date' name='end_date'/>
                 </div>
                 <div className="small-inputs-box">
-                    <EasyInput label='Номер исп. производства' required className={classes.smallInput} defaultValue={data.number} name='number' />
+                    <EasyInput shrink label='Номер исп. производства' className={classes.smallInput} name='number'/>
+                    <EasyInput editable={false} shrink autoFocus label='дата статуса' className={classes.smallInput} type='date' name='status_date'/>
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
-                    <ServerSelect label='Статус исп. производства:' required value={enforcementProceedingStatus} serverAddress='enforcement-proceedings/search-status' setId={value => setEnforcementProceedingStatus(value)}/>
+                    <ServerSelect id={statusId} name={'status_id'} label='Статус исп. производства:' serverAddress='enforcement-proceedings/search-status'/>
 
                 </div>
                 <div className={styles.executiveChoises__bailiffBlock}>
@@ -79,17 +109,16 @@ const EnforcementProceedings = ({ data = {}, executiveDocId, setShow}) => {
                 </div>
                 <div className={styles.smallHeader}>Взысканные суммы</div>
                 <div className={styles.contentBlock}>
-                    <EasyInput className={styles.smallInput} size={'small'} defaultValue={''} name='main' variant='standard' pattern='float' required label='осн. долг' />
-                    <EasyInput className={styles.smallInput} size={'small'} defaultValue={''} name='percents' variant='standard' pattern='float'  required label='Проценты' />
+                    <EasyInput editable={false} shrink className={styles.smallInput} size={'small'} name='main' variant='standard' pattern='float' label='осн. долг'/>
+                    <EasyInput editable={false} shrink className={styles.smallInput} size={'small'} name='percents' variant='standard' pattern='float' label='Проценты'/>
                 </div>
                 <div className={styles.contentBlock}>
-                    <EasyInput className={styles.smallInput} size={'small'} defaultValue={''} name='penalties' variant='standard' pattern='float' required label='Неустойка' />
-                    <EasyInput className={styles.smallInput} size={'small'} defaultValue={''} name='fee' variant='standard' pattern='float' required label='Госпошлина' />
+                    <EasyInput editable={false} shrink className={styles.smallInput} size={'small'} name='penalties' variant='standard' pattern='float' label='Неустойка'/>
+                    <EasyInput editable={false} shrink className={styles.smallInput} size={'small'} name='fee' variant='standard' pattern='float' label='Госпошлина'/>
                 </div>
-                <ButtonInForm type='button' loading={loading} onClick={formSubmitHandler} />
-            </form>
-        </CustomModal>
-    );
+                </CustomFormStepper>
+                {error.Comp()}
+            </>}
+        </CustomModal>);
 };
-
 export default EnforcementProceedings;

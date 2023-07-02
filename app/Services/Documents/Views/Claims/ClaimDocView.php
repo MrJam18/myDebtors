@@ -97,6 +97,7 @@ abstract class ClaimDocView extends BaseDocView
         $this->buildRequirements($this->bodyBuilder);
         $this->footerBuilder->addHeader('Приложение:');
         $this->buildFooter($this->footerBuilder);
+        $this->footerBuilder->addSignature($this->agent->name->initials());
         $this->percentsTable->build();
         $this->tableSection->addTextBreak(5);
         $this->penaltiesTable->build();

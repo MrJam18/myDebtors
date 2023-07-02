@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from '@mui/material';
 import React, { useState } from 'react';
 import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
-import styles from '../../css/orgs.module.css';
+import styles from '../../css/leftList.module.css';
 import { makeStyles } from '@mui/styles';
 import AddCreditor from './AddCreditor';
 import ListSearcher from "../dummyComponents/search/ListSearcher";

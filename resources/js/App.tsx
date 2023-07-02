@@ -1,3 +1,5 @@
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {faFileCirclePlus} from "@fortawesome/free-solid-svg-icons";
 import { StrictMode } from 'react';
 import {ErrorsCatcher} from "./components/ErrorsCatcher";
 import { setupStore } from './store';
@@ -7,15 +9,15 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import './index.css';
 import Router from './components/Router';
 
-export const store = setupStore();
 
+export const store = setupStore();
 const root = createRoot(document.getElementById('root'));
 root.render(
     <StrictMode>
         <Provider store ={store}>
             <StyledEngineProvider injectFirst>
                 <ErrorsCatcher>
-                    <Router />
+                    <Router/>
                 </ErrorsCatcher>
             </StyledEngineProvider>
         </Provider>

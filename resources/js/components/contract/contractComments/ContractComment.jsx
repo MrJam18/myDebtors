@@ -1,11 +1,13 @@
-import React, {useState} from 'react';
-import CustomList from "../../dummyComponents/CustomList";
+import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router";
 import {useUpdate} from "../../../hooks/useUpdate";
 import CustomModal from "../../dummyComponents/CustomModal";
 import api from "../../../http";
 import {alertHandler} from "../../../utils/errorHandler";
 import {TextField} from "@mui/material";
+import {UploadCommentFile} from './UploadCommentFile'
+import ContractCommentList from "./ContractCommentsList";
+
 
 
 function ContractComment() {
@@ -13,7 +15,7 @@ function ContractComment() {
         {name: "Дата добавления", key: 'created_at', type: 'date'},
         {name: "Комментарий", key: 'text'},
         {name: "Автор", key: 'author'},
-        {name: 'Файл', key: 'comment_file'}];
+        {name: 'Файл', key: 'comment_file'},];
     const {contractId} = useParams();
     const update = useUpdate();
     const [commentId, setCommentId] = useState(null)
@@ -21,10 +23,15 @@ function ContractComment() {
     const [showAddTextModal, setShowAddTextModal] = useState(false)
     const [comment, setComment] = useState('')
 
+
+    useEffect(() => {
+        getCommentText(commentId)
+
+    }, [commentId])
+
     const onClickRow = (id) => {
         setShowModal(true)
         setCommentId(id);
-        getCommentText(id)
     }
 
     const onChange = (event) => {
@@ -41,15 +48,14 @@ function ContractComment() {
         }
     }
 
-    const getCommentText = async (commentId) => {
+    const getCommentText = async (id) => {
         try {
-            const {data} = await api.get('contracts/contract-comments/show/' + commentId);
+            const {data} = await api.get('contracts/contract-comments/show/' + id);
             setComment(data.text);
         } catch (e) {
             alertHandler(e, 'Ошибка получения комментария!');
         }
     }
-
     const changeCommentText = async (column, value, id) => {
         try {
             await api.post('contracts/contract-comments/update/' + id, {column, value, id});
@@ -72,12 +78,12 @@ function ContractComment() {
 
     return (
         <div>
-            <CustomList
+            <ContractCommentList
                 headers={headers}
                 serverAddress={`contracts/${contractId}/contract-comments/index`}
                 onClickRow={onClickRow}
                 update={update.state}
-                setElement={getCommentText}/>
+            />
             <button
                 type={"button"}
                 onClick={() => setShowAddTextModal(true)}>
@@ -93,6 +99,7 @@ function ContractComment() {
                         value={comment}
                         onChange={onChange}
                         />
+                    <UploadCommentFile commentId={commentId} update={update} setShow={setShowModal}/>
                     <button
                         type={"submit"}
                         onClick={() => changeCommentText('comments', comment, commentId)}>

@@ -11,12 +11,11 @@ use App\Models\Contract\ContractComment;
 use App\Models\CommentFile;
 use App\Models\Subject\People\Name;
 use App\Providers\Database\Contracts\ContractCommentsProvider;
-use App\Services\CommentFileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 class ContractCommentsController extends AbstractController
 {
@@ -62,13 +61,9 @@ class ContractCommentsController extends AbstractController
 //        return response()->json(['success' => 'Comment created'], 200);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function show($id): array | JsonResponse
+    public function show($id): array
     {
         $comment = ContractComment::find((int)$id);
-
         return [
                     'text' => $comment->comments,
             ];
@@ -93,5 +88,23 @@ class ContractCommentsController extends AbstractController
     public function delete($id): void
     {
         ContractComment::destroy($id);
+    }
+
+    public function upload(Request $request, $id): void
+    {
+        $data = $request->all();
+        $file = $data['file'];
+        $comment = ContractComment::find((int)$id);
+        $contract = Contract::find($comment->contract->id);
+        $store = Storage::putFile("public/commentFile/{$contract->id}", $file);
+        $commentFile = new CommentFile();
+        $commentFile->url = $store;
+        $commentFile->save();
+        $comment->file()->associate($commentFile->id);
+        $comment->save();
+    }
+
+    public function destroyFile($id): void {
+
     }
 }

@@ -27,3 +27,4 @@ Route::prefix('{contract}/contract-comments')->group(function () {
 Route::get('contract-comments/show/{id}', [ContractCommentsController::class, 'show'])->name('show');
 Route::post('contract-comments/update/{id}', [ContractCommentsController::class, 'update'])->name('update');
 Route::post('contract-comments/delete/{id}', [ContractCommentsController::class, 'delete'])->name('delete');
+Route::post('contract-comments/upload/{id}', [ContractCommentsController::class, 'upload'])->name('upload');

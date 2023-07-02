@@ -14,6 +14,7 @@ use App\Models\ExecutiveDocument\ExecutiveDocument;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class EnforcementProceedingsController extends Controller
 {
@@ -29,6 +30,7 @@ class EnforcementProceedingsController extends Controller
          * @var EnforcementProceedingStatus $proceedingStatus
          */
         $data = $request->all();
+
         foreach ($data['enforcementProceedings'] as $proceedingData) {
             if(isset($proceedingData['id'])) {
                 $enforcementProceeding = EnforcementProceeding::find((int)$proceedingData['id']);

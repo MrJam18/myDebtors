@@ -22,7 +22,8 @@ type Props = {
     defaultData?: Data,
     buttonText?: string,
     defaultStep?: number,
-    loading?: boolean
+    loading?: boolean,
+    setIsNewDoc?: (isNewDoc: boolean) => void,
 }
 
 const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
@@ -39,7 +40,8 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
         onChangeStep = null,
         buttonText = 'Сохранить',
         defaultStep = null,
-        loading = true
+        loading = true,
+        setIsNewDoc
     }: Props, ref) => {
 
     const formRef = useForwardRef(ref);
@@ -103,6 +105,7 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
         if(onChangeStep) onChangeStep(activeData);
     }
     const onAdd = () => {
+        if (setIsNewDoc) setIsNewDoc(true);
         const newArr = addNewData();
         stepChanger(newArr.length - 1, newArr);
     }

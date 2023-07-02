@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { TextField } from "@mui/material";
 import { capitalizeFirstLetter } from "../../utils/text/capitalize";
 import { moreThenNow } from "../../utils/moreThenNow";
-const EasyInput = React.forwardRef(({ label = null, name, className, type = 'text', autoFocus = false, required = false, pattern = null, defaultValue = null, disabled = false, variant = 'standard', size = 'medium', onBlur = null, shrink = undefined }, ref) => {
+const EasyInput = React.forwardRef(({ editable = true, label = null, name, className, type = 'text', autoFocus = false, required = false, pattern = null, defaultValue = null, disabled = false, variant = 'standard', size = 'medium', onBlur = null, shrink = undefined }, ref) => {
     label = label ? capitalizeFirstLetter(label) : null;
     const inputRef = useRef();
     let suggestionsHandler;
@@ -33,6 +33,6 @@ const EasyInput = React.forwardRef(({ label = null, name, className, type = 'tex
         if (ref)
             ref.current = inputRef.current;
     }, [inputRef.current]);
-    return (<TextField autoFocus={autoFocus} onBlur={onBlur} disabled={disabled} defaultValue={defaultValue} label={label} onChange={suggestionsHandler} inputProps={{ pattern: currentPattern }} inputRef={inputRef} variant={variant} required={required} InputLabelProps={{ shrink: type === 'date' ? true : shrink }} className={className} name={name} fullWidth type={type} size={size}/>);
+    return (<TextField disabled={disabled || !editable} autoFocus={autoFocus} onBlur={onBlur} defaultValue={defaultValue} label={label} onChange={suggestionsHandler} inputProps={{ pattern: currentPattern }} inputRef={inputRef} variant={variant} required={required} InputLabelProps={{ shrink: type === 'date' ? true : shrink }} className={className} name={name} fullWidth type={type} size={size}/>);
 });
 export default EasyInput;

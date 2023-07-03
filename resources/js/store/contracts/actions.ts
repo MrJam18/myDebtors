@@ -45,11 +45,6 @@ export const deleteContract = id => async dispatch => {
     await api.post('contracts/deleteOne', {id});
     dispatch(setAlert('Успешно', "Договор успешно удален"));
 }
-
-export const recieveStatuses = () => async dispatch => {
-   const {data} = await api.get('contracts/status-list');
-    dispatch(actions.setStatuses(data));
-}
 export const getExistingFiles = (contractId) => async dispatch => {
     try {
         dispatch(actions.setLoadingExisting(true));
@@ -79,19 +74,3 @@ export const deleteContractFile = (contractId, fileName) => async dispatch => {
     }
 }
 
-export const uploadContractFile = (fileName, contractId, formData) => async dispatch => {
-    try{
-        dispatch(actions.setCurrentLoadingExisting({fileName, status: true}));
-        formData.append('documentName', fileName);
-        formData.append('contractId', contractId);
-        await api.post(`files/uploadContractFile`, formData);
-        dispatch(setAlert('Успешно', "Файл успешно загружен"));
-        dispatch(actions.setCurrentExisting({fileName, status: true}));
-    }
-    catch (e) {
-        alertHandler(e);
-    }
-    finally {
-        dispatch(actions.setCurrentLoadingExisting({fileName, status: false}));
-    }
-}

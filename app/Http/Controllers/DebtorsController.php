@@ -32,8 +32,8 @@ class DebtorsController extends AbstractController
             $name = new Name([
                 'surname' => $formData['surname'],
                 'name' => $formData['name'],
-                'patronymic' => $formData['patronymic']
             ]);
+            if(isset($formData['patronymic'])) $name->patronymic = $formData['patronymic'];
             $name->save();
             $debtor->name()->associate($name);
             $debtor->birth_place = $formData['birthPlace'];
@@ -85,10 +85,11 @@ class DebtorsController extends AbstractController
                 $debtor->address()->associate($address);
             }
             $name = $debtor->name;
-            if($name->surname !== $formData['surname'] || $name->name !== $formData['name'] || $name->patronymic !== $formData['patronymic']) {
+            if($name->surname !== $formData['surname'] || $name->name !== $formData['name'] || (!$name->patronymic === isset($formData['patronymic'])) || (isset($formData['patronymic']) && $name->patronymic !== $formData['patronymic'])) {
                 $name->surname = $formData['surname'];
                 $name->name = $formData['name'];
-                $name->patronymic = $formData['patronymic'];
+                if(isset($formData['patronymic'])) $name->patronymic = $formData['patronymic'];
+                else $name->patronymic = null;
                 $name->save();
             }
             $debtor->birth_place = $formData['birthPlace'];

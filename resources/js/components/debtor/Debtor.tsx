@@ -1,6 +1,6 @@
 import {TextField} from "@mui/material";
 import {makeStyles} from "@mui/styles";
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import styles from "../../css/addDebtor.module.css";
 import {standardFontSize} from "../../utils/standardFontSize";
 import {capitalizeFirstLetter} from "../../utils/text/capitalize";
@@ -11,7 +11,8 @@ import ServerSelect from "../dummyComponents/ServerSelect";
 
 type Props = {
     defaultValues?: Record<string, any>,
-    setAddressForDB: SetAddressForDB
+    setAddressForDB: SetAddressForDB,
+    formRef: React.RefObject<HTMLFormElement>
 }
 const useStyles = makeStyles({
     input: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles({
 const standardInputMUISx = { '& .MuiInput-root': standardFontSize, '& .MuiInputLabel-root': standardFontSize };
 const checkBoxInputProps = { tabIndex: '-1' };
 
-const Debtor = ({setAddressForDB, defaultValues = {}}: Props) => {
+const Debtor = ({setAddressForDB, formRef, defaultValues = {}}: Props) => {
     const classes = useStyles();
     const defNoPatronymic = useMemo(()=> {
         if(typeof defaultValues.patronymic === 'undefined') return false;
@@ -52,6 +53,22 @@ const Debtor = ({setAddressForDB, defaultValues = {}}: Props) => {
         const value = ev.target.value;
         if (value) ev.target.value = capitalizeFirstLetter(value);
     };
+    useEffect(()=> {
+        if(typeof defaultValues.patronymic === 'undefined') setNoPatronymic(false);
+        else setNoPatronymic(!defaultValues.patronymic);
+        if(typeof defaultValues.birth_date === 'undefined') setNoBirthPlace(false);
+        else setNoBirthPlace(!defaultValues.birth_date);
+    }, [defaultValues]);
+    useEffect(()=> {
+        if(noBirthPlace) {
+            formRef.current.elements['birthPlace'].value = '';
+        }
+    },[noBirthPlace]);
+    useEffect(()=> {
+        if(noPatronymic) {
+            formRef.current.elements['patronymic'].value = '';
+        }
+    },[noPatronymic]);
     return (
         <>
             <div className={styles.debtor__block}>

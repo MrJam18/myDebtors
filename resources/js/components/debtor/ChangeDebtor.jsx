@@ -29,7 +29,7 @@ const ChangeDebtor = ({ debtorId, setShow, update }) => {
     return (<CustomModal header={'Изменение должника'} customStyles={{ width: '40%', minWidth: '465px', maxWidth: '500px' }} setShow={setShow}>
             {loading ? <Loading /> :
             <form onSubmit={onSubmit} ref={form.ref}>
-                    <Debtor setAddressForDB={setAddressForDB} defaultValues={debtor}/>
+                    <Debtor formRef={form.ref} setAddressForDB={setAddressForDB} defaultValues={debtor}/>
                     {form.Button()}
                 </form>}
         </CustomModal>);

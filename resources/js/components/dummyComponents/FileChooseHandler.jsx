@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import { alertHandler } from "../../utils/errorHandler";
-const FileChooseHandler = ({ extensions, setFile, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760, name = 'file' }) => {
+const FileChooseHandler = ({ extensions, setFile = null, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760, name = 'file', onChangeFile = null }) => {
     const inputRef = useRef();
     const accept = useMemo(() => {
         let acceptString = '';
@@ -27,7 +27,10 @@ const FileChooseHandler = ({ extensions, setFile, Button, title = 'Загруз�
             if (!extensionMatch) {
                 throw new Error('необходимо загрузить файл со следующими разрешениями: ' + accept + '.');
             }
-            setFile(file);
+            if (setFile)
+                setFile(file);
+            if (onChangeFile)
+                onChangeFile();
         }
         catch (e) {
             alertHandler(e, 'Ошибка при загрузке файла.');

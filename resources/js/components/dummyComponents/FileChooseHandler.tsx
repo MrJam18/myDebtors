@@ -3,15 +3,16 @@ import {alertHandler} from "../../utils/errorHandler";
 
 type Props = {
     extensions: string[],
-    setFile: (file: File) => void,
+    setFile?: (file: File) => void,
     Button: React.ReactElement
     title?: string,
     multiple?:boolean,
     maxFileSize?: number,
-    name?: string
+    name?: string,
+    onChangeFile?: ()=> void
 }
 
-const FileChooseHandler = ({extensions, setFile, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760, name = 'file'}: Props) => {
+const FileChooseHandler = ({extensions, setFile = null, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760, name = 'file', onChangeFile = null}: Props) => {
     const inputRef = useRef<HTMLInputElement>();
     const accept = useMemo(()=> {
         let acceptString = '';
@@ -36,7 +37,8 @@ const FileChooseHandler = ({extensions, setFile, Button, title = 'Загрузи
             if(!extensionMatch) {
                 throw new Error('необходимо загрузить файл со следующими разрешениями: ' + accept + '.');
             }
-            setFile(file);
+            if(setFile) setFile(file);
+            if(onChangeFile) onChangeFile();
         }
         catch (e) {
             alertHandler(e, 'Ошибка при загрузке файла.')

@@ -314,3 +314,6 @@
     display: block;
     width: 47%;
 }
+.files__form {
+    display: contents;
+}

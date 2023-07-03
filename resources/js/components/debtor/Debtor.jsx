@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "../../css/addDebtor.module.css";
 import { standardFontSize } from "../../utils/standardFontSize";
 import { capitalizeFirstLetter } from "../../utils/text/capitalize";
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 });
 const standardInputMUISx = { '& .MuiInput-root': standardFontSize, '& .MuiInputLabel-root': standardFontSize };
 const checkBoxInputProps = { tabIndex: '-1' };
-const Debtor = ({ setAddressForDB, defaultValues = {} }) => {
+const Debtor = ({ setAddressForDB, formRef, defaultValues = {} }) => {
     const classes = useStyles();
     const defNoPatronymic = useMemo(() => {
         if (typeof defaultValues.patronymic === 'undefined')
@@ -48,6 +48,26 @@ const Debtor = ({ setAddressForDB, defaultValues = {} }) => {
         if (value)
             ev.target.value = capitalizeFirstLetter(value);
     };
+    useEffect(() => {
+        if (typeof defaultValues.patronymic === 'undefined')
+            setNoPatronymic(false);
+        else
+            setNoPatronymic(!defaultValues.patronymic);
+        if (typeof defaultValues.birth_date === 'undefined')
+            setNoBirthPlace(false);
+        else
+            setNoBirthPlace(!defaultValues.birth_date);
+    }, [defaultValues]);
+    useEffect(() => {
+        if (noBirthPlace) {
+            formRef.current.elements['birthPlace'].value = '';
+        }
+    }, [noBirthPlace]);
+    useEffect(() => {
+        if (noPatronymic) {
+            formRef.current.elements['patronymic'].value = '';
+        }
+    }, [noPatronymic]);
     return (<>
             <div className={styles.debtor__block}>
                 <div className={styles.header + ' ' + styles.header_first}>Информация о должнике</div>

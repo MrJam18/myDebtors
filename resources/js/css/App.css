@@ -209,6 +209,9 @@ html {
 .margin-bottom_5 {
   margin-bottom: 5px;
 }
+.margin-top_20 {
+  margin-top: 20px;
+}
 .margin-left_5 {
   margin-left: 5px;
 }
@@ -228,6 +231,21 @@ html {
 }
 .flex {
   display: flex;
+}
+.flex_vertical-center {
+  display: flex;
+  align-items: center;
+}
+.flex_center {
+  display: flex;
+  justify-content: center;
+}
+.full-size-flex-wrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 }
 @keyframes slideOut {
   from {

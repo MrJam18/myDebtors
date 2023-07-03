@@ -2,102 +2,101 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Contracts;
+namespace App\Http\Controllers\Contract;
 
+use App\Exceptions\ShowableException;
 use App\Http\Controllers\AbstractControllers\AbstractController;
 use App\Http\Requests\PaginateRequest;
 use App\Models\Contract\Contract;
 use App\Models\Contract\ContractComment;
-use App\Models\CommentFile;
-use App\Models\Subject\Name;
-use App\Providers\Database\Contracts\ContractCommentsProvider;
-use App\Services\CommentFileService;
-use Illuminate\Http\JsonResponse;
+use App\Providers\ContractCommentsProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContractCommentsController extends AbstractController
 {
     /**
      * @throws Exception
      */
-    public function index(PaginateRequest $request, ContractCommentsProvider $provider, Contract $contract): array | JsonResponse
+    public function getList(PaginateRequest $request, ContractCommentsProvider $provider, Contract $contract): array
     {
         $data = $request->validated();
         $paginator = $provider->getList($data, $contract);
-
-        $list = $paginator->items()->map(function (ContractComment $comment) {
-            return [
-                'created_at' => $comment->created_at->format(RUS_DATE_FORMAT),
-                'text' => $comment->comments,
-                'author' => Name::find($comment->user->id)->name,
-                'comment_file'=> $comment->file,
-                'idd' => $comment->id
+        $list = $paginator->items()->map(function (ContractComment $comment) use ($contract) {
+            $user = $comment->user_surname . ' ' . strtoupper(mb_substr($comment->user_name, 0, 1)) . '.';
+            if($comment->user_patronymic) $user .= ' ' . strtoupper(mb_substr($comment->user_patronymic, 0, 1)) . '.';
+            $returned = [
+                'contract_comments.created_at' => $comment->created_at->format(RUS_DATE_FORMAT),
+                'contract_comments.text' => $comment->text,
+                'names.surname' => $user,
+                'id' => $comment->id,
+                'file_name' => $comment->file_name,
+                'user_id' => $comment->user_id
             ];
+            if($comment->file_name) $returned['file_url'] = "contract-comments/get-file/$comment->id";
+            return $returned;
         });
         return $paginator->jsonResponse($list);
     }
 
-//    function createFile
-    public function create(Request $request): JsonResponse
+    /**
+     * @throws Exception
+     */
+    public function createOne(Request $request, Contract $contract): void
     {
         $data = $request->all();
-
-            $groupId = getGroupId();
-            $comment = new ContractComment();
-            $comment->comment = $data['comment'];
-            $comment->user()->associate(Auth::user());
-            $contract = Contract::query()->byGroupId($groupId)->find(['contractId'], ['id']);
-            if(!$contract) throw new Exception('cant find contract');
-            $comment->contract()->associate($contract);
-            $file = CommentFile::query()->find($data['CommentFileId'], ['id']);
-            if(!$file) throw new Exception('cant find comment file');
-//            $comment->file()->associate(optional($file));
+        $comment = new ContractComment();
+        $comment->contract()->associate($contract);
+        $comment->text = $data['text'];
+        $comment->user()->associate(Auth::user());
+        $comment->save();
+        if($file = $request->file('file')) {
+            if($file->getSize() > 10485760) throw new ShowableException('Файл превышает размер в 10 мегабайт');
+            $fileName = $comment->id . "__{$file->getClientOriginalName()}.{$file->getExtension()}";
+            $file->storeAs($this->getFileDir($contract), $fileName);
+            $comment->file_name = $fileName;
             $comment->save();
-
-        return response()->json(['success' => 'Comment created'], 200);
+        }
     }
 
-    /**
-     * @throws Exception
-     */
-    public function show(Request $request, ContractCommentsProvider $provider, Contract $contract): array | JsonResponse
+    function getFile(Contract $contract, ContractComment $comment): StreamedResponse
     {
-        $data = $request->validated();
-        $paginator = $provider->getList($data, $contract);
-        $list = $paginator->items()->search(function (ContractComment $comment) {
-            return [
-                    'comment' => $comment->comments,
-                    'comment_file' => $comment->file,
-            ];
-        });
-        return $paginator->jsonResponse($list);
+        return Storage::download($this->getFileDir($contract) . DIRECTORY_SEPARATOR . $comment->file_name, $comment->file_name);
     }
 
-    /**
-     * @throws Exception
-     */
-    public function update(Request $request): JsonResponse
+    function updateOne(Contract $contract, ContractComment $comment, Request $request): void
     {
+        if($comment->user_id !== Auth::id()) throw new ShowableException('Вы не являетесь владельцем комментария и поэтому не можете изменить его');
         $data = $request->all();
-        $comment = ContractComment::query()->find(['id']);
-        if(!$comment) throw new Exception('cant find contractComment');
-        $comment->comment = $data['comment'];
-        $comment->contract = Contract::query()->find($data['contract_id'], ['id']);
-        if (isset($data['comment_file_id'])) $comment->file = CommentFile::query()->find($data['comment_file_id'], ['id']);
-        $comment->update();
-        return response()->json(['success' => 'Comment updated'], 200);
+        $comment->text = $data['text'];
+        if($file = $request->file('file')) {
+            if($file->getSize() > 10485760) throw new ShowableException('Файл превышает размер в 10 мегабайт');
+            $fileDir = $this->getFileDir($contract);
+            if($comment->file_name) {
+                Storage::delete($fileDir . DIRECTORY_SEPARATOR . $comment->file_name);
+            }
+            $fileName = $comment->id . "__{$file->getClientOriginalName()}";
+            $file->storeAs($fileDir, $fileName);
+            $comment->file_name = $fileName;
+        }
+        elseif($comment->file_name) {
+            Storage::delete($this->getFileDir($contract) . DIRECTORY_SEPARATOR . $comment->file_name);
+            $comment->file_name = null;
+        }
+        $comment->save();
     }
 
-    /**
-     * @throws Exception
-     */
-    public function destroy(ContractComment $comment): JsonResponse
+    function deleteOne(ContractComment $comment): void
     {
-        if (isset($comment->file)) CommentFileService::query()->find($comment->file)->delete();
+        if($comment->user_id !== Auth::id()) throw new ShowableException('Только владелец комментария может удалить его');
         $comment->delete();
-        return response()->json(['success' => 'Comment deleted'], 200);
+    }
+
+    private function getFileDir(Contract $contract): string
+    {
+        return "contracts/$contract->id/comments";
     }
 }

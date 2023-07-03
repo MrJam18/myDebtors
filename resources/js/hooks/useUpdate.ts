@@ -1,8 +1,11 @@
 import {useCallback, useEffect, useState} from "react";
 
+export type Update = ()=> void;
+export type UpdateState = number;
+
 type Returned = {
-    state: number,
-    set: ()=> void
+    state: UpdateState,
+    set: Update
 }
 
 export function useUpdate() {

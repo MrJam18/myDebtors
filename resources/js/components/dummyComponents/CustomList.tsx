@@ -25,12 +25,12 @@ export default function CustomList({headers, defaultOrder=null,  serverAddress, 
     const clickRowHandler = (index: number)=> {
         const currentEl = list.get[index];
         const id = currentEl.id ?? currentEl.idd;
-        onClickRow(id);
-        if(setElement) setElement(currentEl);
+        if(onClickRow) onClickRow(id);
+        if(setElement) setElement({...currentEl});
     }
     return(
         <>
-            <NoBorderTable headers={headers} rows={list.get} onClickRow={onClickRow ? clickRowHandler : null} focus={list.order[0]} sortHandler={list.setOrder}  loading={list.loading} />
+            <NoBorderTable headers={headers} rows={list.get} onClickRow={onClickRow||setElement ? clickRowHandler : null} focus={list.order[0]} sortHandler={list.setOrder}  loading={list.loading} />
             <Pagination page={list.page} perPage={list.perPage} setPerPage={list.setPerPage} total={list.totalItems} setPage={list.setPage} />
         </>
         )

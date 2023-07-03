@@ -34,6 +34,8 @@ const ContractMenu = ({menuValue, setMenuValue}) => {
                 <hr className={styles.divider} />
                 <Tab value={'documents'} label={'Документы'} ></Tab>
                 <hr className={styles.divider} />
+                <Tab value={'comments'} label={'Комментарии'} ></Tab>
+                <hr className={styles.divider} />
             </Tabs>
         </div>
     );

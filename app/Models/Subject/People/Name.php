@@ -34,7 +34,9 @@ class Name extends BaseModel
     }
     function initials(): string
     {
-        return $this->surname . ' ' . strtoupper(mb_substr($this->name, 0, 1)) . '. ' . strtoupper(mb_substr($this->patronymic, 0, 1)) . '.';
+        $initials = $this->surname . ' ' . strtoupper(mb_substr($this->name, 0, 1)) . '.';
+        if($this->patronymic) $initials .= ' ' . strtoupper(mb_substr($this->patronymic, 0, 1)) . '.';
+        return $initials;
     }
     function getFullGenitive(): string
     {

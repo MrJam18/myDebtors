@@ -1,10 +1,11 @@
-import React, {useMemo, useRef} from 'react';
+import React, {FC, useMemo, useRef} from 'react';
+import {useForwardRef} from "../../hooks/useForwardRef";
 import {alertHandler} from "../../utils/errorHandler";
 
 type Props = {
-    extensions: string[],
+    extensions?: string[],
     setFile?: (file: File) => void,
-    Button: React.ReactElement
+    Button: React.ReactElement | FC
     title?: string,
     multiple?:boolean,
     maxFileSize?: number,
@@ -12,12 +13,15 @@ type Props = {
     onChangeFile?: ()=> void
 }
 
-const FileChooseHandler = ({extensions, setFile = null, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760, name = 'file', onChangeFile = null}: Props) => {
-    const inputRef = useRef<HTMLInputElement>();
+const FileChooseHandler = React.forwardRef<HTMLInputElement, Props>(({extensions = null, setFile = null, Button, title = 'Загрузить', multiple = false, maxFileSize = 10485760, name = 'file', onChangeFile = null}: Props, ref) => {
+    const inputRef = useForwardRef<HTMLInputElement>(ref);
     const accept = useMemo(()=> {
-        let acceptString = '';
-        extensions.forEach((extension)=> acceptString += extension + ',');
-        return acceptString.substring(0, acceptString.length - 1);
+        if(extensions) {
+            let acceptString = '';
+            extensions.forEach((extension)=> acceptString += extension + ',');
+            return acceptString.substring(0, acceptString.length - 1);
+        }
+        else return null;
     }, [extensions])
     const onChange = async () => {
         try{
@@ -26,7 +30,7 @@ const FileChooseHandler = ({extensions, setFile = null, Button, title = 'Заг�
             if(!file) return;
             if(file.size > maxFileSize) throw Error('Объем файла превышает ограничение в ' + maxFileSize + 'килобайт');
             let extensionMatch = false;
-             extensions.find((extension)=> {
+            if(extensions) extensions.find((extension)=> {
                 const regExp = new RegExp('.' + extension + '$');
                 if(regExp.test(file.name)) {
                     extensionMatch = true;
@@ -34,6 +38,7 @@ const FileChooseHandler = ({extensions, setFile = null, Button, title = 'Заг�
                 }
                 return false;
             })
+            else extensionMatch = true;
             if(!extensionMatch) {
                 throw new Error('необходимо загрузить файл со следующими разрешениями: ' + accept + '.');
             }
@@ -52,6 +57,6 @@ const FileChooseHandler = ({extensions, setFile = null, Button, title = 'Заг�
       <input onChange={onChange} multiple={multiple} ref={inputRef}  accept={accept} style={{display:'none'}} type="file" id="file" name={name} />
   </>
  );
-};
+});
 
 export default FileChooseHandler;

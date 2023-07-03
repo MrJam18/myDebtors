@@ -16,6 +16,7 @@ import Files from "./files/Files";
 import {contractsSlice} from "../../store/contracts/reducer";
 import Documents from "./documents/Documents";
 import {useUpdate} from "../../hooks/useUpdate";
+import CommentsList from "./comments/CommentsList";
 
 
 const Contract = () => {
@@ -38,6 +39,9 @@ const Contract = () => {
                 return  <Files />
             case 'documents':
                 return <Documents update={update.set} />
+            case 'comments':
+                return <CommentsList />
+
         }
     }
 

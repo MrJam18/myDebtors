@@ -43,6 +43,7 @@ use Illuminate\Support\Collection;
  * @property Collection $payments;
  * @property Collection $courtClaims;
  * @property Collection $actions;
+ * @property Collection $comments;
  */
 class Contract extends BaseModel
 {
@@ -107,6 +108,10 @@ class Contract extends BaseModel
     function actions(): HasMany|CustomBuilder
     {
         return $this->hasMany(Action::class);
+    }
+    function comments(): HasMany|CustomBuilder
+    {
+        return $this->hasMany(ContractComment::class);
     }
 
 }

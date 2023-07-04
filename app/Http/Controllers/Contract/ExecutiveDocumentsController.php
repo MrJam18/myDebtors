@@ -75,7 +75,11 @@ class ExecutiveDocumentsController extends Controller
              * @var EnforcementProceeding $lastProceeding
              */
             $lastProceeding = $document->enforcementProceedings()->orderBy('begin_date', 'DESC')->first();
-            $returned['lastProceeding'] = "№ {$lastProceeding->number} от {$lastProceeding->begin_date->format(RUS_DATE_FORMAT)} г.";
+            if($lastProceeding) {
+                $returned['lastProceeding'] = "№ {$lastProceeding->number} от {$lastProceeding->begin_date->format(RUS_DATE_FORMAT)} г.";
+            }
+            else $returned['lastProceeding'] = 'Отсутствует';
+
             return $returned;
         });
     }

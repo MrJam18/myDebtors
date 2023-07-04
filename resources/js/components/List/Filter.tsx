@@ -32,12 +32,14 @@ type Props = {
 }
 const filterHeaders = [
     new Header('Дата выдачи', 'contracts.issued_date', {type: 'date'}),
+    new Header('Дата создания', 'contracts.created_at', {type: 'date'}),
     new Header('Номер', 'contracts.number'),
     new Header('Фамилия должника', 'names.surname'),
     new Header('Имя должника', 'names.name'),
     new Header('Отчество должника', 'names.patronymic'),
     new Header('кредитор', 'creditors.name'),
-    new Header('статус', 'contract_statuses.name')
+    new Header('статус', 'contract_statuses.name'),
+    new Header('цессия', 'cession_groups.name')
 ];
 
 

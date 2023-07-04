@@ -25,7 +25,7 @@ const onClickFile = async (ev: MouseEvent)=> {
     }
 }
 const headers = [
-    new Header('Дата', 'contract_comments.created_at', {type: 'date'}),
+    new Header('Дата/Время', 'contract_comments.created_at', {type: 'date'}),
     new Header('Текст', 'contract_comments.text'),
     new Header('Автор', 'names.surname'),
     /*@ts-ignore*/
@@ -46,14 +46,12 @@ const CommentsList = ({}) => {
         }
     }, [changedComment]);
     return (
-        <div className={styles.main}>
+        <div className={styles.content}>
             {showChangeComment.Comp()}
-            <div className={styles.content}>
-                <h3 className={styles.header_small}>Управление комментариями</h3>
-                <CommentsToolBar setSearch={setSearch} update={update.set} />
+            <h3 className={styles.header_small}>Управление комментариями</h3>
+            <CommentsToolBar setSearch={setSearch} update={update.set} />
             <div style={{height: "auto", minHeight: '70%'}} className='full-size-flex-wrapper'>
                 <CustomList defaultOrder={['contract_comments.created_at', 'DESC']} search={search} setElement={setChangedComment} headers={headers} serverAddress={getContractPath(`comments/list`)} update={update.state} />
-            </div>
             </div>
         </div>
         );

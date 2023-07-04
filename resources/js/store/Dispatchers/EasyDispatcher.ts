@@ -1,4 +1,4 @@
-import {AxiosResponse} from "axios";
+import {Axios, AxiosResponse} from "axios";
 import {Dispatch, MutableRefObject, SetStateAction} from "react";
 import {Alert} from "../../classes/Alert";
 import api from "../../http/index";
@@ -55,7 +55,6 @@ export class EasyDispatcher
         if(this._setError) this._setError(false);
         if(this.#formRef) this.data.formData = formDataConverter(this.#formRef.current.elements);
         try {
-            console.log(this.data);
             let result = await this.request(serverAddress, method, this.data);
             if(this.afterResponse) result = this.afterResponse(result)
             if(this.#setShow) this.#setShow(false);
@@ -78,7 +77,7 @@ export class EasyDispatcher
         if(e.response?.status === 551) return this._setError(e.response.data.message);
         if(this._setError) this._setError(e.message);
     }
-    public request: (serverAddress, method) => void = async (serverAddress: string, method: 'post'|'get'|'put'|'delete', data: DispatcherData): Promise<AxiosResponse<any, any>> => {
+    public request: (serverAddress: string, method: ("post" | "get" | "put" | "delete"), data: DispatcherData) => Promise<AxiosResponse<any, any>> = async (serverAddress: string, method: 'post'|'get'|'put'|'delete', data: DispatcherData): Promise<AxiosResponse<any, any>> => {
         return await this._api[method](serverAddress, (method === 'get' || method === 'delete') ? null : data);
     }
 

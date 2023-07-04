@@ -6,11 +6,10 @@ const getContractStatuses = async () => {
     return data;
 };
 export const contractColumns = [
-    new Column('Должник', 'debtorName', 'setter', { style: 'fullString' }),
-    new Column('Действующий кредитор', 'creditor', 'setter', { style: 'fullString' }),
-    new Column('Первоначальный кредитор', 'firstCreditor', undefined, { noChange, style: 'fullString' }),
-    new Column('Договор цессии', 'cession', undefined, { noChange, style: 'fullString' }),
+    new Column('Должник', 'debtorName', 'setter'),
     new Column('Статус', "status", 'selected', { func: getContractStatuses }),
+    new Column('Кредитор', 'creditor', 'setter'),
+    new Column('Цессия', 'cession', undefined, { noChange }),
     new Column('Номер договора', "number"),
     new Column('дата выдачи', 'date_issue', 'date'),
     new Column("сумма выдачи", 'sum_issue', 'money'),
@@ -21,16 +20,14 @@ export const contractColumns = [
     new Column('проценты на сегодня', 'percentToday', 'money', { noChange }),
     new Column('неустойка(год.)', 'penalty', 'percent'),
     new Column('неустойка на сегодня', 'penaltyToday', 'money', { noChange }),
-    new Column('Количество платежей', 'paymentsCount', 'text', { noChange }),
-    new Column('Исполнительный документ', 'executiveDocName', 'setter', { style: "fullString" }),
-    new Column('Cудебный иск', 'courtClaimName', 'setter', { style: "fullString" })
+    new Column('Cудебный иск', 'courtClaimName', 'setter', { style: 'fullString' }),
+    new Column('Исполнительный документ', 'executiveDocName', 'setter', { style: 'fullString' }),
 ];
 export const creditContractColumns = [
-    new Column('Должник', 'debtorName', 'ref', { ref: '/debtors', refColName: 'debtorId', style: 'fullString' }),
-    new Column('Действующий кредитор', 'creditor', 'setter', { style: 'fullString' }),
-    new Column('Первоначальный кредитор', 'firstCreditor', undefined, { noChange, style: 'fullString' }),
-    new Column('Договор цессии', 'cession', undefined, { noChange, style: 'fullString' }),
+    new Column('Должник', 'debtorName', 'setter'),
     new Column('Статус', "status", 'selected', { func: getContractStatuses }),
+    new Column('Кредитор', 'creditor', 'setter'),
+    new Column('Цессия', 'cession', undefined, { noChange }),
     new Column('Номер договора', "number"),
     new Column('дата выдачи', 'date_issue', 'date'),
     new Column("сумма выдачи", 'sum_issue', 'money'),
@@ -44,6 +41,6 @@ export const creditContractColumns = [
     new Column('неустойка(год.)', 'penalty', 'percent'),
     new Column('неустойка на сегодня', 'penaltyToday', 'money', { noChange }),
     new Column('Количество платежей', 'paymentsCount', 'text', { noChange }),
+    new Column('Cудебный иск', 'courtClaimName', 'setter'),
     new Column('Исполнительный документ', 'executiveDocName', 'setter'),
-    new Column('Cудебный иск', 'courtClaimName', 'setter')
 ];

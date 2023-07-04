@@ -29,7 +29,7 @@ class ContractCommentsController extends AbstractController
             $user = $comment->user_surname . ' ' . strtoupper(mb_substr($comment->user_name, 0, 1)) . '.';
             if($comment->user_patronymic) $user .= ' ' . strtoupper(mb_substr($comment->user_patronymic, 0, 1)) . '.';
             $returned = [
-                'contract_comments.created_at' => $comment->created_at->format(RUS_DATE_FORMAT),
+                'contract_comments.created_at' => $comment->created_at->format(RUS_DATE_TIME_FORMAT),
                 'contract_comments.text' => $comment->text,
                 'names.surname' => $user,
                 'id' => $comment->id,

@@ -57,38 +57,25 @@ class ExecutiveDocumentsController extends Controller
 
     public function getAll(Contract $contract):Collection
     {
-
         $list = $contract->executiveDocuments;
         return $list->map(function (ExecutiveDocument $document){
             $returned = $document->toArray();
-            $bailiffDepartment = BailiffDepartment::find($document->bailiff_department_id);
-            $court = Court::find($document->court_id);
-            $docType = ExecutiveDocumentType::find($document->type_id);
             $returned['bailiffDepartment'] = [
-                'name'=>$bailiffDepartment->name,
-                'id'=>$bailiffDepartment->id
+                'name'=>$document->bailiffDepartment->name,
+                'id'=>$document->bailiffDepartment->id
             ];
             $returned['court'] = [
-                'name'=>$court->name,
-                'id'=>$court->id
+                'name'=>$document->court->name,
+                'id'=> $document->court->id
             ];
-//            $returned['typeId'] = [
-//                'name'=>$docType->name,
-//                'id'=>$docType->id
-//            ];
             $returned['main'] = $document->moneySum->main;
             $returned['percents'] = $document->moneySum->percents;
             $returned['penalties'] = $document->moneySum->penalties;
-            $enforcementProceedingsList = $document->enforcementProceedings;
-            $proceedingsArray = $enforcementProceedingsList->map(function (EnforcementProceeding $proceeding){
-                $item = $proceeding->toArray();
-                $item['bailiff'] = [
-                    'name' => $proceeding->bailiff->name->getFull(),
-                    'id' => $proceeding->bailiff->id
-                ];
-                return $item;
-            })->toArray();
-            $returned['enforcementProceedings'] = $proceedingsArray;
+            /**
+             * @var EnforcementProceeding $lastProceeding
+             */
+            $lastProceeding = $document->enforcementProceedings()->orderBy('begin_date', 'DESC')->first();
+            $returned['lastProceeding'] = "№ {$lastProceeding->number} от {$lastProceeding->begin_date->format(RUS_DATE_FORMAT)} г.";
             return $returned;
         });
     }

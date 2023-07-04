@@ -75,6 +75,7 @@ class ContractsProvider extends AbstractProvider
         if(!$nameUsed) $query->joinRelation('debtor.name');
         if($data->filter) {
             foreach ($data->filter as $filterEl) {
+                if($filterEl->key === 'cession_groups.name') $query->joinRelation('cession');
                 if($filterEl->operator === 'LIKE' || $filterEl->operator === 'NOT LIKE') {
                     $query->search([$filterEl->key => $filterEl->value], $filterEl->operator === 'NOT LIKE');
                 }

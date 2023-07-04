@@ -1,6 +1,6 @@
 import { useParams } from 'react-router';
 import styles from '../../../css/contract.module.css'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ChangePayment from "./ChangePayment";
 import CustomList from "../../dummyComponents/CustomList";
 import {useUpdate} from "../../../hooks/useUpdate";
@@ -25,8 +25,6 @@ const ContractPayments = () => {
         setPaymentId(id);
         showChangedPayment.setShow(true);
     }
-
-
     return (
         <div className={styles.payments}>
             <div className={styles.header_small}>Управление платежами</div>

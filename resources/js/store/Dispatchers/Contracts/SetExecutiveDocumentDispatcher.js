@@ -19,7 +19,7 @@ export class SetExecutiveDocumentDispatcher extends Dispatcher {
             id: (_a = dispatcherData.executiveDocId) !== null && _a !== void 0 ? _a : null,
             deleteIds: dispatcherData.deleteIds
         };
-        await api.post(`contracts/${this.noReqData.contractId}/executive-documents/set`, sendData);
+        await api.post(`contracts/${this.noReqData.contractId}/executive-documents/set-one`, sendData);
         Alert.set('Успешно', "Исполнительный документ успешно изменен");
         this.noReqData.update();
     }

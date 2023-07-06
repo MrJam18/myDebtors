@@ -7,5 +7,9 @@ export class Header {
         this.type = (_a = options.type) !== null && _a !== void 0 ? _a : null;
         if (options.className)
             this.className = options.className;
+        if (options.type === 'button')
+            this.button = options.button;
+        if (options.styles)
+            this.styles = options.styles;
     }
 }

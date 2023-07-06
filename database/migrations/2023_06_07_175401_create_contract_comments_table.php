@@ -14,10 +14,10 @@ return new class extends Migration {
     {
         Schema::create('contract_comments', function (Blueprint $table) {
             $table->id();
-            $table->string('comments', 500);
-            $table->foreignId('contract_id')->constrained('contracts');
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('file_id')->nullable()->constrained('comment_files');
+            $table->text('text');
+            $table->foreignId('contract_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->string('file_name')->nullable();
             $table->timestamps();
         });
     }

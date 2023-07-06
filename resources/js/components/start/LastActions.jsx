@@ -15,7 +15,7 @@ const LastActions = () => {
         if(element) navigate(`/contracts/${element.contractId}`);
     }
 
-    return (<div className={styles.element}>
+    return (<div className={styles.element} style={{minHeight: '70vh'}}>
             <div className="header">Мои последние действия</div>
             <div className={styles.flexWrapper}>
                 <NoBorderTable onClickRow={onClickRow} headers={headers} loading={list.loading} rows={list.get} focus={list.order[0]} />

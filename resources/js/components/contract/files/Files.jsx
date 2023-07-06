@@ -16,9 +16,9 @@ const fileList = [
 ]
 
 
-const Files = () => {
+const Files = ({}) => {
     const [loading, setLoading] = useState(true);
-    const [existingFiles, setExistingFiles] = useState([]);
+    const [existingFiles, setExistingFiles] = useState({});
     useEffect(()=> {
         api.get(getContractPath('files/existing-files'))
             .then(({data}) => setExistingFiles(data))
@@ -30,7 +30,7 @@ const Files = () => {
       {
           fileList.map((file)=> {
              return (
-                 <FileHandler key={file.name} documentName={file.name} header={file.header} globalLoading={loading} existingFiles={existingFiles} />
+                 <FileHandler key={file.name} fileName={file.name} header={file.header} globalLoading={loading} existingFiles={existingFiles} />
              )
           }
 

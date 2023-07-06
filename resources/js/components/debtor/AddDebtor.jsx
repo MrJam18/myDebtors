@@ -31,7 +31,7 @@ const AddDebtor = ({ setShow, updateList }) => {
     return (
     <CustomModal header={'Создание должника'} show={true} customStyles={{ width: '40%', minWidth: '465px', maxWidth: '500px' }} setShow={setShow}>
         <form onSubmit={formHandler} ref={debtorForm}>
-            <Debtor setAddressForDB={setAddressForDB} defaultValues={{type_id: 1}} />
+            <Debtor formRef={debtorForm} setAddressForDB={setAddressForDB} defaultValues={{type_id: 1}} />
             <div className='button_submit'><LoadingButton loading={loading} variant="contained" size="large" type='submit' className={classes.button}>
           Подтвердить
             </LoadingButton></div>

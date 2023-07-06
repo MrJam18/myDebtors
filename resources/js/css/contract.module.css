@@ -1,7 +1,7 @@
 .main {
-    width: 60%;
-    min-width: 650px;
-    max-width: 900px;
+    width: 65%;
+    min-width: 700px;
+    max-width: 950px;
     padding: 0;
     display: flex;
 }
@@ -18,15 +18,19 @@
     font-size: 20px;
     text-align: center;
 }
+.menuDivider {
+    background: rgba(0, 0, 0, 0.18);
+    width: 1px;
+}
 .divider {
     margin: 0;
     border: none;
-    background-color: rgba(0, 0, 0, 0.12);
+    background-color: rgba(0, 0, 0, 0.15);
     height: 1px;
     width: 100%
 }
 .menu {
-    width: 35%;
+    width: 180px;
 }
 .menuHeader {
     font-size: 16px;
@@ -64,8 +68,8 @@
     font-size: 18px;
     padding: 0;
     padding-bottom: 1px;
-    margin: 0;
     cursor: pointer;
+    margin: 0 0 0 10px;
 }
 .content__link:hover {
     border-bottom: 1px solid #000;
@@ -313,4 +317,7 @@
 .smallBlock {
     display: block;
     width: 47%;
+}
+.files__form {
+    display: contents;
 }

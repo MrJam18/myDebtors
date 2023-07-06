@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import {Header} from "../../classes/Header";
 import styles from '../../css/noBorderTable.module.css'
 import SortButton from './SortButton';
 import Loading from './Loading';
@@ -7,11 +8,7 @@ import {Order} from "../../Types/Order";
 
 type Props = {
     rows?: Array<Record<string, string> & {id: number}>,
-    headers?: Array<{
-        styles?: React.CSSProperties,
-        name: string,
-        key: string
-    }>,
+    headers?: Array<Header>,
     sortHandler?: (order: Order)=> void,
     focus?: string,
     loading?: boolean,
@@ -48,7 +45,11 @@ const NoBorderTable = ({rows = [], headers = [], sortHandler = null, focus = nul
             rows.map((row, index) => {
             let array = [];
             headers.forEach((el) => {
-                const cell = row[el.key] ?? null;
+                let cell = row[el.key] ?? null;
+                if(el.type === 'button' && cell) {
+                    // @ts-ignore
+                    cell = el.button({data: cell});
+                }
                 array.push(
                     <td key={el.key + row.id} className={styles.row}>
                     <span className={styles.rowContainer}>

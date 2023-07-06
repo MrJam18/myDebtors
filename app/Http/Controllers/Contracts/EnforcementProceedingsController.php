@@ -22,7 +22,7 @@ class EnforcementProceedingsController extends Controller
     {
         return EnforcementProceedingStatus::query()->get();
     }
-    public function setAllByExecutiveDoc(Request $request, Contract $contract, ExecutiveDocument $executiveDocument):void
+    public function setAllByExecutiveDoc(Request $request, Contract $contract, ExecutiveDocument $executiveDocument): string
     {
         if ($contract->id !== $executiveDocument->contract->id) throw new ShowableException('Договор не соответствует исполнительному документу');
         /**
@@ -30,7 +30,10 @@ class EnforcementProceedingsController extends Controller
          * @var EnforcementProceedingStatus $proceedingStatus
          */
         $data = $request->all();
-
+        /**
+         * @var EnforcementProceeding $lastProceeding;
+         */
+        $lastProceeding = null;
         foreach ($data['enforcementProceedings'] as $proceedingData) {
             if(isset($proceedingData['id'])) {
                 $enforcementProceeding = EnforcementProceeding::find((int)$proceedingData['id']);
@@ -41,6 +44,11 @@ class EnforcementProceedingsController extends Controller
             else {
                 $enforcementProceeding = new EnforcementProceeding();
                 $enforcementProceeding->executiveDocument()->associate($executiveDocument);
+                $enforcementProceeding->fee = 0;
+                $enforcementProceeding->penalties = 0;
+                $enforcementProceeding->percents = 0;
+                $enforcementProceeding->main = 0;
+                $enforcementProceeding->sum = 0;
             }
             $enforcementProceeding->begin_date= $proceedingData['begin_date'];
             $enforcementProceeding->end_date = $proceedingData['end_date'] ?? null;
@@ -48,16 +56,13 @@ class EnforcementProceedingsController extends Controller
             $enforcementProceeding->status_date = now();
             $enforcementProceeding->status_id = $proceedingData['status_id'];
             $enforcementProceeding->bailiff_id = $proceedingData['bailiff']['id'];
-            $enforcementProceeding->fee = $proceedingData['fee'];
-            $enforcementProceeding->penalties = $proceedingData['penalties'];
-            $enforcementProceeding->percents = $proceedingData['percents'];
-            $enforcementProceeding->main = $proceedingData['main'];
-            $enforcementProceeding->sum = $enforcementProceeding->main + $enforcementProceeding->percents + $enforcementProceeding->penalties + $enforcementProceeding->fee;
+            if(!$lastProceeding || $lastProceeding->begin_date < $enforcementProceeding->begin_date) $lastProceeding = $enforcementProceeding;
             $enforcementProceeding->save();
         }
         if(count($data['deleteIds']) !== 0) {
             $executiveDocument->enforcementProceedings()->whereIn('id', $data['deleteIds'])->delete();
         }
+        return "№ {$lastProceeding->number} от {$lastProceeding->begin_date->format(RUS_DATE_FORMAT)} г.";
     }
 
     public function getAll($executiveDocId): array
@@ -78,7 +83,7 @@ class EnforcementProceedingsController extends Controller
     public function getListByExecutiveDoc(Contract $contract, ExecutiveDocument $executiveDocument): Collection
     {
         if($contract->id !== $executiveDocument->contract->id) throw new ShowableException('Договор не соответствует исполнительному документу');
-        $list = $executiveDocument->enforcementProceedings;
+        $list = $executiveDocument->enforcementProceedings()->orderBy('begin_date')->get();
         return $list->map(function (EnforcementProceeding $proceeding) {
             $returned = $proceeding->toArray();
             $returned['bailiff'] = [

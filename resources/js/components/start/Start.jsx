@@ -8,10 +8,10 @@ import Refferences from './Referrences';
 
 const Start = () => {
     return (<div className={styles.main}>
-            <Tasks />
-            <Limits />
-            <LastActions />
-            <Refferences />
+            {/*<Tasks />*/}
+        <LastActions />
+        <Limits  />
+            {/*<Refferences />*/}
         </div>);
 };
 export default Start;

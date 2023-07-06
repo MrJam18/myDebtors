@@ -11,9 +11,6 @@ const useStyles = makeStyles({
       paddingTop: '12px',
       cursor: 'pointer'
   },
-  menu: {
-    width: '100%',
-  }
 })
 
 const ContractMenu = ({menuValue, setMenuValue}) => {
@@ -23,7 +20,7 @@ const ContractMenu = ({menuValue, setMenuValue}) => {
     }
     return (
         <div className={styles.menu}>
-            <Tabs value={menuValue} onChange={handleChangeMenu} className={classes.menu} centered variant='fullWidth'  aria-label="basic tabs example" orientation='vertical'>
+            <Tabs value={menuValue} onChange={handleChangeMenu} centered variant='fullWidth'  aria-label="basic tabs example" orientation='vertical'>
                 <Tab value='data' label="Договор" ></Tab>
                 <hr className={styles.divider} />
                 <Tab value='actions'   label="Действия"></Tab>
@@ -34,7 +31,7 @@ const ContractMenu = ({menuValue, setMenuValue}) => {
                 <hr className={styles.divider} />
                 <Tab value={'documents'} label={'Документы'} ></Tab>
                 <hr className={styles.divider} />
-                <Tab value={'contractComments'} label={'Комментарии'} ></Tab>
+                <Tab value={'comments'} label={'Комментарии'} ></Tab>
                 <hr className={styles.divider} />
             </Tabs>
         </div>

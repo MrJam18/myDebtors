@@ -1,33 +1,22 @@
 import React from 'react';
 import styles from '../../../css/contract.module.css';
-import {useSelector} from "react-redux";
-import {selectExisting, contractsSelectors} from "../../../store/contracts/selectors";
+import { getContractPath } from "../../../utils/getContractPath";
 import Loading from "../../dummyComponents/Loading";
-import {Button} from "@mui/material";
-import api from "../../../http";
-import {useParams} from "react-router";
-import {alertHandler} from "../../../utils/errorHandler";
-
-const DocumentsGetter = ({ documentName }) => {
- const status = useSelector(selectExisting[documentName]);
- const {contractId} = useParams();
- // const loading = useSelector(contractsSelectors.getLoadingExisting);
- const currentLoading = useSelector(selectExisting['loading' + documentName]);
- const loadHandler = async () => {
-  try{
-   await api.saveFile(`files/getContractFile?fileName=${documentName}&contractId=${contractId}`, documentName + '.pdf');
-  }
-  catch (e) {
-   alertHandler(e, 'Ошибка получения файла')
-  }
-
- }
- return (
-  <div className={styles.documents__getter}>
-   {true || currentLoading ? <Loading addStyles={{margin: '0px 15px 0px 50px', minHeight: '30px', }} size={28} bold={4} /> :
-       status ? <Button size='small' variant='contained' onClick={loadHandler} >Загрузить файл</Button> : <div className={styles.documents__noDocuments}>Нет файлов для загрузки</div> }
-  </div>
- );
+import { Button } from "@mui/material";
+import { saveFile } from "../../../http";
+import { alertHandler } from "../../../utils/errorHandler";
+const DocumentsGetter = ({ documentName, isLoaded, globalLoading, loading }) => {
+    const loadHandler = async () => {
+        try {
+            await saveFile(getContractPath(`files/get-file?fileName=${documentName}`));
+        }
+        catch (e) {
+            alertHandler(e, 'Ошибка получения файла');
+        }
+    };
+    return (<div className={styles.documents__getter}>
+            {loading || globalLoading ? <Loading addStyles={{ margin: '0px 15px 0px 50px', minHeight: '30px', }} size={28} bold={false}/> :
+            isLoaded ? <Button size='small' onClick={loadHandler} variant='contained'>Загрузить файл</Button> : <div className={styles.documents__noDocuments}>Нет файлов для загрузки</div>}
+        </div>);
 };
-
 export default DocumentsGetter;

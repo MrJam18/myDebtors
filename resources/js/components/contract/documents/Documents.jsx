@@ -28,7 +28,6 @@ const Documents = ({update}) => {
     const {contractId} = useParams();
     const [selectedDoc, setSelectedDoc] = useState();
     const [additionalShow, setAdditionalShow] = useState('');
-
     useEffect(()=> {
         return ()=> {
             setAdditionalShow('');

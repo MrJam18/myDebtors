@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Providers\Database;
+namespace App\Providers\Database\Contracts;
 
 use App\Http\Requests\Base\ListRequestData;
 use App\Models\Base\CustomPaginator;
@@ -75,6 +75,7 @@ class ContractsProvider extends AbstractProvider
         if(!$nameUsed) $query->joinRelation('debtor.name');
         if($data->filter) {
             foreach ($data->filter as $filterEl) {
+                if($filterEl->key === 'cession_groups.name') $query->joinRelation('cession');
                 if($filterEl->operator === 'LIKE' || $filterEl->operator === 'NOT LIKE') {
                     $query->search([$filterEl->key => $filterEl->value], $filterEl->operator === 'NOT LIKE');
                 }

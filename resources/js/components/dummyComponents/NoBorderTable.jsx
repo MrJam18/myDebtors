@@ -32,7 +32,11 @@ const NoBorderTable = ({ rows = [], headers = [], sortHandler = null, focus = nu
                     let array = [];
                     headers.forEach((el) => {
                         var _a;
-                        const cell = (_a = row[el.key]) !== null && _a !== void 0 ? _a : null;
+                        let cell = (_a = row[el.key]) !== null && _a !== void 0 ? _a : null;
+                        if (el.type === 'button' && cell) {
+                            // @ts-ignore
+                            cell = el.button({ data: cell });
+                        }
                         array.push(<td key={el.key + row.id} className={styles.row}>
                     <span className={styles.rowContainer}>
                         {cell}

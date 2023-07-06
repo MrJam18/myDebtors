@@ -8,17 +8,14 @@ import { chandeDateFormatOnRus } from '../../utils/changeDateFormat';
 import Loading from '../dummyComponents/Loading';
 import ContractMenu from './ContractMenu';
 import ContractData from './contractData/ContractData';
-import ContractPayments from './payments/ContractPayments'
-import { Divider } from '@mui/material';
+import ContractPayments from './payments/ContractPayments';
 import Actions from './Actions';
 import { setAlert } from '../../store/alert/actions';
 import Files from "./files/Files";
-import {contractsSlice} from "../../store/contracts/reducer";
+import { contractsSlice } from "../../store/contracts/reducer";
 import Documents from "./documents/Documents";
-import {useUpdate} from "../../hooks/useUpdate";
-import ContractComment from './contractComments/ContractComment';
-
-
+import { useUpdate } from "../../hooks/useUpdate";
+import CommentsList from "./comments/CommentsList";
 const Contract = () => {
     const { contractId } = useParams();
     const dispatch = useDispatch();
@@ -30,57 +27,54 @@ const Contract = () => {
     const menuSelector = () => {
         switch (menuValue) {
             case 'data':
-                return <ContractData update={update.set} contractId={contractId}/>
+                return <ContractData update={update.set} contractId={contractId}/>;
             case 'payments':
-                return <ContractPayments update={update.set} />
+                // @ts-ignore
+                return <ContractPayments update={update.set}/>;
             case 'actions':
-                return <Actions />
+                return <Actions />;
             case 'files':
-                return  <Files />
+                return <Files />;
             case 'documents':
-                return <Documents update={update.set} />
-            case 'contractComments':
-                return <ContractComment />
+                return <Documents update={update.set}/>;
+            case 'comments':
+                return <CommentsList />;
         }
-    }
-
+    };
     const getNecessary = async () => {
         setLoading(true);
-        try{
-        await dispatch(getCurrentContract(contractId));
+        try {
+            await dispatch(getCurrentContract(contractId));
         }
-        catch(e){
-           console.log(e.response.data);
+        catch (e) {
+            console.log(e.response.data);
             setError(e.response.data.message);
             setAlert('Ошибка!', "Ошибка при получении данных контракта!", 'error');
         }
-        finally{
+        finally {
             setLoading(false);
         }
-    }
-
-    useEffect(()=> {
+    };
+    useEffect(() => {
         getNecessary();
         return () => {
             dispatch(contractsSlice.actions.reset());
-        }
+        };
     }, [update.state]);
-    return (
-    <div className={'background firstWindow'}>
-        {loading &&  <div className="header">Загрузка</div> }
-        {error && <div className="header">Ошибка!</div>}
-        {(!loading && !error) && <div className="header">{`${contract.name} № ${contract.number} от ${chandeDateFormatOnRus(contract.date_issue)} г.`}</div> }
-    <div className={"contentBox" + ' ' + styles.main}>
-    <ContractMenu menuValue={menuValue} setMenuValue = {setMenuValue} />
-    <Divider orientation='vertical' />
-        {loading && <div className="center"><Loading/></div> }
-        {error && <div className="center"><div className="header_small error">Ошибка получения контракта! <br />
-                                                                        {error}</div></div> }
-        {(!loading && !error) && menuSelector() }
-    </div>
+    return (<div className={'background firstWindow'}>
+            {loading && <div className="header">Загрузка</div>}
+            {error && <div className="header">Ошибка!</div>}
+            {(!loading && !error) && <div className="header">{`${contract.name} № ${contract.number} от ${chandeDateFormatOnRus(contract.date_issue)} г.`}</div>}
+            <div className={"contentBox" + ' ' + styles.main}>
+                <ContractMenu menuValue={menuValue} setMenuValue={setMenuValue}/>
+                <div className={styles.menuDivider}></div>
+                {/*<Divider itemScope orientation='vertical' />*/}
+                {loading && <div className="center"><Loading /></div>}
+                {error && <div className="center"><div className="header_small error">Ошибка получения контракта! <br />
+                    {error}</div></div>}
+                {(!loading && !error) && menuSelector()}
+            </div>
 
-    </div>
-    );
+        </div>);
 };
-
 export default Contract;

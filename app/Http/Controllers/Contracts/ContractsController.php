@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Contract;
+namespace App\Http\Controllers\Contracts;
 
 use App\Enums\Database\ActionObjectEnum;
 use App\Enums\Database\ActionTypeEnum;
@@ -52,6 +52,9 @@ class ContractsController
         return ContractStatus::all()->toArray();
     }
 
+    /**
+     * @throws Exception
+     */
     function createOne(Request $request): void
     {
         $data = $request->all();
@@ -69,7 +72,7 @@ class ContractsController
         $status = ContractStatus::find($data['statusId'], ['id']);
         if(!$status) throw new Exception('cant find status');
         $contract->status()->associate($status);
-        $debtor = Debtor::query()->byGroupId($groupId)->find($data['debtorId'], ['id']);
+        $debtor = Debtor::query()->byGroupId($groupId)->find($data['debtorId']);
         if(!$debtor) throw new Exception('cant find debtor');
         $contract->debtor()->associate($debtor);
         $type = ContractType::find($formData['typeId']);

@@ -185,7 +185,7 @@ class AgentsController extends Controller
         return $list->map(function (Agent $agent) {
             return [
               'id' => $agent->id,
-              'name' => $agent->name->getFull()
+              'name' => getFullName($agent)
             ];
         });
     }

@@ -1,135 +1,89 @@
 import React, {useEffect, useState} from 'react';
+import axios, {AxiosError} from "axios";
+import ButtonInForm from "../../dummyComponents/ButtonInForm";
+import CustomButton from "../../dummyComponents/CustomButton";
+import CustomList from "../../dummyComponents/CustomList";
+import useList from "../../../hooks/useList";
 import {useParams} from "react-router";
+import ToolbarAddButton from "../../dummyComponents/ToolbarAddButton";
+import AddButton from "../../cessions/AddButton";
+import {useShow} from "../../../hooks/useShow";
+import ContractCommentChanger from "./ContractCommentChanger";
 import {useUpdate} from "../../../hooks/useUpdate";
 import CustomModal from "../../dummyComponents/CustomModal";
+import EasyInput from "../../dummyComponents/EasyInput";
 import api from "../../../http";
+import actions from "../Actions";
+import {useDispatch} from "react-redux";
 import {alertHandler} from "../../../utils/errorHandler";
-import {TextField} from "@mui/material";
-import {UploadCommentFile} from './UploadCommentFile'
-import ContractCommentList from "./ContractCommentsList";
 
 
-
-function ContractComment() {
+function contractComment() {
+    const dispatch = useDispatch();
     const headers = [
         {name: "Дата добавления", key: 'created_at', type: 'date'},
         {name: "Комментарий", key: 'text'},
         {name: "Автор", key: 'author'},
-        {name: 'Файл', key: 'comment_file'},];
+        {name: 'Файл', key: 'comment_file'}];
     const {contractId} = useParams();
     const update = useUpdate();
     const [commentId, setCommentId] = useState(null)
     const [showModal, setShowModal] = useState(false)
-    const [showAddTextModal, setShowAddTextModal] = useState(false)
-    const [comment, setComment] = useState('')
+    const [commentText, setCommentText] = useState('')
+    const {header, setHeader} = useState();
+    // const list = useList(`contracts/${contractId}/contract-comments/show/${commentId}`)
+    // const showComments = useShow(ContractCommentChanger, {commentId, update: update.set});
 
+    // const [commentFile, setCommentFile] = useState('')
+    // const [loading, setLoading] = useState(false)
+    // const [error, setError] = useState(false)
 
-    useEffect(() => {
-        getCommentText(commentId)
-
-    }, [commentId])
+    // useEffect( ()=> {
+    //     dispatch(getCommentText(commentId))
+    //         .then((header) => setHeader(header));
+    //     return () => {
+    //         dispatch(getCommentText().setInfoDefault());
+    //     }
+    // }, []);
 
     const onClickRow = (id) => {
         setShowModal(true)
         setCommentId(id);
+        getCommentText(commentId)
     }
 
-    const onChange = (event) => {
-        setComment(event.target.value)
-    }
 
-    const createComment = async (id, commentText) => {
+    const getCommentText = async (commentId) => {
         try {
-            await api.post(`contracts/${contractId}/contract-comments/create`, {id, commentText});
-            setShowAddTextModal(false)
-            update.set()
-        } catch (e) {
-            alertHandler(e, 'Ошибка добавления комментария!');
-        }
-    }
-
-    const getCommentText = async (id) => {
-        try {
-            const {data} = await api.get('contracts/contract-comments/show/' + id);
-            setComment(data.text);
+            const {data} = await api.get('contracts/contract-comments/show/' + commentId);
+            setHeader(data.comment);
+            // delete data.name;
+            // dispatch(actions.setInfoRows(data));
+            console.log(data)
+            return header;
         } catch (e) {
             alertHandler(e, 'Ошибка получения комментария!');
-        }
-    }
-    const changeCommentText = async (column, value, id) => {
-        try {
-            await api.post('contracts/contract-comments/update/' + id, {column, value, id});
-            setShowModal(false)
-            update.set()
-        } catch (e) {
-            alertHandler(e, 'Ошибка изменения комментария!');
-        }
-    }
-
-    const deleteComment = async (id) => {
-        try {
-            await api.post('contracts/contract-comments/delete/' + id, {id});
-            setShowModal(false)
-            update.set()
-        } catch (e) {
-            alertHandler(e, 'Ошибка удаления комментария!')
         }
     }
 
     return (
         <div>
-            <ContractCommentList
+            <CustomList
                 headers={headers}
                 serverAddress={`contracts/${contractId}/contract-comments/index`}
                 onClickRow={onClickRow}
-                update={update.state}
-            />
-            <button
-                type={"button"}
-                onClick={() => setShowAddTextModal(true)}>
-                добавить комментарий
-            </button>
-            <CustomModal
-                customClassName={'changeComment'}
-                header='Редактировать комментарий'
-                customStyles={{width: 500}}
-                show = {showModal}
-                setShow={setShowModal}>
-                    <TextField
-                        value={comment}
-                        onChange={onChange}
-                        />
-                    <UploadCommentFile commentId={commentId} update={update} setShow={setShowModal}/>
-                    <button
-                        type={"submit"}
-                        onClick={() => changeCommentText('comments', comment, commentId)}>
-                        сохранить
-                    </button>
-                    <button
-                        type={'submit'}
-                        onClick={() => deleteComment(commentId)}>
-                        удалить комментарий
-                    </button>
-            </CustomModal>
-
-            <CustomModal
-                customClassName={'addComment'}
-                header='Добавить комментарий'
-                customStyles={{width: 500}}
-                show = {showAddTextModal}
-                setShow={setShowAddTextModal}>
-                <TextField
-                    onChange={onChange}
-                    />
-                <button
-                    type={"submit"}
-                    onClick={() => createComment(contractId, comment)}>
-                    сохранить
-                </button>
-            </CustomModal>
-
+                update={update.state}/>
+                <CustomModal
+                    header='Редактировать комментарий'
+                    customStyles={{width: 500}}
+                    show = {showModal}
+                    setShow={setShowModal}>
+                     <EasyInput defaultValue={header} />
+                </CustomModal>
         </div>
     )
 }
 
-export default ContractComment;
+
+
+export default contractComment;

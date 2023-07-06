@@ -14,7 +14,7 @@ const Limits = () => {
         const element = list.get[index];
         if(element) navigate(`/contracts/${element.id}`);
     }
-    return (<div className={styles.element}>
+    return (<div className={styles.element} style={{minHeight: '70vh'}}>
                 <div className="header">Сроки исковой давности</div>
                 <div className={styles.flexWrapper}>
                     <NoBorderTable onClickRow={onClickRow} headers={headers} loading={list.loading} rows={list.get} focus={list.order[0]} />

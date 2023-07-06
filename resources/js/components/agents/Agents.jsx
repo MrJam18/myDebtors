@@ -5,7 +5,13 @@ import ChangeAgent from './ChangeAgent';
 import CustomList from "../dummyComponents/CustomList";
 import {useUpdate} from "../../hooks/useUpdate";
 
-const headers = [{key: 'createdAt', name: 'Дата создания', type: 'date'}, {key: 'surname', name: 'Фамииля'}, {key: 'name', name: 'Имя'}, {key: 'patronymic' , name: 'Отчество'}, {key: "enclosure", name: "Документ"}];
+const headers = [
+    {key: 'created_at', name: 'Дата создания', type: 'date'},
+    {key: 'names.surname', name: 'Фамииля'},
+    {key: 'names.name', name: 'Имя'},
+    {key: 'names.patronymic' , name: 'Отчество'},
+    {key: "enclosure", name: "Документ"}
+];
 
 const Agents = () => {
     const update = useUpdate();

@@ -24,20 +24,18 @@ class AgentsController extends Controller
     /**
      * @throws \Exception
      */
-    function getList(PaginateRequest $request, AgentsProvider $provider): array | JsonResponse
+    function getList(PaginateRequest $request): array | JsonResponse
     {
         $data = $request->validated();
-        $paginator = $provider->getList( $data);
-
+        $query = Agent::query()->joinRelation('name')->orderByData($data->orderBy)->select( 'names.surname', 'names.name', 'names.patronymic', 'agents.*');
+        $paginator = $query->paginate($data->perPage, 'names*', page: $data->page);
         $list = $paginator->items()->map(function (Agent $agent) {
             return [
                 'idd' => $agent->id,
-                'is_default' => $agent->is_default,
-                'no_show_group' => $agent->no_show_group,
-                'surname' => $agent->name->surname,
-                'name'=> $agent->name->name,
-                'patronymic'=> $agent->name->patronymic,
-                'createdAt'=>$agent->created_at->format(RUS_DATE_FORMAT),
+                'names.surname' => $agent->surname,
+                'names.name'=> $agent->name,
+                'names.patronymic'=> $agent->patronymic,
+                'created_at'=>$agent->created_at->format(RUS_DATE_FORMAT),
                 'enclosure'=>$agent->enclosure,
             ];
         });
@@ -49,7 +47,6 @@ class AgentsController extends Controller
         $data = $request->all();
         DB::transaction(function () use(&$data) {
             $user = Auth::user();
-            Log::info(print_r($user->id, true));
             $formData = $data['formData'];
             $addressService = new AddressService();
             $address = $addressService->addAddress($data['address']);

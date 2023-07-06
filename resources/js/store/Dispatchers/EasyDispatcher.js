@@ -43,7 +43,6 @@ export class EasyDispatcher {
         if (__classPrivateFieldGet(this, _EasyDispatcher_formRef, "f"))
             this.data.formData = formDataConverter(__classPrivateFieldGet(this, _EasyDispatcher_formRef, "f").current.elements);
         try {
-            console.log(this.data);
             let result = await this.request(serverAddress, method, this.data);
             if (this.afterResponse)
                 result = this.afterResponse(result);

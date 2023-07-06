@@ -29,7 +29,7 @@ class ContractCommentsController extends AbstractController
             $user = $comment->user_surname . ' ' . strtoupper(mb_substr($comment->user_name, 0, 1)) . '.';
             if($comment->user_patronymic) $user .= ' ' . strtoupper(mb_substr($comment->user_patronymic, 0, 1)) . '.';
             $returned = [
-                'contract_comments.created_at' => $comment->created_at->format(RUS_DATE_FORMAT),
+                'contract_comments.created_at' => $comment->created_at->format(RUS_DATE_TIME_FORMAT),
                 'contract_comments.text' => $comment->text,
                 'names.surname' => $user,
                 'id' => $comment->id,
@@ -55,7 +55,7 @@ class ContractCommentsController extends AbstractController
         $comment->save();
         if($file = $request->file('file')) {
             if($file->getSize() > 10485760) throw new ShowableException('Файл превышает размер в 10 мегабайт');
-            $fileName = $comment->id . "__{$file->getClientOriginalName()}.{$file->getExtension()}";
+            $fileName = $comment->id . "__{$file->getClientOriginalName()}";
             $file->storeAs($this->getFileDir($contract), $fileName);
             $comment->file_name = $fileName;
             $comment->save();
@@ -64,7 +64,7 @@ class ContractCommentsController extends AbstractController
 
     function getFile(Contract $contract, ContractComment $comment): StreamedResponse
     {
-        return Storage::download($this->getFileDir($contract) . DIRECTORY_SEPARATOR . $comment->file_name, $comment->file_name);
+        return Storage::download($this->getFileDir($contract) . DIRECTORY_SEPARATOR . $comment->file_name);
     }
 
     function updateOne(Contract $contract, ContractComment $comment, Request $request): void

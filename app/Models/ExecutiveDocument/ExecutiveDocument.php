@@ -28,6 +28,9 @@ use Illuminate\Support\Collection;
  * @property int $type_id;
  * @property int $bailiff_department_id
  * @property int $court_id;
+ * @property ExecutiveDocumentType $type;
+ * @property BailiffDepartment $bailiffDepartment;
+ * @property Court $court;
  * @property MoneySum $moneySum;
  * @property Collection $ipInitStatements;
  * @property Collection $enforcementProceedings;

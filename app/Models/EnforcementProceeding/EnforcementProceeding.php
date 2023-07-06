@@ -43,9 +43,9 @@ class EnforcementProceeding extends BaseModel
     ];
 
     protected $casts = [
-        'begin_date' => 'date',
-        'end_date' => 'date',
-        'status_date' => 'date'
+        'begin_date' => 'date:' . ISO_DATE_FORMAT,
+        'end_date' => 'date:' . ISO_DATE_FORMAT,
+        'status_date' => 'date:' . ISO_DATE_FORMAT
     ];
 
 

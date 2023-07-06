@@ -72,7 +72,7 @@ class ContractsController
         $status = ContractStatus::find($data['statusId'], ['id']);
         if(!$status) throw new Exception('cant find status');
         $contract->status()->associate($status);
-        $debtor = Debtor::query()->byGroupId($groupId)->find($data['debtorId'], ['id']);
+        $debtor = Debtor::query()->byGroupId($groupId)->find($data['debtorId']);
         if(!$debtor) throw new Exception('cant find debtor');
         $contract->debtor()->associate($debtor);
         $type = ContractType::find($formData['typeId']);

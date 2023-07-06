@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatcher } from "../../../hooks/useDispatcher";
 import { useError } from "../../../hooks/useError";
+import { createUpdateElementsFunc } from "../../../utils/createUpdateElementFunc";
 import { formDataConverter } from "../../../utils/formDataConverter";
 import EasyInput from "../../dummyComponents/EasyInput";
 import { makeStyles } from "@mui/styles";
@@ -18,7 +19,7 @@ import Loading from "../../dummyComponents/Loading";
 const useStyles = makeStyles({
     smallInput
 });
-const EnforcementProceedings = ({ executiveDocId, setShow }) => {
+const EnforcementProceedings = ({ executiveDocId, setShow, setLastProceeding }) => {
     const [activeEnforcementProceeding, setActiveEnforcementProceeding] = useState({});
     const [statusId, setStatusId] = useState(null);
     const [enforcementProceedings, setEnforcementProceedings] = useState([]);
@@ -32,12 +33,11 @@ const EnforcementProceedings = ({ executiveDocId, setShow }) => {
     const [bailiff, setBailiff] = useState(null);
     const [showCreateBailiff, setShowCreateBailiff] = useState(false);
     const onSubmit = async (data) => {
-        // const sendingEnforcementProceedings = [...enforcementProceedings];
-        // sendingEnforcementProceedings[activeStep] = getUpdatedData();
-        // dispatcher.addData('enforcementProceedings', sendingEnforcementProceedings);
         dispatcher.addData('enforcementProceedings', data);
         dispatcher.addData('deleteIds', deleteIds);
-        dispatcher.handle(getContractPath('enforcement-proceedings/set-all-by-executive-doc/' + executiveDocId), 'post');
+        const response = await dispatcher.handle(getContractPath('enforcement-proceedings/set-all-by-executive-doc/' + executiveDocId), 'post');
+        if (response.data)
+            setLastProceeding(response.data);
     };
     const getUpdatedData = () => {
         if (formRef.current) {
@@ -55,11 +55,8 @@ const EnforcementProceedings = ({ executiveDocId, setShow }) => {
         api.get(getContractPath('enforcement-proceedings/get-list-by-executive-doc/' + executiveDocId))
             .then(({ data }) => {
             if (Array.isArray(data) && data.length !== 0) {
-                const last = data.length - 1;
-                const lastData = data[last];
+                console.log(data);
                 setEnforcementProceedings(data);
-                // setActiveEnforcementProceeding(lastData);
-                // updateInputs(lastData);
             }
         })
             .catch((e) => Alert.setError('Ошибка при получении списка исп. производств', e))
@@ -68,7 +65,7 @@ const EnforcementProceedings = ({ executiveDocId, setShow }) => {
     const updateInputs = (data) => {
         var _a;
         if (formRef.current) {
-            const elements = formRef.current.elements;
+            const updateElement = createUpdateElementsFunc(data, formRef.current.elements);
             updateElement('begin_date');
             updateElement('end_date');
             updateElement('number');
@@ -79,12 +76,6 @@ const EnforcementProceedings = ({ executiveDocId, setShow }) => {
             updateElement('status_date');
             setBailiff(data.bailiff);
             setStatusId((_a = data.status_id) !== null && _a !== void 0 ? _a : 0);
-            function updateElement(property) {
-                if (data[property])
-                    elements[property].value = data[property];
-                else
-                    elements[property].value = '';
-            }
         }
     };
     return (<CustomModal customStyles={{ width: 500 }} setShow={setShow}>

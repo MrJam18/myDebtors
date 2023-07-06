@@ -16,7 +16,7 @@ const fileList = [
 ]
 
 
-const Files = () => {
+const Files = ({}) => {
     const [loading, setLoading] = useState(true);
     const [existingFiles, setExistingFiles] = useState({});
     useEffect(()=> {

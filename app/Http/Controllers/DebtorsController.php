@@ -120,7 +120,8 @@ class DebtorsController extends AbstractController
     {
         $list = Debtor::query()->searchByFullName($request->validated())
             ->byGroupId(getGroupId())
-            ->limit(5)->get();
+            ->limit(5)
+            ->select(['names.*', 'debtors.id', 'debtors.birth_date'])->get();
         return $list->map(function (Debtor $debtor) {
             $name = getFullName($debtor);
             return [

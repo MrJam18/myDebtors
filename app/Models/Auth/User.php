@@ -2,7 +2,7 @@
 
 namespace App\Models\Auth;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contract\Auth\MustVerifyEmail;
 use App\Models\Action\Action;
 use App\Models\Base\CustomBuilder;
 use App\Models\Cession\CessionGroup;

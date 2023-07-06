@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-//        Schema::table('agents', function (Blueprint $table) {
-//            $table->foreignId('passport_id')->constrained();
-//        });
+        Schema::table('agents', function (Blueprint $table) {
+            $table->foreignId('passport_id')->constrained();
+        });
     }
 
     /**

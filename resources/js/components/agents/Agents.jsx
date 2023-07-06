@@ -17,7 +17,6 @@ const Agents = () => {
     const update = useUpdate();
     const [changedAgentId, setChangedAgentId] = useState(false);
     const onClickRow = (id) => {
-        console.log(id)
         setChangedAgentId(id);
     }
     return (

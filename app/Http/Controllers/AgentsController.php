@@ -49,6 +49,7 @@ class AgentsController extends Controller
         $data = $request->all();
         DB::transaction(function () use(&$data) {
             $user = Auth::user();
+            Log::info(print_r($user->id, true));
             $formData = $data['formData'];
             $addressService = new AddressService();
             $address = $addressService->addAddress($data['address']);
@@ -60,7 +61,11 @@ class AgentsController extends Controller
             $name->patronymic = $formData['patronymic'];
             $name->save();
             $agent->name()->associate($name);
-            $agent->is_default = $formData['is_default'];
+            if($formData['is_default'] == 1){
+                Agent::query()->where('user_id', $user->id)->update(['is_default' => 0]);
+                    $agent->is_default = $formData['is_default'];
+                } else $agent->is_default = $formData['is_default'];
+
             $agent->no_show_group = $formData['no_show_group'];
             $agent->enclosure = $formData['enclosure'];
             $agent->phone = $formData['phone'];
@@ -99,6 +104,7 @@ class AgentsController extends Controller
 
     public function update(Request $request): JsonResponse
     {
+        $user = Auth::user();
         $addressService = new AddressService();
         $input = $request->all();
         $formData=$input['formData'];
@@ -152,7 +158,11 @@ class AgentsController extends Controller
         }
         // Обработка checkbox
             $agent->no_show_group=$formData['no_show_group'];
+        if($formData['is_default'] == 1){
+            Agent::query()->where('user_id', $user->id)->update(['is_default' => 0]);
             $agent->is_default = $formData['is_default'];
+        } else $agent->is_default = $formData['is_default'];
+
         $agent->save();
         if(isset($oldAddress)) $oldAddress->delete();
         return response()->json($agent);

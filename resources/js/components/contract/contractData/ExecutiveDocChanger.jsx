@@ -79,7 +79,6 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     }, []);
 
     const updateInputs = (data)=>{
-        console.log("updateInputs has been called with data:", data);
         let elements
         if (formRef.current) {
             elements = formRef.current;

@@ -31,7 +31,7 @@ const CustomSelect = ({ name, label, initValue = '', children, style, customClas
                 <Select fullWidth onChange={onChangeValue} variant='standard' value={value} required labelId={name} name={name}>
                         {children}
                 </Select>
-                
+                <div>Список</div> 
             </div>);
 };
 export default CustomSelect;

@@ -9,10 +9,6 @@ import styles from '../../css/auth.module.css';
 import { tryLogin } from '../../store/users/actions';
 import { formDataConverter } from '../../utils/formDataConverter';
 
-
-
-
-
 const useStyles = makeStyles({
     input: {
         marginBottom: '10px',

@@ -24,6 +24,10 @@ import Debtor from "./debtor/Debtor";
 import Registration from "./auth/Registration";
 import Cessions from "./cessions/Cessions";
 import Test from "./Test";
+import PrivacyPolice  from "./footer/PrivacyPolice";
+import TermsUse from './footer/TermsUse';
+
+
 
 
 
@@ -63,6 +67,8 @@ function Router() {
                 <Route path={'cessions'} element={<PrivateAccess Wrapped={<Cessions />}/>}/>
                 <Route path='/' element={<PrivateAccess Wrapped={<Start />}/>}/>
                 <Route path={'test2'} element={<Test />} />
+                <Route path={'privacyPolice'} element={<PrivacyPolice/>}/>
+                <Route path={'termsUse'} element={<TermsUse/>}/>
             </Routes>
       </BrowserRouter>
       );

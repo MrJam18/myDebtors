@@ -51,8 +51,8 @@ const Registration = ({}) => {
             <CustomInput name='groupName' className={styles.input} label={'Укажите название новой группы'}/>}
             <ButtonInForm loading={loading.state}/>
                 {error.Comp()}
+                
         </form>
-        <script src="js/classes/footer.js"></script>
     </Content>);
 };
 export default Registration;

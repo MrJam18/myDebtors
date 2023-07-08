@@ -1,15 +1,13 @@
-button {
-  outline: 0;
-  border: 0;
+.body{
+  margin: 0;
+  padding: 0;
 }
-
 #root {
   display: flex;
   flex-direction: column;
-  height: 1200px;
+  height: 100vh;
   background-size: 100%;
   font-family: 'Roboto_slab', serif;
-  background-color:#f3fef7;
 }
 .header {
   font-family: 'Roboto_slab', serif;
@@ -32,7 +30,7 @@ button {
   background-position: center;
 }
 html {
-  background: rgb(187, 185, 185) no-repeat center center fixed;
+  background: white no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

@@ -1,9 +1,39 @@
 .footer {
-    height: 100px;
+    height: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 26px;
     color:white;
-    background-color:#1f4f16;
+    background-color: #00a86b;
+    text-decoration: white;
     }
+
+ .bootonOpenBtn {
+    padding:20px;
+    display: flex;
+    background-color: #00a86b;
+    flex-direction: row;
+    justify-content: space-between;
+    color:white;
+ } 
+ .linkprivacyPolice , .linkTermsUse{
+    color: #dedede;
+ }
+ 
+ .linkTermsUse:hover {
+    color: #c4d813;
+ }
+ .linkprivacyPolice :hover {
+    color: #c4d813;
+ }
+ .content {
+   padding: 30px;
+ }
+
+
+
+
+
+
+

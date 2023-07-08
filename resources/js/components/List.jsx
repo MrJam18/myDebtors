@@ -17,11 +17,20 @@ const List = () => {
         setAddDebtor(true);
     };
     const debtorsList = list.get.map(debtor => <Debtors debtor={debtor} key={debtor.id} setAddContract={setAddContract}/>);
+
+
+
+    
     return (
+
+
+
     <div className='background firstWindow'>
+       <div className={styles.list_treaties}>Список договоров</div>
           {addContract && <AddContract updateList={list.update} debtorId={addContract} setShow={setAddContract}/>}
          {addDebtor && <AddDebtor updateList={list.update} setAddDebtor={setAddDebtor}/>}
         <div className={"contentBox" + ' ' + styles.listBox}>
+         <div className={styles.menuSort} icon={solid('user-plus')} >
           <div className={styles.utils}>
           <button className={styles.buttonUtil} title='добавить должника' onClick={openAddDebtor}>
           <FontAwesomeIcon icon={solid('user-plus')} className={styles.imgUtil}/>
@@ -42,9 +51,12 @@ const List = () => {
           <FontAwesomeIcon icon={solid("filter")} className={styles.imgUtil}/>
           </button>
           </div>
+          <div class='line' className={styles.line}></div>
+          </div>
         <div>
           {list.loading ? <Loading /> : debtorsList}
          </div>
+         <div class='line' className={styles.line}></div>
          <Pagination page={list.page} perPage={list.perPage} setPerPage={list.setPerPage} setPage={list.setPage} total={list.totalItems} />
         </div>
         </div>);

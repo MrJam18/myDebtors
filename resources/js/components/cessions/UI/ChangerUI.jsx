@@ -8,12 +8,12 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import CustomButton from "../../dummyComponents/CustomButton";
 import NameChanger from "../NameChanger";
-import Cession from "../Cession";
+import CessionChanger from "../CessionChanger";
 import {useShow} from "../../../hooks/useShow";
 
 const ChangerUI = ({ error, cessionGroupId = null, info, activeCession, header, setShow, update = null, forceUpdate, showDeleteGroup, cessionName, onSubmit }) => {
     const showNameChanger = useShow(NameChanger, {name: cessionName, onSubmit});
- const ActiveCession = useCallback(() => info.loading ? null : <Cession setShowNameChanger={showNameChanger.setShow} data={info.rows[activeCession]} />, [activeCession, info.loading, forceUpdate]);
+ const ActiveCession = useCallback(() => info.loading ? null : <CessionChanger setShowNameChanger={showNameChanger.setShow} data={info.rows[activeCession]} />, [activeCession, info.loading, forceUpdate]);
  // const showNameChanger = useShow(<NameChanger name={cessionName} onSubmit={onSubmit} />);
 
  return (

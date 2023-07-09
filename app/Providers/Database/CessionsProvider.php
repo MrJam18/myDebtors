@@ -21,14 +21,11 @@ class CessionsProvider extends AbstractProvider
 
     function getList(ListRequestData $data): CustomPaginator
     {
-
-        $builder = $this->byGroupId(getGroupId(), $data->orderBy)->with(['cessions' => [
-            'assignee:id,name', 'assignor:id,name'
-        ]])
+        $builder = $this->byGroupId(getGroupId(), $data->orderBy)
             ->joinSub($this->getLastCessionQuery(), 'ranked_table', 'ranked_table.cession_group_id', 'cession_groups.id')
             ->join('creditors as assignee_table', 'ranked_table.assignee_id', 'assignee_table.id')
             ->join('creditors as assignor_table', 'ranked_table.assignor_id', 'assignor_table.id')
-            ->selectRaw("{$this->getAsEquals('cession_groups.name')}, {$this->getAsEquals('assignee_table.short')}, {$this->getAsEquals('assignor_table.short')}, {$this->getAsEqualsRusDate('ranked_table.transfer_date')}, cession_groups.id as idd, {$this->getAsEquals('cession_groups.id')}, {$this->getAsEqualsRusDate('cession_groups.created_at')}");
+            ->selectRaw("{$this->getAsEquals('cession_groups.name')}, {$this->getAsEquals('assignee_table.short')}, {$this->getAsEquals('assignor_table.short')}, {$this->getAsEqualsRusDate('ranked_table.transfer_date')}, cession_groups.id, {$this->getAsEquals('cession_groups.id')}, {$this->getAsEqualsRusDate('cession_groups.created_at')}");
         if ($data->search) {
             if(!is_numeric($data->search)) $builder->searchOne(['cession_groups.name'], $data->search);
             else $builder->searchOne(['cession_groups.id'], $data->search);
@@ -52,8 +49,8 @@ class CessionsProvider extends AbstractProvider
     private function getLastCessionQuery(): Builder
     {
         $rankedQuery = DB::table('cessions')->selectRaw(
-            '*, RANK() over (PARTITION BY cession_group_id order by transfer_date DESC) as transfer_rank'
-        );
+            'transfer_date, assignee_id, assignor_id, cession_group_id, RANK() over (PARTITION BY cession_group_id order by transfer_date DESC) as transfer_rank'
+        )->distinct();
         return DB::query()
             ->from($rankedQuery, 'ranked_table')
             ->where('ranked_table.transfer_rank', '=', 1);

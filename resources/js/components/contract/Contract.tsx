@@ -1,4 +1,4 @@
-import React, {CSSProperties, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { getCurrentContract } from '../../store/contracts/actions';
@@ -9,7 +9,6 @@ import Loading from '../dummyComponents/Loading';
 import ContractMenu from './ContractMenu';
 import ContractData from './contractData/ContractData';
 import ContractPayments from './payments/ContractPayments'
-import { Divider } from '@mui/material';
 import Actions from './Actions';
 import { setAlert } from '../../store/alert/actions';
 import Files from "./files/Files";

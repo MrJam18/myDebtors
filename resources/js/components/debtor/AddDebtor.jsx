@@ -13,7 +13,7 @@ const useStyles = makeStyles({
         height: '35px',
     },
 });
-const AddDebtor = ({ setShow, updateList }) => {
+const AddDebtor = ({ setShow, updateList, setDebtor = null }) => {
     const classes = useStyles();
     const [addressForDB, setAddressForDB] = useState();
     const [loading, setLoading] = useState(false);
@@ -24,6 +24,7 @@ const AddDebtor = ({ setShow, updateList }) => {
         const dispatcher = new AddDebtorDispatcher(setError, setLoading, debtorForm);
         // dispatcher.data.passportType = passportType;
         dispatcher.data.address = addressForDB;
+        dispatcher.addNoReqData('setDebtor', setDebtor);
         await dispatcher.handle();
         setShow(false);
         updateList();

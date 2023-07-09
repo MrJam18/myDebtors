@@ -84,7 +84,7 @@ class ContractsProvider extends AbstractProvider
                 }
             }
         }
-        $query->selectRaw("contracts.number, contracts.issued_date, contracts.id, names.surname, names.name, names.patronymic, creditors.short, creditors.name as creditor_name, contract_statuses.name as status_name");
+        $query->selectRaw("contracts.number, contracts.issued_date, contracts.id, names.surname, names.name, names.patronymic, creditors.short, creditors.name as creditor_name, contract_statuses.name as status_name, contracts.created_at");
         return $query->paginate($data->perPage, page: $data->page);
     }
 

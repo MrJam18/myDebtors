@@ -64,11 +64,12 @@ class ListController extends AbstractController
     function getContractList(PaginateRequest $request, ContractsProvider $provider): array {
         $paginator = $provider->getList($request->validated());
         $list = $paginator->items()->map(function (Contract $contract) {
-            $debtorName = "$contract->surname $contract->name";
-            if($contract->patronymic) $debtorName .= ' ' . $contract->patronymic;
+            $debtorName = "$contract->surname " . strtoupper(mb_substr($contract->name, 0, 1)) . '.';
+            if($contract->patronymic) $debtorName .= ' ' . strtoupper(mb_substr($contract->patronymic, 0, 1)) . '.';
             $creditorName = $contract->short;
             if(!$creditorName) $creditorName = $contract->creditor_name;
             return [
+                'created_at' => $contract->created_at->format(RUS_DATE_FORMAT) . ' г.',
                 'number' => $contract->number,
                 'issued_date' => $contract->issued_date->format(RUS_DATE_FORMAT) . ' г.',
                 'id' => $contract->id,

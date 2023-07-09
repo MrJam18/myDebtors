@@ -100,7 +100,7 @@ class AuthController extends AbstractController
             $name = new Name();
             $name->name = $formData['name'];
             $name->surname = $formData['surname'];
-            $name->patronymic = $formData['patronymic'];
+            if(isset($formData['patronymic'])) $name->patronymic = $formData['patronymic'];
             $name->save();
             $user->name()->associate($name);
             if(!isset($data['group_id'])) {

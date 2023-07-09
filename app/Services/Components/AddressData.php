@@ -27,7 +27,6 @@ class AddressData
         $this->checkEmpty($data['settlement']);
         $this->checkEmpty($data['street']);
         $this->checkEmpty($data['house']);
-        $this->checkEmpty($data['postal_code']);
         $this->country = $data['country'];
         $this->region = $data['region'];
         $this->area = $data['area'];

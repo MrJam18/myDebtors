@@ -7,10 +7,9 @@ import {AddCreditorDispatcher} from "../../store/Dispatchers/Creditor/AddCredito
 
 
 
-const AddCreditor = ({show, setShow, setUpdate}) => {
+const AddCreditor = ({setShow, setUpdate, setCreditor = null}) => {
     const [address, setAddress] = useState(false);
     const error = useError();
-    // const loading = useSelector(getOrgsLoading);
     const [loading, setLoading] = useState(false);
     const form = useRef();
     const [isOrg, setIsOrg] = useState(true);
@@ -21,7 +20,8 @@ const AddCreditor = ({show, setShow, setUpdate}) => {
         const dispatcher = new AddCreditorDispatcher(error.setError, setLoading, form, setShow);
         dispatcher.addData('address', address);
         dispatcher.addData('bankRequisitesId', bankRequisites.id);
-        dispatcher.addData('setUpdate', setUpdate);
+        dispatcher.addNoReqData('setUpdate', setUpdate);
+        dispatcher.addNoReqData('setCreditor', setCreditor);
         dispatcher.handle();
 
     }
@@ -29,7 +29,7 @@ const AddCreditor = ({show, setShow, setUpdate}) => {
     return (
         <div>
             <form onSubmit={formHandler} ref={form}>
-            <CustomModal show={show} fixedStyles={fixedStyles} setShow={setShow}  customStyles={{width: '500px'}}>
+            <CustomModal fixedStyles={fixedStyles} setShow={setShow}  customStyles={{width: '500px'}}>
                 <div className="header_small">Укажите данные кредитора</div>
                 <Creditor bankRequisites={bankRequisites} setBankRequisites={setBankRequisites} isOrg={isOrg} setIsOrg={setIsOrg} setAddress={setAddress} setFixedStyles={setFixedStyles} />
                 <div className="margin-bottom_10">

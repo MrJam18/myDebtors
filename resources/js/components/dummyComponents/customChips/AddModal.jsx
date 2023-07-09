@@ -6,7 +6,7 @@ import CustomButton from "../CustomButton";
 import { useError } from "../../../hooks/useError";
 const AddModal = ({ setShow, addHeader, setList }) => {
     const inputRef = useRef();
-    const { error, ErrorComp, setError } = useError();
+    const error = useError();
     const onClick = () => {
         try {
             // @ts-expect-error TS(2532): Object is possibly 'undefined'.
@@ -21,7 +21,7 @@ const AddModal = ({ setShow, addHeader, setList }) => {
             setShow(false);
         }
         catch (e) {
-            setError(e);
+            error.setError(e);
         }
     };
     const onKeyPress = (ev) => {
@@ -32,7 +32,7 @@ const AddModal = ({ setShow, addHeader, setList }) => {
                <div className='header_small'>{addHeader}</div>
                <Input autoFocus inputRef={inputRef} required className={styles.addInput} fullWidth onKeyDown={onKeyPress}/>
                <CustomButton onClick={onClick} text='Подтвердить'/>
-           {error && <ErrorComp />}
+           {error.Comp()}
        </CustomModal>);
 };
 export default AddModal;

@@ -5,9 +5,11 @@ export class CreateAgentDispatcher extends Dispatcher
 {
     async _handler(dispatcherData)
     {
+        const noReqData = this.noReqData as Record<string, any>;
         if(!dispatcherData.address) throw new Error('Укажите адрес представителя');
-        await this._api.post('agents/create-one', dispatcherData);
+        const response = await this._api.post('agents/create-one', dispatcherData);
         Alert.set('Успешно', "Представитель успешно создан");
-        this.noReqData.update();
+        if(noReqData.update) noReqData.update();
+        if(noReqData.setAgent && response.data) noReqData.setAgent(response.data);
     }
 }

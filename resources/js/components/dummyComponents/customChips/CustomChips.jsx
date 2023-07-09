@@ -22,7 +22,7 @@ const CustomChips = ({ list = [], setList, header, addHeader }) => {
     <div className={styles.chips}>
    {list.map((el, index) => <Chip className={styles.chip} key={index} size='small' data-index={index} label={el} onDelete={deleteHandler(index)}/>)}
     </div>
-    <Fab size="small" onClick={addHandler} color="secondary" className={styles.addChipButton} aria-label="add">
+    <Fab size="small" onClick={addHandler} color="primary" className={styles.addChipButton} aria-label="add">
      <AddIcon />
     </Fab>
     {addModal.show && <AddModal addHeader={addHeader} setShow={addModal.setShow} setList={setList}/>}

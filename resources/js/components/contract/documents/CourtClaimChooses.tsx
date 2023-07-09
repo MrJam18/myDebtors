@@ -7,7 +7,9 @@ import {saveFile} from "../../../http/index";
 import {contractsSelectors} from "../../../store/contracts/selectors";
 import {EasyDispatcher} from "../../../store/Dispatchers/EasyDispatcher";
 import {getDefaultAgent} from "../../../utils/server/getDefaultAgent";
+import AddAgent from "../../agents/AddAgent";
 import EasySearch from "../../dummyComponents/search/EasySearch";
+import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
 import CourtClaimChooser from "./choosers/CourtClaimChooser";
 
 export type SelectedDoc = {
@@ -30,6 +32,7 @@ const CourtClaimChooses = ({setError, setLoading, update, selectedDoc}: Props) =
     });
     const showCourtClaimChooser = useShow(CourtClaimChooser, {setCourtClaim});
     const [agent, setAgent] = useState(null);
+    const showAddAgent = useShow(AddAgent, {setAgent});
     const onSubmit = (ev)=> {
         ev.preventDefault();
         if(!courtClaim.id) setError('Сначала создайте судебный иск');
@@ -56,9 +59,10 @@ const CourtClaimChooses = ({setError, setLoading, update, selectedDoc}: Props) =
                 <h4 className={styles.smallHeader}>
                     Представитель
                 </h4>
-                <EasySearch className={'margin-bottom_10 ' + styles.documents__selector} value={agent} setValue={setAgent} serverAddress={'agents/search-list'} required />
+                <SearchAndAddButton onClickAddButton={showAddAgent.setTrue} className={'margin-bottom_10 ' + styles.documents__selector} value={agent} setValue={setAgent} serverAddress={'agents/search-list'} required />
             </form>
             {showCourtClaimChooser.Comp()}
+            {showAddAgent.Comp()}
         </>
         );
 }

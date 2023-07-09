@@ -9,7 +9,7 @@ const defaultHeaderStyles = {maxWidth: '400px', display: 'none'}
 export type SetShow = (show: boolean)=> void;
 
 type Props = {
-    children: React.ReactNode
+    children: React.ReactNode | React.ReactNode[]
     show?: boolean,
     setShow: SetShow,
     onClose?: ()=> void,

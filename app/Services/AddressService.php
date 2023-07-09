@@ -42,7 +42,7 @@ class AddressService extends BaseService
                 'settlement_id' => $address->settlement->id
             ]);
         $address->street()->associate($street);
-        $address->postal_code = $addressData->postal_code;
+        if($addressData->postal_code)$address->postal_code = $addressData->postal_code;
         $address->house = $addressData->house;
         if($addressData->flat) $address->flat = $addressData->flat;
         if($addressData->block) $address->block = $addressData->block;

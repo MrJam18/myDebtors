@@ -26,12 +26,11 @@
     width: 30px;
     height: 30px;
     min-height: 20px;
-    /*margin-bottom: 2px;*/
-    /*margin-right: 5px;*/
+    bottom: 0;
     border: none;
-    background-color: darkviolet;
+    background-color: #6a6868;
     border-radius: 50%;
-    z-index: 1;
+    z-index: 0;
 }
 .addInput {
     margin-bottom: 10px;

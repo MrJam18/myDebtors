@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AbstractControllers\AbstractController;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\SearchRequest;
-use App\Models\Contract\Contract;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
 use App\Models\Subject\People\Debtor;
@@ -22,11 +21,12 @@ use Illuminate\Support\Facades\DB;
 class DebtorsController extends AbstractController
 {
 
-    function createOne(Request $request): void
+    function createOne(Request $request): array
     {
         $formData = $this->getFormData();
         $addressData = $request->input('address');
-        DB::transaction(function () use (&$formData, &$addressData) {
+        $returned = null;
+        DB::transaction(function () use (&$formData, &$addressData, &$returned) {
             $addressService = new AddressService();
             $debtor = new Debtor();
             $name = new Name([
@@ -55,7 +55,12 @@ class DebtorsController extends AbstractController
             $debtor->address()->associate($address);
             $debtor->user()->associate(Auth::user());
             $debtor->save();
+            $returned = [
+                'id' => $debtor->id,
+                'name' => "{$debtor->name->getFull()}, {$debtor->birth_date->format(RUS_DATE_FORMAT)} г. р."
+            ];
         });
+        return $returned;
     }
     function getOne(Debtor $debtor): array
     {
@@ -126,7 +131,7 @@ class DebtorsController extends AbstractController
             $name = getFullName($debtor);
             return [
                 'id' => $debtor->id,
-                'name' => "$name {$debtor->birth_date->format(RUS_DATE_FORMAT)} г. р."
+                'name' => "$name, {$debtor->birth_date->format(RUS_DATE_FORMAT)} г. р."
             ];
         });
     }

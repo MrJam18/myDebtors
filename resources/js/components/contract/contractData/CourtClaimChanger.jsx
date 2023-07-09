@@ -7,7 +7,6 @@ import { useError } from "../../../hooks/useError";
 import { useShow } from "../../../hooks/useShow";
 import api, { saveFile } from "../../../http/index";
 import { createUpdateElementsFunc } from "../../../utils/createUpdateElementFunc";
-import { formDataConverter } from "../../../utils/formDataConverter";
 import { getContractPath } from "../../../utils/getContractPath";
 import { changeChecked } from "../../../utils/inputs/changeChecked";
 import CustomFormStepper from "../../dummyComponents/CustomFormStepper";
@@ -77,17 +76,13 @@ const CourtClaimChanger = ({ setShow, update }) => {
         dispatcher.handle(getContractPath('court-claims/update-list-by-contract'), 'post');
         // dispatcher.handle(getContractPath('court-claims/change-or-create-one'), 'post');
     };
-    const getUpdatedData = () => {
-        if (formRef.current) {
-            const data = formDataConverter(formRef.current);
-            data.court = court;
-            data.agent = agent;
-            data.status_date = activeClaim.status_date;
-            if (activeClaim.id)
-                data.id = activeClaim.id;
-            return data;
-        }
-        return null;
+    const getUpdatedData = (data) => {
+        data.court = court;
+        data.agent = agent;
+        data.status_date = activeClaim.status_date;
+        if (activeClaim.id)
+            data.id = activeClaim.id;
+        return data;
     };
     const onDownloadDocument = () => {
         saveFile('documents/get-court-claim-doc/' + activeClaim.id)

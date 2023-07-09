@@ -21,7 +21,7 @@ const AgentsToolBar = ({setUpdate}) => {
     }
     return (
         <div className={styles.toolbar}>
-            { showAddAgent && <AddAgent setUpdate={setUpdate} show={showAddAgent} setShow={setShowAddAgent} /> }
+            { showAddAgent && <AddAgent setUpdate={setUpdate} setShow={setShowAddAgent} /> }
             <Button variant="text" onClick={addOrgClickHandler} className={classes.toolBarButton}><FontAwesomeIcon icon={solid('plus')} className={styles.addIcon}/> Добавить</Button>
         </div>
     );

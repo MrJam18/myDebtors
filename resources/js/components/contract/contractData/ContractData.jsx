@@ -46,6 +46,10 @@ const ContractData = ({contractId, update}) => {
         {
             colName: 'debtorName',
             func: showDebtorChanger.setTrue
+        },
+        {
+            colName: 'cession',
+            func: showCreditorChanger.setTrue
         }
     ];
     return (

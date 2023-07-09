@@ -55,16 +55,13 @@ const ExecutiveDocChanger = ({setShow, update}) => {
         await dispatcher.handle();
     }
 
-    const getUpdatedData = () => {
-        if (formRef.current) {
-            const data = formDataConverter(formRef.current);
-            data.bailiffDepartment = bailiff;
-            data.court = court;
-            data.enforcementProceedings = activeDoc.enforcementProceedings;
-            data.lastProceeding = lastProceeding;
-            if (activeDoc.id) data.id = activeDoc.id;
-            return data;
-        }
+    const getUpdatedData = (data) => {
+        data.bailiffDepartment = bailiff;
+        data.court = court;
+        data.enforcementProceedings = activeDoc.enforcementProceedings;
+        data.lastProceeding = lastProceeding;
+        if (activeDoc.id) data.id = activeDoc.id;
+        return data;
     };
 
     useEffect(() => {

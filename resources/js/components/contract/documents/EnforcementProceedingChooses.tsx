@@ -9,8 +9,10 @@ import {contractsSelectors} from "../../../store/contracts/selectors";
 import {IdNameType} from "../../../Types/IdNameType";
 import {getContractPath} from "../../../utils/getContractPath";
 import {getDefaultAgent} from "../../../utils/server/getDefaultAgent";
+import AddAgent from "../../agents/AddAgent";
 import Loading from "../../dummyComponents/Loading";
 import EasySearch from "../../dummyComponents/search/EasySearch";
+import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
 import EnforcementProceedings from "../contractData/EnforcementProceedings";
 import {SelectedDoc} from "./CourtClaimChooses";
 
@@ -28,6 +30,7 @@ const EnforcementProceedingChooses = ({selectedDoc, setError, setLoading}: Props
     const dispatcher = useDispatcher(setError, {
         setLoading, request: (serverAddress) => saveFile(serverAddress),
     });
+    const showAddAgent = useShow(AddAgent, {setAgent});
     const showEnforcementProceedings = useShow(EnforcementProceedings, {executiveDocId: contract.executiveDocId});
 
     const onSubmit = (ev) => {
@@ -56,6 +59,7 @@ const EnforcementProceedingChooses = ({selectedDoc, setError, setLoading}: Props
     return (
         <>
             {showEnforcementProceedings.Comp()}
+            {showAddAgent.Comp()}
             {currentLoading ? <Loading/> :
                 <form id='submitSelectDocument' className={styles.documents__executiveChoosesMain} onSubmit={onSubmit}>
                     <h4 className={styles.smallHeader}>
@@ -65,7 +69,7 @@ const EnforcementProceedingChooses = ({selectedDoc, setError, setLoading}: Props
                     <h4 className={styles.smallHeader}>
                         Представитель
                     </h4>
-                    <EasySearch className={'margin-bottom_10 ' + styles.documents__selector} value={agent}
+                    <SearchAndAddButton onClickAddButton={showAddAgent.setTrue} className={'margin-bottom_10 ' + styles.documents__selector} value={agent}
                                 setValue={setAgent} serverAddress={'agents/search-list'} required />
                 </form>
             }

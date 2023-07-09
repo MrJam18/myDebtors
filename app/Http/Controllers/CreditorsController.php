@@ -80,10 +80,11 @@ class CreditorsController
             throw $exception;
         }
     }
-    function addOne(Request $request): void
+    function addOne(Request $request): array
     {
         $data = $request->all();
-        DB::transaction(function () use(&$data) {
+        $returned = null;
+        DB::transaction(function () use(&$data, &$returned) {
             $user = Auth::user();
             $addressService = new AddressService();
             $formData = $data['formData'];
@@ -105,7 +106,9 @@ class CreditorsController
             $creditor->court_identifier = $formData['courtIdentifier'];
             $creditor->user()->associate(Auth::user());
             $creditor->save();
+            $returned = $this->getIdName($creditor);
         });
+        return $returned;
     }
     function getOne(Request $request): array
     {
@@ -180,12 +183,7 @@ class CreditorsController
             'short' => $request->validated()
         ])->with(['defaultCession:id,name', 'type'])->limit(5)->get();
         return $data->map(function (Creditor $creditor) {
-            if ($creditor->type->id !== 3 && $creditor->short) $name = $creditor->short . ", ИНН: " . $creditor->court_identifier;
-            else $name = $creditor->name;
-            $data = [
-                'id' => $creditor->id,
-                'name' => $name
-            ];
+            $data = $this->getIdName($creditor);
             if($creditor->defaultCession) {
                 $data['default_cession'] = [
                     'id' => $creditor->defaultCession->id,
@@ -202,13 +200,18 @@ class CreditorsController
             'short' => $request->validated()
         ])->limit(5)->get();
         return $data->map(function (Creditor $creditor) {
-            if ($creditor->type->id !== 3 && $creditor->short) $name = $creditor->short . ", ИНН: " . $creditor->court_identifier;
-            else $name = $creditor->name;
-            return [
-                'id' => $creditor->id,
-                'name' => $name,
-                'short' => $creditor->short
-            ];
+            $data = $this->getIdName($creditor);
+            $data['short'] = $creditor->short;
+            return $data;
         });
+    }
+    private function getIdName(Creditor $creditor): array
+    {
+        if ($creditor->type->id !== 3 && $creditor->short) $name = $creditor->short . ", ИНН: " . $creditor->court_identifier;
+        else $name = $creditor->name;
+        return [
+            'id' => $creditor->id,
+            'name' => $name
+        ];
     }
 }

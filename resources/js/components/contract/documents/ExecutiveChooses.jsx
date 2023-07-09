@@ -4,11 +4,13 @@ import { useSelector} from 'react-redux';
 import {contractsSelectors} from "../../../store/contracts/selectors";
 import EasySearch from "../../dummyComponents/search/EasySearch";
 import api from "../../../http";
-import ExecutiveDocChanger from "../contractData/ExecutiveDocChanger";
 import {Alert} from "../../../classes/Alert";
 // @ts-ignore
 import {CreateIpInitDispatcher} from "../../../store/Dispatchers/Contracts/CreateIpInitDispatcher";
 import ExecutiveDocChooser from "./choosers/ExecutiveDocChooser";
+import {useShow} from "../../../hooks/useShow";
+import AddAgent from "../../agents/AddAgent";
+import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
 
 const ExecutiveChooses = ({setError, setLoading}) => {
     const formRef = useRef();
@@ -19,6 +21,7 @@ const ExecutiveChooses = ({setError, setLoading}) => {
         name: contract.executiveDocName
     });
     const [showExecutiveDocChooser, setShowExecutiveDocChooser] = useState(false);
+    const showAddAgent = useShow(AddAgent, {setAgent});
     const onSubmit = async (ev) => {
         ev.preventDefault();
         const dispatcher = new CreateIpInitDispatcher(setError, setLoading);
@@ -50,9 +53,10 @@ const ExecutiveChooses = ({setError, setLoading}) => {
                 <h4 className={styles.smallHeader}>
                    Ф.И.О. представителя
                 </h4>
-                <EasySearch className={'margin-bottom_10 ' + styles.documents__selector} value={agent} setValue={setAgent} serverAddress={'agents/search-list'} required />
+                <SearchAndAddButton onClickAddButton={showAddAgent.setTrue} className={'margin-bottom_10 ' + styles.documents__selector} value={agent} setValue={setAgent} serverAddress={'agents/search-list'} required />
             </form>
                 {showExecutiveDocChooser && <ExecutiveDocChooser setExecutiveDoc={setExecutiveDoc} setShow={setShowExecutiveDocChooser}  />}
+            {showAddAgent.Comp()}
         </>
     );
 };

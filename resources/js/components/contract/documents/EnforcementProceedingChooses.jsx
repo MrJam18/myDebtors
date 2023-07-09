@@ -7,8 +7,10 @@ import { useShow } from "../../../hooks/useShow";
 import api, { saveFile } from "../../../http/index";
 import { contractsSelectors } from "../../../store/contracts/selectors";
 import { getContractPath } from "../../../utils/getContractPath";
+import AddAgent from "../../agents/AddAgent";
 import Loading from "../../dummyComponents/Loading";
 import EasySearch from "../../dummyComponents/search/EasySearch";
+import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
 import EnforcementProceedings from "../contractData/EnforcementProceedings";
 const EnforcementProceedingChooses = ({ selectedDoc, setError, setLoading }) => {
     const contract = useSelector(contractsSelectors.getCurrent);
@@ -18,6 +20,7 @@ const EnforcementProceedingChooses = ({ selectedDoc, setError, setLoading }) => 
     const dispatcher = useDispatcher(setError, {
         setLoading, request: (serverAddress) => saveFile(serverAddress),
     });
+    const showAddAgent = useShow(AddAgent, { setAgent });
     const showEnforcementProceedings = useShow(EnforcementProceedings, { executiveDocId: contract.executiveDocId });
     const onSubmit = (ev) => {
         ev.preventDefault();
@@ -42,6 +45,7 @@ const EnforcementProceedingChooses = ({ selectedDoc, setError, setLoading }) => 
     }, []);
     return (<>
             {showEnforcementProceedings.Comp()}
+            {showAddAgent.Comp()}
             {currentLoading ? <Loading /> :
             <form id='submitSelectDocument' className={styles.documents__executiveChoosesMain} onSubmit={onSubmit}>
                     <h4 className={styles.smallHeader}>
@@ -51,7 +55,7 @@ const EnforcementProceedingChooses = ({ selectedDoc, setError, setLoading }) => 
                     <h4 className={styles.smallHeader}>
                         Представитель
                     </h4>
-                    <EasySearch className={'margin-bottom_10 ' + styles.documents__selector} value={agent} setValue={setAgent} serverAddress={'agents/search-list'} required/>
+                    <SearchAndAddButton onClickAddButton={showAddAgent.setTrue} className={'margin-bottom_10 ' + styles.documents__selector} value={agent} setValue={setAgent} serverAddress={'agents/search-list'} required/>
                 </form>}
         </>);
 };

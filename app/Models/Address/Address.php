@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id;
  * @property Carbon $created_at;
  * @property Carbon $updated_at;
- * @property string $postal_code;
+ * @property string | null $postal_code;
  * @property string | null $block;
  * @property string | null $flat;
  * @property string $house;
@@ -65,7 +65,8 @@ class Address extends BaseModel
             ->select(['countries.name as country_name', 'regions.name as region_name', 'areas.name as area_name',
                 'settlements.name as settlement_name', 'streets.name as street_name'])
             ->first();
-        $fullAddress = $this->postal_code . ', ';
+        $fullAddress = '';
+        if($this->postal_code) $fullAddress = $this->postal_code . ', ';
         if($this->country_id !== 1) $fullAddress .= $data->country_name . ', ';
         $fullAddress .= $data->region_name . ', ';
         if($data->area_name) $fullAddress .= $data->area_name . ', ';
@@ -76,7 +77,8 @@ class Address extends BaseModel
     }
     function getFullByNested(): string
     {
-        $fullAddress = $this->postal_code . ', ';
+        $fullAddress = '';
+        if($this->postal_code) $fullAddress = $this->postal_code . ', ';
         if($this->country_id !== 1) $fullAddress .= $this->country->name . ', ';
         $fullAddress .= $this->region->name . ', ';
         if($this->area_id) $fullAddress .= $this->area->name . ', ';

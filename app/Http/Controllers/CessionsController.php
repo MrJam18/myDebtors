@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ShowableException;
 use App\Http\Controllers\AbstractControllers\AbstractController;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\SearchRequest;
@@ -11,6 +12,7 @@ use App\Models\Cession\CessionEnclosure;
 use App\Models\Cession\CessionGroup;
 use App\Models\Subject\Creditor\Creditor;
 use App\Providers\Database\CessionsProvider;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -24,72 +26,81 @@ class CessionsController extends AbstractController
         return $paginator->jsonResponse();
     }
 
-    function createOne(Request $request): void
+    function setOne(Request $request): array
     {
-        $data = $request->all();
-        DB::transaction(function () use(&$data){
-            $cessionGroup = new CessionGroup();
-            $cessionGroup->name = $data['name'];
-            $cessionGroup->user()->associate(Auth::user());
-            $cessionGroup->save();
-            foreach ($data['cessions'] as $cessionData) {
-                $cession = new Cession();
-                $this->updateCessionData($cessionData, $cession, $cessionGroup);
+        $cessionGroup = null;
+        $this->transaction($request, function (array $data) use (&$cessionGroup){
+            if(isset($data['cessionGroupId'])) {
+                $cessionGroup = CessionGroup::findWithGroupId($data['cessionGroupId']);
             }
-        });
-    }
-
-    function changeOne(Request $request, CessionGroup $cessionGroup): void
-    {
-        $this->transaction($request, function (array $data) use ($cessionGroup){
-            $this->throwExceptionIfGroupDontCompared($cessionGroup);
+            else $cessionGroup = new CessionGroup();
             $cessionGroup->name = $data['name'];
+            $cessionGroup->user_id = Auth::id();
             $cessionGroup->save();
-            foreach ($data['cessions'] as $cessionData) {
-                /**
-                 * @var Cession $cession
-                 */
+            /**
+             * @var Cession $cession
+             */
+            $cession = null;
+            foreach ($data['list'] as $index => $cessionData) {
                 if(isset($cessionData['id'])) {
                     $cession = Cession::query()->where('cession_group_id', $cessionGroup->id)->find($cessionData['id']);
                     $this->exceptionIfNull($cession);
                     $cession->enclosures->each(fn(CessionEnclosure $enclosure)=> $enclosure->delete());
                 }
                 else $cession = new Cession();
-                $this->updateCessionData($cessionData, $cession, $cessionGroup);
+                $cession->transfer_date = $cessionData['transferDate'];
+                $cession->use_default_text = $cessionData['useDefaultText'];
+                $cession->text = $cessionData['text'];
+                $cession->number = $cessionData['number'];
+                $cession->sum = $cessionData['sum'] ?? null;
+                $cession->assignee()->associate(Creditor::findWithGroupId($cessionData['assignee']['id']));
+                $cession->assignor()->associate(Creditor::findWithGroupId($cessionData['assignor']['id']));
+                $cession->cessionGroup()->associate($cessionGroup);
+                $cession->save();
+                foreach ($cessionData['enclosures'] as $enclosureData) {
+                    $enclosure = new CessionEnclosure();
+                    $enclosure->cession()->associate($cession);
+                    $enclosure->name = $enclosureData;
+                    $enclosure->save();
+                }
+//                $this->updateCessionData($cessionData, $cession, $cessionGroup);
+            }
+            if($cession) {
+                $assignee = $cession->assignee;
+                if($data['isDefaultCession']) {
+                    $assignee->defaultCession()->associate($cessionGroup);
+                    $assignee->save();
+                }
+                else {
+                    if($assignee->defaultCession?->id === $cessionGroup->id) {
+                        $assignee->defaultCession()->dissociate();
+                        $assignee->save();
+                    }
+                }
             }
             foreach ($data['deleteIds'] as $deleteId) {
+                /**
+                 * @var Cession $cession;
+                 */
                 $cession = Cession::query()->where('cession_group_id', $cessionGroup->id)->find($deleteId);
+                if($cession->cession_group_id !== $cessionGroup->id) throw new ShowableException('Цессия на удаление не соответствует группе цессий');
+                $cession->enclosures->each(fn(CessionEnclosure $enclosure)=> $enclosure->delete());
                 $this->exceptionIfNull($cession);
                 $cession->delete();
             }
         });
-    }
-
-    private function updateCessionData(array $cessionData, Cession $cession, ?CessionGroup $cessionGroup = null)
-    {
-        $cession->transfer_date = $cessionData['transferDate'];
-        $cession->use_default_text = $cessionData['useDefaultText'];
-        $cession->text = $cessionData['text'];
-        $cession->number = $cessionData['number'];
-        $cession->sum = $cessionData['sum'] ?? null;
-        $cession->assignee()->associate(Creditor::find($cessionData['assigneeId']));
-        $cession->assignor()->associate(Creditor::find($cessionData['assignorId']));
-        if($cessionGroup) $cession->cessionGroup()->associate($cessionGroup);
-        $cession->save();
-        foreach ($cessionData['enclosures'] as $enclosureData) {
-            $enclosure = new CessionEnclosure();
-            $enclosure->cession()->associate($cession);
-            $enclosure->name = $enclosureData;
-            $enclosure->save();
-        }
+        return [
+            'name' => $cessionGroup->name,
+            'id' => $cessionGroup->id
+        ];
     }
 
     function getOne(CessionGroup $cessionGroup): array
     {
         return [
             'name' => $cessionGroup->name,
-            'id' => $cessionGroup->id,
-            'cessions' => $cessionGroup->cessions()->with(['assignor:id,name,short', 'assignee:id,name,short', 'enclosures'])->get()->map(function (Cession $cession) {
+            'isDefaultCession' => (bool)$cessionGroup->defaultCreditor,
+            'list' => $cessionGroup->cessions()->with(['assignor:id,name,short', 'assignee:id,name,short', 'enclosures'])->orderBy('transfer_date', 'asc')->get()->map(function (Cession $cession) {
                 return [
                     'assignor' => $cession->assignor,
                     'assignee' => $cession->assignee,
@@ -104,7 +115,7 @@ class CessionsController extends AbstractController
                     'id' => $cession->id
                 ];
             }),
-            'count' => $cessionGroup->cessions->count()
+
         ];
     }
 

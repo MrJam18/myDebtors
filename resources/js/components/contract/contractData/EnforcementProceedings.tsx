@@ -41,13 +41,10 @@ const EnforcementProceedings = ({ executiveDocId, setShow, setLastProceeding}) =
         const response = await dispatcher.handle(getContractPath('enforcement-proceedings/set-all-by-executive-doc/' + executiveDocId), 'post');
         if(response.data) setLastProceeding(response.data);
     }
-    const getUpdatedData = () => {
-        if(formRef.current) {
-            const data = formDataConverter(formRef.current);
-            data.bailiff = bailiff;
-            if (activeEnforcementProceeding.id) data.id = activeEnforcementProceeding.id;
-            return data;
-        }
+    const getUpdatedData = (data: Record<string, any>) => {
+        data.bailiff = bailiff;
+        if (activeEnforcementProceeding.id) data.id = activeEnforcementProceeding.id;
+        return data;
     }
     const onClickCreateBailiff = ()=>{
         setShowCreateBailiff(true)

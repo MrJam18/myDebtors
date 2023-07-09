@@ -80,16 +80,12 @@ const CourtClaimChanger = ({setShow, update}) => {
         dispatcher.handle(getContractPath('court-claims/update-list-by-contract'), 'post');
         // dispatcher.handle(getContractPath('court-claims/change-or-create-one'), 'post');
     }
-    const getUpdatedData = (): Record<string, any> => {
-        if(formRef.current) {
-            const data = formDataConverter(formRef.current);
-            data.court = court;
-            data.agent = agent;
-            data.status_date = activeClaim.status_date;
-            if (activeClaim.id) data.id = activeClaim.id;
-            return data;
-        }
-        return null;
+    const getUpdatedData = (data: Record<string, string>): Record<string, any> => {
+        data.court = court;
+        data.agent = agent;
+        data.status_date = activeClaim.status_date;
+        if (activeClaim.id) data.id = activeClaim.id;
+        return data;
     }
 
 

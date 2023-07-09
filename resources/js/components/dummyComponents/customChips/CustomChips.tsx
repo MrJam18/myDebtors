@@ -37,7 +37,7 @@ const CustomChips = ({list = [], setList, header, addHeader}) => {
     )
    }
     </div>
-    <Fab size="small" onClick={addHandler} color="secondary" className={styles.addChipButton} aria-label="add">
+    <Fab size="small" onClick={addHandler} color="primary" className={styles.addChipButton} aria-label="add">
      <AddIcon />
     </Fab>
     {addModal.show && <AddModal addHeader={addHeader} setShow={addModal.setShow} setList={setList} /> }

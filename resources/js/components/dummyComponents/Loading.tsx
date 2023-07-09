@@ -1,13 +1,13 @@
 import React, {useEffect, useRef} from 'react';
 import styles from '../../css/loading.module.css'
 
-type Props = {
+export type LoadingProps = {
     addStyles?: React.CSSProperties,
     size?: number,
     bold?: boolean
 }
 
-const Loading = ({addStyles, size, bold = true}: Props) => {
+const Loading = ({addStyles, size, bold = true}: LoadingProps) => {
     const parentRef = useRef();
     useEffect(()=> {
         if(size || bold) {

@@ -44,10 +44,11 @@ class AgentsController extends Controller
         return $paginator->jsonResponse($list);
     }
 
-    function addOne(Request $request): void
+    function addOne(Request $request): array
     {
         $data = $request->all();
-        DB::transaction(function () use(&$data) {
+        $agent = null;
+        DB::transaction(function () use(&$data, &$agent) {
             $user = Auth::user();
             $formData = $data['formData'];
             $addressService = new AddressService();
@@ -74,6 +75,10 @@ class AgentsController extends Controller
             $agent->passport()->associate($passport);
             $agent->save();
         });
+        return [
+            'name' => $agent->name->getFull(),
+            'id' => $agent->id,
+        ];
     }
 
     /**

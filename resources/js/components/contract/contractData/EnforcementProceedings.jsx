@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatcher } from "../../../hooks/useDispatcher";
 import { useError } from "../../../hooks/useError";
 import { createUpdateElementsFunc } from "../../../utils/createUpdateElementFunc";
-import { formDataConverter } from "../../../utils/formDataConverter";
 import EasyInput from "../../dummyComponents/EasyInput";
 import { makeStyles } from "@mui/styles";
 import { smallInput } from '../../../constants/css';
@@ -39,14 +38,11 @@ const EnforcementProceedings = ({ executiveDocId, setShow, setLastProceeding }) 
         if (response.data)
             setLastProceeding(response.data);
     };
-    const getUpdatedData = () => {
-        if (formRef.current) {
-            const data = formDataConverter(formRef.current);
-            data.bailiff = bailiff;
-            if (activeEnforcementProceeding.id)
-                data.id = activeEnforcementProceeding.id;
-            return data;
-        }
+    const getUpdatedData = (data) => {
+        data.bailiff = bailiff;
+        if (activeEnforcementProceeding.id)
+            data.id = activeEnforcementProceeding.id;
+        return data;
     };
     const onClickCreateBailiff = () => {
         setShowCreateBailiff(true);

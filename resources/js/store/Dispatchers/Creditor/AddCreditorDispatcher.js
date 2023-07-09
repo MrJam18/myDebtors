@@ -6,10 +6,11 @@ export class AddCreditorDispatcher extends Dispatcher {
             throw new Error('Укажите адрес.');
         if (!data.bankRequisitesId)
             throw new Error('Укажите банк получателя.');
-        const setUpdate = data.setUpdate;
-        delete data.setUpdate;
-        await this._api.post('creditors/add-one', data);
+        const response = await this._api.post('creditors/add-one', data);
         Alert.set('Успешно.', "Кредитор успешно добавлен");
-        setUpdate(true);
+        if (this.noReqData.setUpdate)
+            this.noReqData.setUpdate(true);
+        if (this.noReqData.setCreditor && response.data)
+            this.noReqData.setCreditor(response.data);
     }
 }

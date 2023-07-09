@@ -13,6 +13,7 @@ use App\Models\Contract\Contract;
 use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
 use App\Models\CourtClaim\CourtClaim;
+use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
 use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\Subject\Creditor\Creditor;
@@ -26,6 +27,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -258,5 +260,16 @@ class ContractsController
         $file = $request->file('table');
         $service = CreateContractsExcelService::createFromPath($file->getRealPath());
         $service->handle();
+    }
+    function deleteOne(Contract $contract): void
+    {
+        DB::transaction(function () use ($contract) {
+            $contract->executiveDocuments->each(function (ExecutiveDocument $document) {
+                $document->enforcementProceedings->each(function (EnforcementProceeding $proceeding) {
+                    $proceeding->delete();
+                });
+            });
+        });
+
     }
 }

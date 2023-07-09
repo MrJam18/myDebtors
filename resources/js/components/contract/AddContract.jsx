@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import styles from "../../css/addContract.module.css";
 import { InputLabel, MenuItem, Select } from "@mui/material";
 import EasyInput from "../dummyComponents/EasyInput";
-import EasySearch from "../dummyComponents/search/EasySearch";
 import { useError } from "../../hooks/useError";
 import { makeStyles } from "@mui/styles";
 import { cessionsSlice } from "../../store/cessions/reducer";
@@ -13,6 +12,11 @@ import CustomModal from "../dummyComponents/CustomModal";
 import { AddContractDispatcher } from "../../store/Dispatchers/Contracts/AddContractDispatcher";
 import ServerSelect from "../dummyComponents/ServerSelect";
 import useInput from "../../hooks/useInput";
+import {useShow} from "../../hooks/useShow";
+import AddDebtor from "../debtor/AddDebtor";
+import AddCreditor from "../creditors/AddCreditor";
+import SearchAndAddButton from "../dummyComponents/search/SearchAndAddButton";
+import CessionChanger from "../cessions/CessionChanger";
 const cessionsActions = cessionsSlice.actions;
 const defaultCession = { name: 'Принадлежит выдавшей организации', id: null };
 export const useStyles = makeStyles({
@@ -61,6 +65,9 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
     const [statusId, setStatusId] = useState(1);
     const [debtor, setDebtor] = useState(null);
     const typeInput = useInput('1');
+    const showAddDebtor = useShow(AddDebtor, {setDebtor});
+    const showAddCreditor = useShow(AddCreditor, {setCreditor});
+    const showAddCession = useShow(CessionChanger, {setCession});
     const startHandler = () => {
         error.noError();
         dispatch(organizationsSlice.actions.setSearchList([]));
@@ -88,6 +95,9 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
     }
     return (
     <CustomModal customStyles={{ width: '500px' }} header={"Создание договора"} setShow={setShow} show>
+        {showAddDebtor.Comp()}
+        {showAddCession.Comp()}
+        {showAddCreditor.Comp()}
          <form ref={formRef} onSubmit={formHandler}>
              <div>
                  <div className={styles.header + ' ' + 'marginTop_0'}>Данные о договоре</div>
@@ -115,14 +125,14 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
                  </div>
                  { !debtorId &&
                      <div className={styles.selectMargin}>
-                         <EasySearch label='Должник по договору' value={debtor} getValue='default_cession' required serverAddress={'debtors/search-list'} setValue={setDebtor} />
+                         <SearchAndAddButton label='Должник по договору' value={debtor} getValue='default_cession' required serverAddress={'debtors/search-list'} setValue={setDebtor} onClickAddButton={showAddDebtor.setTrue} />
                      </div>
                  }
                  <div className={styles.selectMargin}>
-                     <EasySearch label='кредитор, которому принадлежит заем' value={creditor} getValue='default_cession' required serverAddress={'creditors/search-list-with-cession'} setValue={onChangeCreditor} />
+                     <SearchAndAddButton label='кредитор, которому принадлежит заем' value={creditor} getValue='default_cession' required serverAddress={'creditors/search-list-with-cession'} setValue={onChangeCreditor} onClickAddButton={showAddCreditor.setTrue} />
                  </div>
                  <div className={styles.selectMargin}>
-                     <EasySearch reqData={creditor ? {creditorId: creditor.id} : null} label='договор цессии, по которому приобретен займ' value={cession} required serverAddress={'cessions/search-list'} setValue={setCession}/>
+                     <SearchAndAddButton onClickAddButton={showAddCession.setTrue} reqData={creditor ? {creditorId: creditor.id} : null} label='договор цессии, по которому приобретен займ' value={cession} required serverAddress={'cessions/search-list'} setValue={setCession}/>
                  </div>
              </div>
              <ButtonInForm loading={loading}/>

@@ -5,6 +5,7 @@ import MobileStepper from "@mui/material/MobileStepper";
 import React, { useEffect, useState } from "react";
 import styles from "../../css/customStepper.module.css";
 import { useForwardRef } from "../../hooks/useForwardRef";
+import { formDataConverter } from "../../utils/formDataConverter";
 import ButtonInForm from "./ButtonInForm";
 const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActiveData, getUpdatedData, children, setDeleteIds, onSubmit, defaultData = {}, onDeleteAll = null, onChangeStep = null, buttonText = 'Сохранить', defaultStep = null, loading = true, }, ref) => {
     const formRef = useForwardRef(ref);
@@ -13,7 +14,7 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
     const stepChanger = (step, changedArr = null) => {
         if (!changedArr)
             changedArr = [...dataArray];
-        changedArr[activeStep] = getUpdatedData();
+        changedArr[activeStep] = onGetUpdatedData();
         setDataArray(changedArr);
         setActiveStep(step);
         changeActiveData(changedArr[step]);
@@ -64,7 +65,6 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
     };
     const changeActiveData = (activeData) => {
         setActiveData(activeData);
-        console.log(activeData);
         if (onChangeStep)
             onChangeStep(activeData);
     };
@@ -88,10 +88,17 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
                 break;
             default:
                 const sendingData = [...dataArray];
-                sendingData[activeStep] = getUpdatedData();
+                sendingData[activeStep] = onGetUpdatedData();
                 onSubmit(sendingData);
                 break;
         }
+    };
+    const onGetUpdatedData = () => {
+        if (formRef.current) {
+            const data = formDataConverter(formRef.current);
+            return getUpdatedData(data);
+        }
+        return null;
     };
     useEffect(() => {
         if (dataArray.length === 0) {
@@ -121,7 +128,7 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
             </div>
             {children}
             <div className={'center'}>
-                <MobileStepper variant="dots" steps={dataArray.length} position="static" activeStep={activeStep} sx={{ maxWidth: '60%', minWidth: '45%' }} nextButton={<Button size="small" type='submit' datatype='next' className={styles.bottomButton} disabled={activeStep === dataArray.length - 1}>
+                <MobileStepper variant="dots" steps={dataArray.length} position="static" activeStep={activeStep} sx={{ maxWidth: '60%', minWidth: '44%' }} nextButton={<Button size="small" type='submit' datatype='next' className={styles.bottomButton} disabled={activeStep === dataArray.length - 1}>
                             след.
                             <KeyboardArrowRight sx={{ paddingBottom: '4px' }}/>
                         </Button>} backButton={<Button size="small" type='submit' datatype='prev' className={styles.bottomButton} disabled={activeStep <= 0}>
@@ -129,7 +136,7 @@ const CustomFormStepper = React.forwardRef(({ dataArray, setDataArray, setActive
                             пред.
                         </Button>}/>
             </div>
-            <ButtonInForm loading={loading} text={buttonText}/>
+            <ButtonInForm styles={{ marginTop: '10px' }} loading={loading} text={buttonText}/>
         </form>);
 });
 export default CustomFormStepper;

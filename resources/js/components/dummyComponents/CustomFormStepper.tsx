@@ -5,6 +5,7 @@ import MobileStepper from "@mui/material/MobileStepper";
 import React, {FormEvent, useEffect, useState} from "react";
 import styles from "../../css/customStepper.module.css";
 import {useForwardRef} from "../../hooks/useForwardRef";
+import {formDataConverter} from "../../utils/formDataConverter";
 import ButtonInForm from "./ButtonInForm";
 
 type Data = Record<string, any>;
@@ -15,9 +16,9 @@ type Props = {
     children: React.ReactNode | React.ReactNode[],
     setActiveData: (data: Data) => void,
     setDeleteIds: React.Dispatch<React.SetStateAction<Array<number>>>,
-    getUpdatedData: () => Data,
+    getUpdatedData: (data: Record<string, any>) => Data,
     onSubmit: (data: Array<Data>) => void,
-    onDeleteAll?: () => Promise<void>
+    onDeleteAll?: () => Promise<void>|void,
     onChangeStep?: (data: Data) => void,
     defaultData?: Data,
     buttonText?: string,
@@ -48,7 +49,7 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
 
     const stepChanger = (step: number, changedArr: Array<Record<any, any>> = null)=> {
         if(!changedArr) changedArr = [...dataArray];
-        changedArr[activeStep] = getUpdatedData();
+        changedArr[activeStep] = onGetUpdatedData();
         setDataArray(changedArr);
         setActiveStep(step);
         changeActiveData(changedArr[step]);
@@ -99,7 +100,6 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
     }
     const changeActiveData = (activeData: Data) => {
         setActiveData(activeData);
-        console.log(activeData);
         if(onChangeStep) onChangeStep(activeData);
     }
     const onAdd = () => {
@@ -122,10 +122,17 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
                 break;
             default:
                 const sendingData = [...dataArray];
-                sendingData[activeStep] = getUpdatedData();
+                sendingData[activeStep] = onGetUpdatedData();
                 onSubmit(sendingData);
                 break;
         }
+    }
+    const onGetUpdatedData = (): Data|null => {
+        if(formRef.current) {
+            const data = formDataConverter(formRef.current);
+            return getUpdatedData(data);
+        }
+        return null;
     }
     useEffect(() => {
         if(dataArray.length === 0) {
@@ -160,7 +167,7 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
                     steps={dataArray.length}
                     position="static"
                     activeStep={activeStep}
-                    sx={{maxWidth: '60%', minWidth: '45%'}}
+                    sx={{maxWidth: '60%', minWidth: '44%'}}
                     nextButton={
                         <Button size="small" type='submit' datatype='next' className={styles.bottomButton} disabled={activeStep === dataArray.length - 1}>
                             след.
@@ -175,7 +182,7 @@ const CustomFormStepper = React.forwardRef<HTMLFormElement, Props>((
                     }
                 />
             </div>
-            <ButtonInForm loading={loading} text={buttonText} />
+            <ButtonInForm styles={{marginTop: '10px'}} loading={loading} text={buttonText} />
         </form>
     );
 });

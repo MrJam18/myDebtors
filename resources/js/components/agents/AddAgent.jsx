@@ -5,7 +5,7 @@ import { setloading } from '../../store/global';
 import Agent from "./Agent";
 import {CreateAgentDispatcher} from "../../store/Dispatchers/Agent/CreateAgentDispatcher";
 
-const AddAgent = ({show, setShow, setUpdate}) => {
+const AddAgent = ({setShow, setUpdate = null, setAgent = null}) => {
     const [address, setAddress] = useState(false);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -20,6 +20,7 @@ const AddAgent = ({show, setShow, setUpdate}) => {
         dispatcher.addData('is_default', isDefaultAgent);
         dispatcher.addData('address', address);
         dispatcher.addNoReqData('update', setUpdate);
+        dispatcher.addNoReqData('setAgent', setAgent);
         await dispatcher.handle();
     }
 
@@ -35,7 +36,7 @@ const AddAgent = ({show, setShow, setUpdate}) => {
     return (
         <div>
             <form onSubmit={formHandler} ref={form}>
-                <CustomModal show={show} setShow={setShow} customStyles={{width: '500px'}}>
+                <CustomModal setShow={setShow} customStyles={{width: '500px'}}>
                     <div className="header_small">Добавление представителя</div>
                     <Agent setDefaultAgent={setIsDefaultAgent} setAddressForDB={setAddress}  setNoShowGroup={setNoShowGroup} />
                     <ButtonInForm loading={loading} />

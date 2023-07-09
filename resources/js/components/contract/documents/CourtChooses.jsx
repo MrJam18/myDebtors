@@ -12,6 +12,8 @@ import EasyCheckBox from "../../dummyComponents/EasyCheckBox";
 import {Alert} from "../../../classes/Alert";
 import {CreateCourtClaimDispatcher} from "../../../store/Dispatchers/Contracts/CreateCourtClaimDispatcher";
 import SearchAndAddButton from "../../dummyComponents/search/SearchAndAddButton";
+import {useShow} from "../../../hooks/useShow";
+import AddAgent from "../../agents/AddAgent";
 
 const useStyles = makeStyles({
     input: {
@@ -34,6 +36,7 @@ const CourtChooses = ({contractId, selectedDoc, setError, setLoading, update}) =
     const [court, setCourt] = useState();
     const classes = useStyles();
     const formRef = useRef();
+    const showAddAgent = useShow(AddAgent, {setAgent});
     const changeShowCourtCreator = () =>{
         setShowCourtCreator(true);
     }
@@ -62,12 +65,13 @@ const CourtChooses = ({contractId, selectedDoc, setError, setLoading, update}) =
     return (
         <div>
             {showCourtCreator && <CourtCreator show={showCourtCreator} setShow={setShowCourtCreator} setValue={setCourt} />}
+            {showAddAgent.Comp()}
             <form id='submitSelectDocument' ref={formRef} onSubmit={onSubmit}>
             <TextField type='date' name='date' label='Дата расчета' defaultValue={getISODate()} variant='standard' InputLabelProps={{shrink: true}} required fullWidth size='small' className={classes.input} />
                 <div className={styles.data__toolbar__courtBox}>
                     <SearchAndAddButton serverAddress={'courts/search-list'} setValue={setCourt} value={court} onClickAddButton={changeShowCourtCreator} required label={'Название суда'} />
                 </div>
-                <EasySearch label={'Представитель'} setValue={setAgent} value={agent} serverAddress={'agents/search-list'} required />
+                <SearchAndAddButton label={'Представитель'} setValue={setAgent} value={agent} serverAddress={'agents/search-list'} onClickAddButton={showAddAgent.setTrue} required />
                 <div className={styles.documents__checkboxesContainer}>
                     <EasyCheckBox label="Договорная подсудность" name={'is_contract_jurisdiction'} />
                     <EasyCheckBox label="Игнорировать платежи при ограничении процентов" name='is_ignored_payments' />

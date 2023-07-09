@@ -11,13 +11,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id;
  * @property Carbon $created_at;
  * @property Carbon $updated_at;
  * @property string $name;
- * @property Collection $defaultCreditors;
+ * @property Creditor $defaultCreditor;
  * @property Collection $cessions;
  * @property Collection $contracts;
  * @property User $user;
@@ -33,9 +34,9 @@ class CessionGroup extends BaseModel
     {
         return $this->belongsTo(User::class);
     }
-    function defaultCreditors(): HasMany
+    function defaultCreditor(): HasOne
     {
-        return $this->hasMany(Creditor::class);
+        return $this->hasOne(Creditor::class, 'default_cession_id');
     }
     function cessions(): HasMany
     {

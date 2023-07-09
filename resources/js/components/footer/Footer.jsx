@@ -12,8 +12,8 @@ const Footer= () => {
                 <p>Телефон горячей линии 8 800 303 00 00</p>
                 <p>myDeptors@mail.com</p>
         </div>
-            <a className='linkprivacyPolice'  href="privacyPolice" target="">Политика конфиденциальности</a>
-            <a className='linkTermsUse' href="TermsUse" target="">Пользовательское соглашение</a>
+            <a className='linkprivacyPolice'  href="privacyPolice" target="">Политика в отношении обработки персональных данных</a>
+            <a className='linkTermsUse' href="TermsUse" target="">Договор публичной оферты</a>
         </div>
               <div className="bootonOpenBtn ">
                 <p>myDeptors</p>
@@ -30,73 +30,6 @@ const Footer= () => {
 
 
 export default Footer;
-/*
-
-
-
-function LoginButton(props) {
-    return (
-      <button onClick={props.onClick}>
-        Войти
-      </button>
-    );
-  }
-  
-  function LogoutButton(props) {
-    return (
-      <button onClick={props.onClick}>
-        Выйти
-      </button>
-    );
-  }
-
- 
-  class LoginControl extends React.Component {
-    constructor(props) {
-      super(props);
-      this.handleLoginClick = this.handleLoginClick.bind(this);
-      this.handleLogoutClick = this.handleLogoutClick.bind(this);
-      this.state = {
-        isLoggedIn: false
-      };
-    }
-    handleLoginClick() {
-      this.setState({
-        isLoggedIn: true
-      });
-    }
-    handleLogoutClick() {
-      this.setState({
-        isLoggedIn: false
-      });
-    }
-
-
-    
-    return() {
-      const isLoggedIn = this.state.isLoggedIn;
-      let button;
-      if (isLoggedIn) {
-        button = _jsx(LogoutButton, {
-            onClick: this.handleLogoutClick
-        });
-      } else {
-        button = _jsx(LoginButton, {
-          onClick: this.handleLoginClick
-        });
-      }
-      return _jsxs("div", {
-        children: [/*#__PUR_jsx(Greeting, {
-          isLoggedIn: isLoggedIn
-        }), button]
-      });
-    }
-  }}
-  const root = ReactDOM.createRoot(document.getElementById('root'));
-  root.render( /*#__PURE__*_jsx(LoginControl, {}));
-
-*/
-
 
 
 

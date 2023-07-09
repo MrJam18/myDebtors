@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Contracts;
+namespace App\Http\Controllers\Contract;
 
 use App\Enums\Database\ActionObjectEnum;
 use App\Enums\Database\ActionTypeEnum;
@@ -14,10 +14,9 @@ use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
 use App\Models\CourtClaim\CourtClaim;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
-use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\People\Debtor;
-use App\Providers\Database\Contracts\ContractsProvider;
+use App\Providers\Database\ContractsProvider;
 use App\Services\ActionsService;
 use App\Services\Counters\CreditCountService;
 use App\Services\Counters\LimitedLoanCountService;
@@ -26,7 +25,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ContractsController

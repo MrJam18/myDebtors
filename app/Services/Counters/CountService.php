@@ -49,7 +49,6 @@ abstract class CountService
         $this->sum->main = $contract->issued_sum;
         $this->sum->percents = 0;
         $this->sum->penalties = 0;
-        dd($this->contractType);
         $this->contractType = $contract->type;
         if(!$payments) $payments = $contract->payments()->orderBy('date')->get();
         $this->payments = $payments;

@@ -12,7 +12,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 .container {
   width: 100%;
-  max-width: 1300px;
+  max-width: 1500px;
   margin: 0 auto;
 }
 
@@ -306,14 +306,6 @@ html {
 .body{
   margin: 0;
   padding: 0;
-}
-
-#root {
-  display: flex;
-  flex-direction: column;
-  height: 1200px;
-  background-size: 100%;
-  font-family: 'Roboto_slab', serif;
 }
 .background {
   display: flex;

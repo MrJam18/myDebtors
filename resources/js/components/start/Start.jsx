@@ -3,15 +3,12 @@ import React from 'react';
 import styles from '../../css/start.module.css';
 import LastActions from './LastActions';
 import Limits from './Limits';
-import Tasks from './Tasks';
-import Refferences from './Referrences';
-
+const perPage = 15;
 const Start = () => {
-    return (<div className={styles.main}>
-            <Tasks />
-            <Limits />
-            <LastActions />
-            <Refferences />
+    return (
+        <div className={styles.main}>
+                <LastActions perPage={perPage} />
+                <Limits perPage={perPage}  />
         </div>);
 };
 export default Start;

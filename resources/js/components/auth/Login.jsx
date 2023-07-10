@@ -42,7 +42,7 @@ const Login = () => {
             setLoading(false);
         }
     };
-    return (<div className='background firstWindow'>
+    return (<div className='firstWindow'>
             <div className="header">Войдите для использования приложения.</div>
             <form onSubmit={onSubmit}>
             <div className={'contentBox' + ' ' + styles.main}>

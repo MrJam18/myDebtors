@@ -24,7 +24,7 @@ const DebtorsList = ({}) => {
         showChangeDebtor.setTrue();
     }
     return (
-        <div className="firstWindow background">
+        <div className="firstWindow">
             <div className="header">Управление должниками</div>
             <div style={{maxWidth: '750px'}} className={"contentBox" + ' ' + styles.main}>
                 <DebtorsToolbar setSearch={setSearch} update={update.set}/>

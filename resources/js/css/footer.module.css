@@ -1,0 +1,63 @@
+.background {
+    width: 100%;
+    background-color: #00a84c;
+}
+.element {
+    font-family: serif;
+    padding: 0 0 8px;
+    color: black;
+    font-weight: 300;
+    font-size: 12px;
+    margin: 0;
+}
+.element_bottom {
+    padding: 0;
+}
+.link {
+    font-family: serif;
+    color: black;
+    text-decoration: unset;
+}
+.footer {
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px;
+    color:white;
+    text-decoration: white;
+    width: 70%;
+    margin: 0 auto;
+}
+.footerBlock {
+
+}
+.footerBlock_end {
+    text-align: end;
+}
+
+.buttonOpenBtn {
+    padding:20px;
+    display: flex;
+    background-color: #00a86b;
+    flex-direction: row;
+    justify-content: space-between;
+    color:white;
+}
+.linkprivacyPolice , .linkTermsUse{
+    color: #dedede;
+}
+
+.linkTermsUse:hover {
+color: #c4d813;
+}
+.linkprivacyPolice :hover {
+color: #c4d813;
+}
+.content {
+padding: 30px;
+font-family: Verdana, sans-serif; font-size: 120%; font-weight: light
+}
+
+
+

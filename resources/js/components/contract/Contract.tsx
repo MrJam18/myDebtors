@@ -67,7 +67,7 @@ const Contract = () => {
         }
     }, [update.state]);
     return (
-        <div className={'background firstWindow'}>
+        <div className={'firstWindow'}>
             {loading &&  <div className="header">Загрузка</div> }
             {error && <div className="header">Ошибка!</div>}
             {(!loading && !error) && <div className="header">{`${contract.name} № ${contract.number} от ${chandeDateFormatOnRus(contract.date_issue)} г.`}</div> }

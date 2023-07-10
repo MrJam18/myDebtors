@@ -36,7 +36,7 @@
     display: block
 }
 .issuingOrg {
-    margin-left: 0 auto;
+    margin-left: 0;
     flex: 1
 }
 
@@ -59,8 +59,8 @@
     background-color: rgb(207, 202, 202);
     cursor: pointer;
     padding: 3px 6px;
-    transition: color 0.15s;
-    transition: background 0.15s;
+    /*transition: color 0.15s;*/
+    transition: color, background 0.15s;
 }
 .buttonUtil:active {
     color: white;
@@ -87,15 +87,14 @@
     font-size: 16px;
 }
 .addContract__button:active {
-    transition: color 0.15s;
-    transition: background 0.15s;
+    transition: background, color 0.15s;
     color: white;
     background-color: black;
 }
 .debtor__buttons {
     padding-left: 10px;
     visibility: hidden;
-    cursor: pointer; 
+    cursor: pointer;
     border-radius: 50%;
     width: 20px;
     height: 28px;
@@ -111,7 +110,7 @@
 }
 .debtor__block:hover .debtor__buttons {
     visibility: visible;
-    
+
 }
 .debtor__infoIcon {
     padding-right: 0.6rem;

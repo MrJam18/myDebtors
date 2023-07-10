@@ -24,6 +24,9 @@ import Registration from "./auth/Registration";
 import Cessions from "./cessions/Cessions";
 import ContractList from "./List/ContractList";
 import DebtorsList from "./debtor/DebtorsList";
+import Footer from "./footer/Footer";
+import PrivacyPolice from "./footer/PrivacyPolice";
+import TermsUse from "./footer/TermsUse";
 
 
 
@@ -52,6 +55,8 @@ function Router() {
         <Menu />
         <LeftMenu />
         <HidingAlert></HidingAlert>
+        <div className="background">
+        <div className="container">
             <Routes >
                 <Route path={'registration'} element={<PublicAccess wrapped={<Registration />}/>} />
                 <Route path='login' exact element={<PublicAccess wrapped={<Login />}/>}/>
@@ -63,7 +68,12 @@ function Router() {
                 <Route path={'cessions'} element={<PrivateAccess Wrapped={<Cessions />}/>}/>
                 <Route path='/' element={<PrivateAccess Wrapped={<Start />}/>}/>
                 <Route path='list/contracts' exact element={<PrivateAccess Wrapped={<ContractList />}/>}/>
+                <Route path='privacy' element={<PrivacyPolice />}/>
+                <Route path='terms' element={<TermsUse />} />
             </Routes>
+        </div>
+        </div>
+        <Footer />
       </BrowserRouter>);
 }
 export default Router;

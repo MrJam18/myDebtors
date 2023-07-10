@@ -26,7 +26,7 @@ const ContractList = () => {
         filter,
         method: 'post'
     }, location.state);
-    return (<div className='background firstWindow'>
+    return (<div className='firstWindow'>
             <div className={"contentBox" + ' ' + styles.listBox}>
                 <ContractListToolBar filter={filter} setFilter={setFilter} update={list.update}/>
                 <div>

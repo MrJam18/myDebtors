@@ -25,7 +25,7 @@ const Creditors = () => {
         showChangeCreditor.setShow(true);
     }
     return (
-        <div className="firstWindow background">
+        <div className="firstWindow">
              <div className="header">Управление кредиторами</div>
             <div className={"contentBox" + ' ' + styles.main}>
                 <CreditorsToolBar setSearch={setSearch} setUpdate={setUpdate} />

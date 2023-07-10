@@ -20,7 +20,7 @@ const Agents = () => {
         setChangedAgentId(id);
     }
     return (
-        <div className="firstWindow background">
+        <div className="firstWindow">
             <div className="header">Управление представителями</div>
             <div className={"contentBox" + ' ' + styles.main}>
                 <AgentsToolBar setUpdate={update.set}  />

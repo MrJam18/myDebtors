@@ -1,7 +1,10 @@
+.background {
+    background-color: #b7f4a0;
+    width: 100%;
+}
 .main {
     display: flex;
     justify-content: right;
-    background-color: #b7f4a0;
     margin: 0;
     padding: 8px 0;
     height: 30px;

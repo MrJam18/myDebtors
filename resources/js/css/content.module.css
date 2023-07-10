@@ -1,8 +1,8 @@
 .contentBox {
     padding: 20px 30px;
     border-radius: 15px;
-    background-color: white;
     padding-left: 30px;
+    background-color: #f3fef7;
 }
 .firstWindow {
     position: relative;

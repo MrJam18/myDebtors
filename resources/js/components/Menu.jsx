@@ -47,19 +47,23 @@ const useStyles = makeStyles({
           }
         </li>
         return (
-          <ul className={styles.main}>
-            <button className='antibutton' onClick={onClickLeftMenuButton}>
-            <MenuIcon className={classes.leftMenu} />
-            </button>
-            <AuthButton />
-        <Search/>
-        <li className={styles.element}>
-            <NavLink to='/' className={changeActiveStyles} >На главную </NavLink>
-        </li>
-          <li className={styles.element}>
-              <NavLink to='list/contracts' className={changeActiveStyles}>Список договоров</NavLink>
-          </li>
-     </ul>
+        <div className={styles.background}>
+          <div className="container">
+            <ul className={styles.main}>
+              <button className='antibutton' onClick={onClickLeftMenuButton}>
+              <MenuIcon className={classes.leftMenu} />
+              </button>
+              <AuthButton />
+              <Search/>
+              <li className={styles.element}>
+                  <NavLink to='/' className={changeActiveStyles} >На главную </NavLink>
+              </li>
+                <li className={styles.element}>
+                    <NavLink to='list/contracts' className={changeActiveStyles}>Список договоров</NavLink>
+                </li>
+            </ul>
+          </div>
+        </div>
       );
   };
   

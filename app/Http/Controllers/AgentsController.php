@@ -6,7 +6,6 @@ use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\SearchRequest;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
-use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\People\Agent;
 use App\Models\Subject\People\Name;
 use App\Providers\Database\AgentsProvider;
@@ -17,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class AgentsController extends Controller
 {
@@ -185,8 +183,7 @@ class AgentsController extends Controller
     }
     function getSearchList(SearchRequest $request): Collection
     {
-        $list = Agent::query()->byGroupId(getGroupId())->searchByFullName($request->validated())->limit(5)->get();
-        toConsole(Agent::query()->byGroupId(getGroupId())->searchByFullName($request->validated())->limit(5)->toSql());
+        $list = Agent::query()->byGroupId(getGroupId())->searchByFullName($request->validated())->limit(5)->get(['names.*', 'agents.id']);
         return $list->map(function (Agent $agent) {
             return [
               'id' => $agent->id,

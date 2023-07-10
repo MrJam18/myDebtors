@@ -31,7 +31,7 @@ class AgentsController extends Controller
         $paginator = $query->paginate($data->perPage, 'names*', page: $data->page);
         $list = $paginator->items()->map(function (Agent $agent) {
             return [
-                'idd' => $agent->id,
+                'id' => $agent->id,
                 'names.surname' => $agent->surname,
                 'names.name'=> $agent->name,
                 'names.patronymic'=> $agent->patronymic,
@@ -155,7 +155,7 @@ class AgentsController extends Controller
         }
         // Обработка checkbox
             $agent->no_show_group=$formData['no_show_group'];
-        if($formData['is_default'] == 1){
+        if($formData['is_default']){
             Agent::query()->where('user_id', $user->id)->update(['is_default' => 0]);
             $agent->is_default = $formData['is_default'];
         } else $agent->is_default = $formData['is_default'];

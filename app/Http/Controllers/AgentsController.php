@@ -22,20 +22,18 @@ class AgentsController extends Controller
     /**
      * @throws \Exception
      */
-    function getList(PaginateRequest $request, AgentsProvider $provider): array | JsonResponse
+    function getList(PaginateRequest $request): array | JsonResponse
     {
         $data = $request->validated();
-        $paginator = $provider->getList( $data);
-
+        $query = Agent::query()->joinRelation('name')->orderByData($data->orderBy)->select( 'names.surname', 'names.name', 'names.patronymic', 'agents.*');
+        $paginator = $query->paginate($data->perPage, 'names*', page: $data->page);
         $list = $paginator->items()->map(function (Agent $agent) {
             return [
-                'idd' => $agent->id,
-                'is_default' => $agent->is_default,
-                'no_show_group' => $agent->no_show_group,
-                'surname' => $agent->name->surname,
-                'name'=> $agent->name->name,
-                'patronymic'=> $agent->name->patronymic,
-                'createdAt'=>$agent->created_at->format(RUS_DATE_FORMAT),
+                'id' => $agent->id,
+                'names.surname' => $agent->surname,
+                'names.name'=> $agent->name,
+                'names.patronymic'=> $agent->patronymic,
+                'created_at'=>$agent->created_at->format(RUS_DATE_FORMAT),
                 'enclosure'=>$agent->enclosure,
             ];
         });
@@ -59,7 +57,11 @@ class AgentsController extends Controller
             $name->patronymic = $formData['patronymic'];
             $name->save();
             $agent->name()->associate($name);
-            $agent->is_default = $formData['is_default'];
+            if($formData['is_default'] == 1){
+                Agent::query()->where('user_id', $user->id)->update(['is_default' => 0]);
+                    $agent->is_default = $formData['is_default'];
+                } else $agent->is_default = $formData['is_default'];
+
             $agent->no_show_group = $formData['no_show_group'];
             $agent->enclosure = $formData['enclosure'];
             $agent->phone = $formData['phone'];
@@ -102,6 +104,7 @@ class AgentsController extends Controller
 
     public function update(Request $request): JsonResponse
     {
+        $user = Auth::user();
         $addressService = new AddressService();
         $input = $request->all();
         $formData=$input['formData'];
@@ -155,7 +158,11 @@ class AgentsController extends Controller
         }
         // Обработка checkbox
             $agent->no_show_group=$formData['no_show_group'];
+        if($formData['is_default']){
+            Agent::query()->where('user_id', $user->id)->update(['is_default' => 0]);
             $agent->is_default = $formData['is_default'];
+        } else $agent->is_default = $formData['is_default'];
+
         $agent->save();
         if(isset($oldAddress)) $oldAddress->delete();
         return response()->json($agent);

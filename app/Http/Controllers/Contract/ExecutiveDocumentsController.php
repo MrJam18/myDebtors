@@ -14,6 +14,7 @@ use App\Models\Subject\Court\Court;
 use App\Services\Excel\Readers\CreateExecutiveDocsExcelService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class ExecutiveDocumentsController extends Controller
 {
@@ -71,6 +72,7 @@ class ExecutiveDocumentsController extends Controller
             $returned['main'] = $document->moneySum->main;
             $returned['percents'] = $document->moneySum->percents;
             $returned['penalties'] = $document->moneySum->penalties;
+            Log::info(print_r($returned, true));
             /**
              * @var EnforcementProceeding $lastProceeding
              */
@@ -79,7 +81,6 @@ class ExecutiveDocumentsController extends Controller
                 $returned['lastProceeding'] = "№ {$lastProceeding->number} от {$lastProceeding->begin_date->format(RUS_DATE_FORMAT)} г.";
             }
             else $returned['lastProceeding'] = 'Отсутствует';
-
             return $returned;
         });
     }

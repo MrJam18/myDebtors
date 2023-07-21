@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Models\ExecutiveDocument;
 
 use App\Models\Base\BaseModel;
+use App\Models\Casts\Money;
 use App\Models\Contract\Contract;
 use App\Models\Contract\IpInitStatement;
 use App\Models\EnforcementProceeding\EnforcementProceeding;
@@ -49,6 +50,7 @@ class ExecutiveDocument extends BaseModel
     protected $casts = [
         'issued_date' => 'date:' . ISO_DATE_FORMAT,
         'resolution_date' => 'date:' . ISO_DATE_FORMAT,
+        'fee' => Money::class
     ];
 
     function type(): BelongsTo

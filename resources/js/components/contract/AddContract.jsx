@@ -110,7 +110,7 @@ const AddContract = ({ debtorId, setShow, updateList }) => {
                          </Select>
                      </div>
                      <ServerSelect smallLabel defaultId={1} serverAddress={'contracts/status-list'} setId={setStatusId} label='Статус' customClassName={classes.input} />
-                     <EasyInput label='Номер договора' name='number' required className={classes.input}/>
+                     <EasyInput autoFocus label='Номер договора' name='number' required className={classes.input}/>
                      <EasyInput label='Дата выдачи' type='date' pattern='lessThenNow' name='issued_date' required className={classes.input}/>
                      <EasyInput label='сумма выдачи' name='issued_sum' pattern='float' required className={classes.input}/>
                      <EasyInput label='дата исполнения' type='date' name='due_date' pattern='lessThenNow' required className={classes.input}/>

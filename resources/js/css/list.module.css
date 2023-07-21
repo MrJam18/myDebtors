@@ -43,8 +43,14 @@
 .contracts__elementBlock {
     width: 23%;
 }
+.contracts__elementBlock_big {
+    width: 30%;
+}
+.contracts__elementBlock_small {
+    width: 20%;
+}
 .contracts__rightElementBlock {
-    width: 15%;
+    width: 20%;
     text-align: right;
 }
 .utils {

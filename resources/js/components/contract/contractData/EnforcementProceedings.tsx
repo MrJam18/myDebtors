@@ -35,6 +35,7 @@ const EnforcementProceedings = ({ executiveDocId, setShow, setLastProceeding}) =
     const dispatcher = useDispatcher(error.setError, {setLoading: setButtonLoading, setShow, alertText: 'Исполнительное производство успешно сохранено'});
     const [bailiff, setBailiff] = useState<IdNameType>(null);
     const [showCreateBailiff, setShowCreateBailiff] = useState(false);
+
     const onSubmit = async (data: Array<Record<string, any>>)=> {
         dispatcher.addData('enforcementProceedings', data);
         dispatcher.addData('deleteIds', deleteIds);

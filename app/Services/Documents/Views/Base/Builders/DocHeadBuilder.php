@@ -19,8 +19,10 @@ class DocHeadBuilder extends BaseBuilder
         $this->headParagraph = [
             'alignment' => Jc::END,
             'indentation' => [
-                'left' => 4000
-            ]
+                'left' => 4000,
+            ],
+            'spaceBefore' => 1,
+            'spaceAfter' => 1
         ];
     }
 

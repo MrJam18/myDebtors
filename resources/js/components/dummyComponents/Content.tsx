@@ -5,7 +5,7 @@ const Content = ({children, boxStyles = null, boxClassName = null, header = null
     return (
         <div className={styles.firstWindow + ' ' +  styles.background}>
             <div className={styles.header}>{header}</div>
-            <div style={boxStyles} className={styles.contentBox + ' ' + boxClassName}>
+            <div style={boxStyles} className={'contentBox ' + boxClassName}>
                 {children}
             </div>
         </div>

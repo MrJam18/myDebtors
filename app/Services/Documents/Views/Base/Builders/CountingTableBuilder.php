@@ -24,7 +24,9 @@ class CountingTableBuilder extends TableBuilder
             'marginRight' => 100,
             'marginTop' => 100,
             'marginBottom' => 100,
-            'vAlign' => VerticalJc::CENTER
+            'vAlign' => VerticalJc::CENTER,
+            'borderColor' => '000000',
+            'borderSize' => 1
         ];
         $this->defaultFontStyle = [
             'alignment' => Jc::END,

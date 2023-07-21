@@ -25,7 +25,7 @@ class AgentsController extends Controller
     function getList(PaginateRequest $request): array | JsonResponse
     {
         $data = $request->validated();
-        $query = Agent::query()->joinRelation('name')->orderByData($data->orderBy)->select( 'names.surname', 'names.name', 'names.patronymic', 'agents.*');
+        $query = Agent::query()->byGroupId(getGroupId())->joinRelation('name')->orderByData($data->orderBy)->select( 'names.surname', 'names.name', 'names.patronymic', 'agents.*');
         $paginator = $query->paginate($data->perPage, 'names*', page: $data->page);
         $list = $paginator->items()->map(function (Agent $agent) {
             return [

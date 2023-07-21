@@ -92,6 +92,9 @@ class ContractCommentsController extends AbstractController
     function deleteOne(ContractComment $comment): void
     {
         if($comment->user_id !== Auth::id()) throw new ShowableException('Только владелец комментария может удалить его');
+        if($comment->file_name) {
+            Storage::delete($this->getFileDir($comment->contract) . DIRECTORY_SEPARATOR . $comment->file_name);
+        }
         $comment->delete();
     }
 

@@ -107,9 +107,9 @@ const EasySearch = ({label = null,
          input.current.setCustomValidity('Введите название и выберите из списка!');
      }
      if(!value) {
-         setShrink(false);
          input.current.value = '';
          setResults([]);
+         if(!document.activeElement.isSameNode(input.current)) setShrink(false);
      }
  }, [value]);
     const Results = results.map((result,)=>{

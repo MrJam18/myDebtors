@@ -2,7 +2,7 @@ import React, { useEffect, useState, forwardRef } from "react";
 import api from "../../http/index";
 import EasySelect from "./EasySelect";
 import { Alert } from "../../classes/Alert";
-const ServerSelect = forwardRef(({ name = null, label, style = null, id = null, setId = null, customClassName = null, defaultId = null, defaultValue, serverAddress, smallLabel = false, required = false }, ref) => {
+const ServerSelect = forwardRef(({ name = null, label, style = null, id = null, setId = null, customClassName = null, defaultId = null, defaultValue, serverAddress, smallLabel = false, required = false, autoFocus = false }, ref) => {
     const [variants, setVariants] = useState([]);
     const [initId, setInitId] = useState('');
     useEffect(() => {
@@ -40,6 +40,6 @@ const ServerSelect = forwardRef(({ name = null, label, style = null, id = null, 
         else if (id === 0)
             setInitId('');
     }, [id]);
-    return (<EasySelect required={required} smallLabel={smallLabel} ref={ref} name={name} label={label} onChange={setId} variants={variants} style={style} customClassName={customClassName} value={initId}/>);
+    return (<EasySelect autoFocus={autoFocus} required={required} smallLabel={smallLabel} ref={ref} name={name} label={label} onChange={setId} variants={variants} style={style} customClassName={customClassName} value={initId}/>);
 });
 export default ServerSelect;

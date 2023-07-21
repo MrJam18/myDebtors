@@ -32,10 +32,11 @@ type Props = {
     defaultValue?: string | number,
     value?: string | number,
     smallLabel?:boolean,
-    required?: boolean
+    required?: boolean,
+    autoFocus?: boolean
 }
 
-const EasySelect = React.forwardRef<HTMLElement, Props>(({name = null, label = null, variants, style, onChange = null, smallLabel=false, customClassName, defaultValue = "", value = "", required=false}: Props, ref) => {
+const EasySelect = React.forwardRef<HTMLElement, Props>(({name = null, label = null, variants, style, onChange = null, smallLabel=false, customClassName, defaultValue = "", value = "", required=false, autoFocus=false}: Props, ref) => {
     const classes: Record<any, any> = useStyles();
     const labelState = useMemo(()=> {
         if (required && label) {
@@ -56,7 +57,7 @@ const EasySelect = React.forwardRef<HTMLElement, Props>(({name = null, label = n
     return (
             <div className={styles.selectBlock + ' ' + classes.input + ' ' + customClassName } style={style}>
                 <InputLabel id={name} className={smallLabel ? classes.selectLabel : classes.fullWidthLabel} >{labelState}</InputLabel>
-                <Select required={required} inputRef={ref} fullWidth defaultValue={defaultValue} variant='standard' labelId={name} {...input} onChange={changeHandler} name={name}>
+                <Select autoFocus={autoFocus} required={required} inputRef={ref} fullWidth defaultValue={defaultValue} variant='standard' labelId={name} {...input} onChange={changeHandler} name={name}>
                         {Variants}
                 </Select>
             </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { TextField } from "@mui/material";
 import { capitalizeFirstLetter } from "../../utils/text/capitalize";
 import { moreThenNow } from "../../utils/moreThenNow";
-const EasyInput = React.forwardRef(({ editable = true, label = null, name, className, type = 'text', autoFocus = false, required = false, pattern = null, defaultValue = null, disabled = false, variant = 'standard', size = 'medium', onBlur = null, shrink = undefined }, ref) => {
+const EasyInput = React.forwardRef(({ editable = true, label = null, name, className, type = 'text', autoFocus = false, required = false, pattern = null, defaultValue = null, disabled = false, variant = 'standard', size = 'medium', onBlur = null, shrink = undefined, isFocused = false }, ref) => {
     label = label ? capitalizeFirstLetter(label) : null;
     const inputRef = useRef();
     let suggestionsHandler;

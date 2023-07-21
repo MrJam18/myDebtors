@@ -117,10 +117,10 @@ const CessionChanger = ({cessionGroupId = null, setShow, setCession = null, upda
                     <EasyInput label='Номер цессии' className={classes.smallInput} name='number' />
                 </div>
                 <div className="full-width-box">
-                    <SearchAndAddButton onClickAddButton={showAddAssignee.setTrue} label={'Цедент'} required value={assignee} serverAddress='creditors/search-list' getValue='short' setValue={setAssignee} />
+                    <SearchAndAddButton onClickAddButton={showAddAssignee.setTrue} label={'Цедент'} required value={assignor} serverAddress='creditors/search-list' getValue='short' setValue={setAssignor} />
                 </div>
                 <div className="full-width-box">
-                    <SearchAndAddButton onClickAddButton={showAddAssignor.setTrue} label='Цессионарий' required value={assignor} serverAddress='creditors/search-list' getValue='short' setValue={setAssignor} />
+                    <SearchAndAddButton onClickAddButton={showAddAssignor.setTrue} label='Цессионарий' required value={assignee} serverAddress='creditors/search-list' getValue='short' setValue={setAssignee} />
                 </div>
                 <div className='full-width-box'>
                     <CustomChips header='Подтверждающие документы' list={enclosures} setList={setEnclosures} addHeader='Введите название документа' />

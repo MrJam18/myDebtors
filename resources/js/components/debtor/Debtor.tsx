@@ -72,9 +72,8 @@ const Debtor = ({setAddressForDB, formRef, defaultValues = {}}: Props) => {
     return (
         <>
             <div className={styles.debtor__block}>
-                <div className={styles.header + ' ' + styles.header_first}>Информация о должнике</div>
                 <div className="position_relative">
-                    <TextField label='Фамилия' onBlur={onBlurName} defaultValue={defaultValues.surname} size='small' name='surname' required variant='standard' className={classes.input} sx={standardInputMUISx} fullWidth/>
+                    <TextField autoFocus label='Фамилия' onBlur={onBlurName} defaultValue={defaultValues.surname} size='small' name='surname' required variant='standard' className={classes.input} sx={standardInputMUISx} fullWidth/>
                     <CustomCheckBox tabIndex={-1} inputProps={checkBoxInputProps} name='noBirthPlace' label='не знаю места рождения' className={classes.checkbox + ' ' + 'position_absolute'} checked={noBirthPlace} setChecked={setNoBirthPlace}/>
                 </div>
                 <div className="position_relative">
@@ -99,8 +98,8 @@ const Debtor = ({setAddressForDB, formRef, defaultValues = {}}: Props) => {
                 </div>
                 {passportTypeId === 1 && <>
                     <div className={styles.passport_block + ' ' + styles.inputsFullWidthFlexBlock}>
-                        <TextField label='Серия' defaultValue={defaultValues.series} variant="standard" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='series' className={classes.smallInput} sx={standardInputMUISx} required size='small'/>
-                        <TextField label='Номер' variant="standard" sx={standardInputMUISx} defaultValue={defaultValues.number} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='number' className={classes.smallInput} required size='small'/>
+                        <TextField label='Серия' defaultValue={defaultValues.series} variant="standard" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='series' className={classes.smallInput} required />
+                        <TextField label='Номер' variant="standard" defaultValue={defaultValues.number} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} name='number' className={classes.smallInput} required/>
                     </div>
                 </>}
                 {passportTypeId !== 1 && <>

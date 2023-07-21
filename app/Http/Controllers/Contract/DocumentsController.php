@@ -65,7 +65,7 @@ class DocumentsController extends AbstractController
         $ipInitStatement->user()->associate(Auth::user());
         $ipInitStatement->agent()->associate($agent);
         $ipInitStatement->executiveDocument()->associate($executiveDocument);
-        $ipInitStatement->save();
+//        $ipInitStatement->save();
         $document = new IpInitStatementDocument($ipInitStatement);
         return $document->getFileResponse("ЗВИП по договору от {$contract->issued_date->format(RUS_DATE_FORMAT)} г., {$contract->debtor->name->initials()}");
     }

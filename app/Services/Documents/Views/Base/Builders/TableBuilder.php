@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use PhpOffice\PhpWord\Element\Row;
 use PhpOffice\PhpWord\Element\Section;
 use PhpOffice\PhpWord\Element\Table;
+use PhpOffice\PhpWord\Style\Border;
 
 abstract class TableBuilder extends BaseBuilder
 {

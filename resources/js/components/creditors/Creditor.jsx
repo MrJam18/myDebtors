@@ -67,7 +67,7 @@ const Creditor = ({defaultValues = {}, defaultRequisites = {}, setAddress, isOrg
  return (
      <>
         <div className={styles.typeHolder}>
-            <ServerSelect defaultId={defaultValues.type_id} label={'Тип кредитора'} name={'creditorTypeId'} serverAddress={'creditors/type-list'} setId={onChangeType} customClassName={styles.type} />
+            <ServerSelect autoFocus defaultId={defaultValues.type_id} label={'Тип кредитора'} name={'creditorTypeId'} serverAddress={'creditors/type-list'} setId={onChangeType} customClassName={styles.type} />
         </div>
         <TextField onBlur={onBlurName} className='inputs-box' defaultValue={defaultValues.name} required name='name' label={ creditorProperties.nameLabel} variant='standard' fullWidth />
          <div className='margin-bottom_10'>

@@ -9,18 +9,27 @@ use PhpOffice\PhpWord\Style\Tab;
 
 class DocFooterBuilder extends BaseBuilder
 {
+    protected array $pStyle = [
+        'spaceBefore' => 20,
+        'spaceAfter' => 20,
+        'indentation' => ['left' => 100]
+    ];
     public function __construct(Section $section)
     {
         parent::__construct($section);
+
     }
 
     function addRow(string $text): Text
     {
-       return $this->section->addText("- $text;", null, ['indentation' => ['left' => 100]]);
+       return $this->section->addText("- $text;", null, $this->pStyle);
     }
     function addHeader(string $text): Text
     {
-        return $this->section->addText($text, ['bold' => true], ['spaceBefore' => 300]);
+        return $this->section->addText($text, ['bold' => true], [
+            'spaceBefore' => 300,
+            'spaceAfter' => 20
+        ]);
     }
     function addSignature(string $initials): Text
     {

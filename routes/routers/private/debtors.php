@@ -11,3 +11,4 @@ Route::post('change-one/{debtor}', [DebtorsController::class, 'changeOne']);
 Route::post('create-from-excel', [DebtorsController::class, 'createFromExcel']);
 Route::get('search-list', [DebtorsController::class, 'getSearchList']);
 Route::get('list', [DebtorsController::class, 'getList']);
+Route::delete('delete-one/{debtor}', [DebtorsController::class, 'deleteOne']);

@@ -24,6 +24,9 @@ class Money implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
-        return (string)round($value, 2);
+        if(gettype($value) === 'string') {
+            $value = getRusFloat($value);
+        }
+        return (string)round($value,2);
     }
 }

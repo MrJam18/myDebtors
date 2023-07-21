@@ -18,7 +18,7 @@ const useStyles = makeStyles({
         fontFamily: 'Roboto_slab, serif'
     },
 });
-const EasySelect = React.forwardRef(({ name = null, label = null, variants, style, onChange = null, smallLabel = false, customClassName, defaultValue = "", value = "", required = false }, ref) => {
+const EasySelect = React.forwardRef(({ name = null, label = null, variants, style, onChange = null, smallLabel = false, customClassName, defaultValue = "", value = "", required = false, autoFocus = false }, ref) => {
     const classes = useStyles();
     const labelState = useMemo(() => {
         if (required && label) {
@@ -41,7 +41,7 @@ const EasySelect = React.forwardRef(({ name = null, label = null, variants, styl
     }, [value]);
     return (<div className={styles.selectBlock + ' ' + classes.input + ' ' + customClassName} style={style}>
                 <InputLabel id={name} className={smallLabel ? classes.selectLabel : classes.fullWidthLabel}>{labelState}</InputLabel>
-                <Select required={required} inputRef={ref} fullWidth defaultValue={defaultValue} variant='standard' labelId={name} {...input} onChange={changeHandler} name={name}>
+                <Select autoFocus={autoFocus} required={required} inputRef={ref} fullWidth defaultValue={defaultValue} variant='standard' labelId={name} {...input} onChange={changeHandler} name={name}>
                         {Variants}
                 </Select>
             </div>);

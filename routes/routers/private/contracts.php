@@ -20,3 +20,4 @@ Route::get('get-statuses', [ContractsController::class, 'getStatusList']);
 Route::post('change-contract', [ContractsController::class, 'changeContract']);
 Route::post('{contract}/change-creditor', [ContractsController::class, 'changeCreditor']);
 Route::post('create-from-excel', [ContractsController::class, 'createFromExcel']);
+Route::delete('delete-one/{contract}', [ContractsController::class, 'deleteOne']);

@@ -19,12 +19,13 @@ type Props = {
     size?: MUISize,
     onBlur?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>,
     shrink?: boolean,
-    editable?: boolean
+    editable?: boolean,
+    isFocused?: boolean
 }
 
-const EasyInput = React.forwardRef<HTMLInputElement, Props>(({ editable = true, label = null, name, className, type='text', autoFocus=false, required = false, pattern = null, defaultValue = null, disabled=false, variant='standard', size='medium', onBlur=null, shrink = undefined }: Props, ref) => {
+const EasyInput = React.forwardRef<HTMLInputElement, Props>(({ editable = true, label = null, name, className, type='text', autoFocus=false, required = false, pattern = null, defaultValue = null, disabled=false, variant='standard', size='medium', onBlur=null, shrink = undefined, isFocused=false }: Props, ref) => {
     label = label ? capitalizeFirstLetter(label) : null;
-    const inputRef = useRef();
+    const inputRef = useRef<HTMLInputElement>();
     let suggestionsHandler;
     let currentPattern;
     if(pattern === 'float') {

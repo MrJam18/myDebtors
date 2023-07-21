@@ -109,9 +109,9 @@ class DatabaseSeeder extends Seeder
         $model = $this->setNameAndSave($model, 'не готов');
         $model = $this->setNameAndSave($model, 'ожидание файлов');
         $model = $this->setNameAndSave($model, 'ожидание отправки СП');
-        $model = $this->setNameAndSave($model, 'Суд. приказ отправлен');
-        $model = $this->setNameAndSave($model, 'Суд.приказ получен');
-        $model = $this->setNameAndSave($model, 'Суд. приказ отменен');
+        $model = $this->setNameAndSave($model, 'Заявление о выдаче СП отправлено');
+        $model = $this->setNameAndSave($model, 'СП получен');
+        $model = $this->setNameAndSave($model, 'СП отменен');
         $model = $this->setNameAndSave($model, 'Иск отправлен');
         $model = $this->setNameAndSave($model, "Вынесено решение");
         $model = $this->setNameAndSave($model, 'Решение получено');

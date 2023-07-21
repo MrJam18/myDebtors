@@ -7,15 +7,18 @@ use App\Enums\Database\ActionObjectEnum;
 use App\Enums\Database\ActionTypeEnum;
 use App\Enums\Database\ContractTypeEnum;
 use App\Exceptions\ShowableException;
+use App\Http\Controllers\AbstractControllers\AbstractController;
 use App\Http\Requests\PaginateRequest;
+use App\Models\Action\Action;
 use App\Models\Cession\CessionGroup;
 use App\Models\Contract\Contract;
+use App\Models\Contract\ContractComment;
 use App\Models\Contract\ContractStatus;
 use App\Models\Contract\ContractType;
+use App\Models\Contract\Payment;
 use App\Models\CourtClaim\CourtClaim;
 use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\ExecutiveDocument\ExecutiveDocument;
-use App\Models\ExecutiveDocument\ExecutiveDocumentType;
 use App\Models\Subject\Creditor\Creditor;
 use App\Models\Subject\People\Debtor;
 use App\Providers\Database\ContractsProvider;
@@ -28,10 +31,9 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class ContractsController
+class ContractsController extends AbstractController
 {
     function getLimitations(PaginateRequest $request, ContractsProvider $provider): array
     {
@@ -261,15 +263,30 @@ class ContractsController
         $service = CreateContractsExcelService::createFromPath($file->getRealPath());
         $service->handle();
     }
+
     function deleteOne(Contract $contract): void
     {
         DB::transaction(function () use ($contract) {
+            $contract->payments->each(function (Payment $payment) {
+                $payment->delete();
+            });
             $contract->executiveDocuments->each(function (ExecutiveDocument $document) {
                 $document->enforcementProceedings->each(function (EnforcementProceeding $proceeding) {
                     $proceeding->delete();
                 });
+                $document->delete();
             });
+            $contract->courtClaims->each(function (CourtClaim $claim) {
+                $claim->delete();
+            });
+            $contract->comments->each(function (ContractComment $comment) use ($contract) {
+                $comment->delete();
+            });
+            $contract->actions->each(function (Action $action) {
+                $action->delete();
+            });
+            $contract->delete();
+            Storage::deleteDirectory("contracts" . DIRECTORY_SEPARATOR . $contract->id);
         });
-
     }
 }

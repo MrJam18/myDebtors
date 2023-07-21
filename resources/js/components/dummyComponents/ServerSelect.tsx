@@ -14,10 +14,11 @@ type ServerSelectProps = {
     serverAddress: string,
     defaultValue?: string,
     smallLabel?: boolean,
-    required?: boolean
+    required?: boolean,
+    autoFocus?: boolean
 }
 
-const ServerSelect = forwardRef(({name = null, label, style = null, id = null, setId = null, customClassName = null, defaultId = null, defaultValue, serverAddress, smallLabel=false, required=false}: ServerSelectProps, ref: ForwardedRef<any>) => {
+const ServerSelect = forwardRef(({name = null, label, style = null, id = null, setId = null, customClassName = null, defaultId = null, defaultValue, serverAddress, smallLabel=false, required=false, autoFocus = false}: ServerSelectProps, ref: ForwardedRef<any>) => {
     const [variants, setVariants] = useState([]);
     const [initId, setInitId] = useState('');
     useEffect(()=> {
@@ -51,7 +52,7 @@ const ServerSelect = forwardRef(({name = null, label, style = null, id = null, s
         else if(id === 0) setInitId('');
     }, [id]);
     return (
-        <EasySelect required={required} smallLabel={smallLabel} ref={ref} name={name} label={label} onChange={setId} variants={variants} style={style} customClassName={customClassName} value={initId} />
+        <EasySelect autoFocus={autoFocus} required={required} smallLabel={smallLabel} ref={ref} name={name} label={label} onChange={setId} variants={variants} style={style} customClassName={customClassName} value={initId} />
     );
 });
 

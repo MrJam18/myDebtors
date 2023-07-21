@@ -12,11 +12,11 @@ import useModal from "../../../hooks/useModal";
 import api from "../../../http";
 import Loading from "../../dummyComponents/Loading";
 import {Alert} from "../../../classes/Alert";
-import {SetExecutiveDocumentDispatcher} from "../../../store/Dispatchers/Contracts/SetExecutiveDocumentDispatcher";
 import EnforcementProceedings from "./EnforcementProceedings";
 import CustomFormStepper from "../../dummyComponents/CustomFormStepper";
-import {formDataConverter} from "../../../utils/formDataConverter";
 import {createUpdateElementsFunc} from "../../../utils/createUpdateElementFunc"
+import {EasyDispatcher} from "../../../store/Dispatchers/EasyDispatcher";
+import {getContractPath} from "../../../utils/getContractPath";
 
 const types = [{name: 'Судебный приказ', id: 1}, {name: 'Исполнительный лист', id: 2}]
 
@@ -44,15 +44,12 @@ const ExecutiveDocChanger = ({setShow, update}) => {
     }
 
     const onSubmit = async (data) => {
-        const dispatcher = new SetExecutiveDocumentDispatcher(setError, setLoading, formRef, setShow);
-        dispatcher.addData('court', court);
-        dispatcher.addData('bailiff', bailiff);
-        dispatcher.addData('typeId', typeId);
-        dispatcher.addData('id', executiveDoc.id);
+        const dispatcher = new EasyDispatcher(setError, {
+            setLoading, setShow, update, alertText: 'Исполнительные документы успешно изменены/установлены'
+        });
+        dispatcher.addData('executiveDocs', data);
         dispatcher.addData('deleteIds', deleteIds);
-        dispatcher.addNoReqData('contractId', contractId);
-        dispatcher.addNoReqData('update', update);
-        await dispatcher.handle();
+        await dispatcher.handle(getContractPath('executive-documents/set'), 'post');
     }
 
     const getUpdatedData = (data) => {
@@ -63,17 +60,6 @@ const ExecutiveDocChanger = ({setShow, update}) => {
         if (activeDoc.id) data.id = activeDoc.id;
         return data;
     };
-
-    useEffect(() => {
-        setDocLoading(true);
-        api.get(`contracts/${contractId}/executive-documents/get-all`)
-            .then(({data}) => {
-                if(data && data.length !== 0) setAllDocs(data);
-                console.log(data);
-                })
-            .catch((error) => Alert.setError('Ошибка при получении данных', error))
-            .finally(() => setDocLoading(false));
-    }, []);
 
     const updateInputs = (data)=>{
         let elements
@@ -92,6 +78,18 @@ const ExecutiveDocChanger = ({setShow, update}) => {
             setLastProceeding(data.lastProceeding);
         }
     }
+
+    useEffect(() => {
+        setDocLoading(true);
+        api.get(`contracts/${contractId}/executive-documents/get-all`)
+            .then(({data}) => {
+                if(data && data.length !== 0) setAllDocs(data);
+                console.log(data);
+            })
+            .catch((error) => Alert.setError('Ошибка при получении данных', error))
+            .finally(() => setDocLoading(false));
+    }, []);
+
     useEffect(()=>{
         if (activeDoc && activeDoc.resolution_number){
             let elements = formRef.current;

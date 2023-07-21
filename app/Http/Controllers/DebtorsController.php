@@ -4,8 +4,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AbstractControllers\AbstractController;
+use App\Http\Controllers\Contract\ContractsController;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\SearchRequest;
+use App\Models\Contract\Contract;
 use App\Models\Passport\Passport;
 use App\Models\Passport\PassportType;
 use App\Models\Subject\People\Debtor;
@@ -149,5 +151,20 @@ class DebtorsController extends AbstractController
             ];
         });
         return $paginator->jsonResponse($list);
+    }
+
+    function deleteOne(Debtor $debtor): void
+    {
+        DB::transaction(function () use ($debtor) {
+            $contractsController = new ContractsController();
+            $debtor->contracts->each(function (Contract $contract) use ($contractsController) {
+                $contractsController->deleteOne($contract);
+            });
+            $debtor->delete();
+            $debtor->name->delete();
+            $debtor->address->delete();
+            $debtor->passport->delete();
+            $debtor->name->delete();
+        });
     }
 }

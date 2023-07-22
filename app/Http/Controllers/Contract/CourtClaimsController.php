@@ -64,7 +64,7 @@ class CourtClaimsController extends AbstractContractController
             $returned['court'] = $claim->court->name;
             $returned['agent'] = $claim->agent->name->getFull();
             $returned = array_merge($returned, $claim->moneySum->getSumsStringArray());
-            $returned['fee'] = $claim->fee . RUS_ROUBLES_NAME;
+            $returned['fee'] = $claim->moneySum->fee . RUS_ROUBLES_NAME;
             $returned['id'] = $claim->id;
             $returned['type'] = $claim->type->name;
             $returned['status'] = $claim->status->name;
@@ -97,6 +97,7 @@ class CourtClaimsController extends AbstractContractController
             $sums->main = $courtClaimData['main'];
             $sums->percents = $courtClaimData['percents'];
             $sums->penalties = $courtClaimData['penalties'];
+            $sums->fee = $courtClaimData['fee'];
             $sums->countSum();
             $sums->save();
             unset($claim->moneySum);
@@ -105,7 +106,6 @@ class CourtClaimsController extends AbstractContractController
             $claim->is_contract_jurisdiction = $courtClaimData['is_contract_jurisdiction'];
             $claim->is_ignored_payments = $courtClaimData['is_ignored_payments'];
             $claim->user_id = Auth::id();
-            $claim->fee = $courtClaimData['fee'];
             $claim->save();
         }
         if(count($data['deleteIds']) !== 0) {
@@ -115,7 +115,10 @@ class CourtClaimsController extends AbstractContractController
     }
     function deleteAllByContract(Contract $contract)
     {
-        $contract->courtClaims()->delete();
+        $contract->courtClaims->each(function (CourtClaim $claim) {
+            $claim->delete();
+            $claim->moneySum->delete();
+        });
         $this->actionsService->createAction(ActionTypeEnum::Delete, 'Удалены судебные иски');
     }
 

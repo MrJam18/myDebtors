@@ -61,7 +61,8 @@ class CreditCountService extends CountService
         $snapshot = [
             'main' => $this->sum->main,
             'percents' => $this->percents,
-            'penalties' => $this->penalties
+            'penalties' => $this->penalties,
+            'fee' => $this->sum->fee
         ];
         $snapshot['percents'] += $this->penaltyPercents;
         $snapshot['main'] += $this->penaltyMain;
@@ -78,6 +79,10 @@ class CreditCountService extends CountService
                     if($this->percents < 0) {
                         $this->sum->main += $this->percents;
                         $this->percents = 0;
+                        if($this->sum->main < 0) {
+                            $this->sum->fee += $this->sum->main;
+                            $this->sum->main = 0;
+                        }
                     }
                 }
             }
@@ -85,6 +90,7 @@ class CreditCountService extends CountService
         $payment->moneySum->percents = $snapshot['percents'] - $this->percents - $this->penaltyPercents;
         $payment->moneySum->penalties = $snapshot['penalties'] - $this->penalties;
         $payment->moneySum->main = $snapshot['main'] - $this->sum->main - $this->penaltyMain;
+        $payment->moneySum->fee = $snapshot['fee'] - $this->sum->fee;
     }
 
     protected function countPercents(Carbon $startDate, Carbon $endDate): float

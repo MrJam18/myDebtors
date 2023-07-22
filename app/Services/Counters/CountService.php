@@ -31,7 +31,7 @@ abstract class CountService
         'started' => false,
         'ended' => false
     ];
-    protected float $fee;
+//    protected float $fee;
     protected ContractType $contractType;
     protected bool $isCurrentYearLeap;
     protected Collection $payments;
@@ -115,8 +115,8 @@ abstract class CountService
         if($claimType->id === 1) {
             $fee = $fee / 2;
         }
-        $this->fee = round($fee, 2);
-        return $this->fee;
+        $this->sum->fee = round($fee, 2);
+        return $this->sum->fee;
     }
     function getResult(): MoneySum
     {
@@ -124,8 +124,8 @@ abstract class CountService
     }
 
     function getFee(CourtClaimType $claimType): float {
-        if(!isset($this->fee)) return $this->countFee($claimType);
-        return $this->fee;
+        if(!$this->sum->fee) return $this->countFee($claimType);
+        return $this->sum->fee;
     }
 
     static function staticCount(Contract $contract, Carbon $endDate): MoneySum

@@ -29,13 +29,13 @@ class AddressData
         $this->checkEmpty($data['house']);
         $this->country = $data['country'];
         $this->region = $data['region'];
-        $this->area = $data['area'];
+        $this->area = $data['area'] ?? null;
         $this->settlement = $data['settlement'];
         $this->street = $data['street'];
         $this->house = $data['house'];
         $this->flat = $data['flat'];
-        $this->block = $data['block'];
-        $this->postal_code = $data['postal_code'];
+        $this->block = $data['block'] ?? null;
+        $this->postal_code = $data['postal_code'] ?? null;
     }
 
     /**

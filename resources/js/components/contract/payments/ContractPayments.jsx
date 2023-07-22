@@ -8,12 +8,14 @@ import Toolbar from "./Toolbar";
 import {useShow} from "../../../hooks/useShow";
 
 const headers = [
-    {name: 'Дата', key: 'date', type: 'date'},
+    {name: 'Дата', key: 'payments.date', type: 'date'},
     {name: "Сумма", key: 'money_sums.sum', type: 'number'},
-    {name: "Осн. долг", key: 'money_sums.main', type: 'number'},
-    {name: "Проценты", key: 'money_sums.percents', type: 'number'},
-    {name: "Неустойка", key: 'money_sums.penalties', type: 'number'},
-    {name: 'Исп. производство', key: 'enforcement_proceedings.number'}];
+    {name: "Осн.", key: 'money_sums.main', type: 'number'},
+    {name: "Проц.", key: 'money_sums.percents', type: 'number'},
+    {name: "Неуст.", key: 'money_sums.penalties', type: 'number'},
+    {name: 'Пошлина', key: 'money_sums.fee', type: 'number'},
+    {name: 'Исп. пр-во', key: 'enforcement_proceedings.number'}
+];
 
 const ContractPayments = () => {
     const {contractId} = useParams();
@@ -29,7 +31,7 @@ const ContractPayments = () => {
         <div className={styles.payments}>
             <div className={styles.header_small}>Управление платежами</div>
             <Toolbar setSearch={setSearch} update={update.set} />
-            <CustomList defaultOrder={['date', 'DESC']} search={search} headers={headers} serverAddress={'contracts/' + contractId + '/payments/list'} update={update.state} onClickRow={onClickRow} />
+            <CustomList defaultOrder={['payments.date', 'DESC']} search={search} headers={headers} serverAddress={'contracts/' + contractId + '/payments/list'} update={update.state} onClickRow={onClickRow} />
             {showChangedPayment.Comp()}
         </div>
     );

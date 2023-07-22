@@ -10,12 +10,11 @@ use Carbon\Carbon;
 
 /**
  * @property int $id;
- * @property Carbon $created_at;
- * @property Carbon $updated_at;
  * @property float $sum;
  * @property float $percents;
  * @property float $penalties;
  * @property float $main;
+ * @property float|null $fee;
  */
 class MoneySum extends BaseModel
 {
@@ -26,13 +25,15 @@ class MoneySum extends BaseModel
         $this->main = 0;
         $this->penalties = 0;
         $this->percents = 0;
+        $this->fee = 0;
     }
 
     protected $fillable = [
         'sum',
         'percents',
         'penalties',
-        'main'
+        'main',
+        'fee'
     ];
     public $timestamps = false;
 
@@ -40,6 +41,7 @@ class MoneySum extends BaseModel
         'sum' => Money::class,
         'percents' => Money::class,
         'penalties' => Money::class,
-        'main' => Money::class
+        'main' => Money::class,
+        'fee' => Money::class
     ];
 }

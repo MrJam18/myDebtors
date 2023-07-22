@@ -12,7 +12,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 .container {
   width: 100%;
-  max-width: 1500px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
@@ -58,6 +58,7 @@ html {
   background-color: white;
   width:500px;
   box-shadow: 0 0 20px 6px rgba(34, 60, 80, 0.2);
+  margin-bottom: 30px;
 }
 .details__close {
   position: absolute;

@@ -19,11 +19,16 @@ abstract class LoanCountService extends CountService
             if ($this->sum->main < 0) {
                 $this->sum->penalties += $this->sum->main;
                 $this->sum->main = 0;
+                if($this->sum->penalties < 0) {
+                    $this->sum->fee += $this->sum->penalties;
+                    $this->sum->penalties = 0;
+                }
             }
         }
         $payment->moneySum->percents = $snapshot->percents - $this->sum->percents;
         $payment->moneySum->penalties = $snapshot->penalties - $this->sum->penalties;
         $payment->moneySum->main = $snapshot->main - $this->sum->main;
+        $payment->moneySum->fee = $snapshot->fee - $this->sum->fee;
     }
 
     protected function countPercents(Carbon $startDate, Carbon $endDate): float

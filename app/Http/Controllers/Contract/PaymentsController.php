@@ -12,6 +12,7 @@ use App\Models\Contract\Contract;
 use App\Models\Contract\Payment;
 use App\Models\EnforcementProceeding\EnforcementProceeding;
 use App\Models\MoneySum;
+use App\Providers\Database\PaymentsProvider;
 use App\Services\Counters\CreditCountService;
 use App\Services\Counters\LimitedLoanCountService;
 use Carbon\Carbon;
@@ -25,40 +26,9 @@ class PaymentsController extends AbstractContractController
         parent::__construct($request, ActionObjectEnum::Payment);
     }
 
-    function getList(Contract $contract, PaginateRequest $request): array
+    function getList(Contract $contract, PaginateRequest $request, PaymentsProvider $provider): array
     {
-        $data = $request->validated();
-        $query = $contract->payments()->orderByData($data->orderBy)
-            ->joinRelation('moneySum')
-            ->leftJoinRelation('enforcementProceeding')
-            ->select(['payments.id as payment_id', 'payments.date', 'money_sums.*', 'enforcement_proceedings.number']);
-        if($data->search) {
-            if(isRusDate($data->search)) $query->searchByRusDate(['payments.date'], $data->search);
-            elseif(is_numeric($data->search)) {
-                $query->searchOne([
-                    'money_sums.main',
-                    'money_sums.percents',
-                    'money_sums.penalties',
-                    'money_sums.sum'
-                ], $data->search);
-            }
-            else {
-                $query->searchOne(['enforcement_proceedings.number'], $data->search);
-            }
-        }
-        $paginator = $query->paginate($data->perPage, 'payments.*', page: $data->page);
-        $list = $paginator->items()->map(function (Payment $payment) {
-            return [
-                'money_sums.sum' => $payment->sum,
-                'money_sums.main' => $payment->main,
-                'money_sums.percents' => $payment->percents,
-                'money_sums.penalties' => $payment->penalties,
-                'enforcement_proceedings.number' => $payment->number,
-                'date' => $payment->date->format(RUS_DATE_FORMAT),
-                'idd' => $payment->payment_id
-            ];
-        });
-        return $paginator->jsonResponse($list);
+        return $provider->getList($request->validated(), $contract)->jsonResponse();
     }
     function addOne(Contract $contract, Request $request): void
     {
@@ -66,7 +36,7 @@ class PaymentsController extends AbstractContractController
         $formData = $data['formData'];
         $payment = new Payment();
         $payment->moneySum = new MoneySum();
-        $payment->moneySum->sum = (float)$formData['sum'];
+        $payment->moneySum->sum = $formData['sum'];
         $payment->date = new Carbon($formData['date']);
         $payment->contract()->associate($contract);
         if(isset($data['enforcementProceedingId'])) {

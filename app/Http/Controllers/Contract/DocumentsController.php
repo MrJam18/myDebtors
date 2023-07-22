@@ -48,7 +48,7 @@ class DocumentsController extends AbstractController
             $moneySum = $countService->getResult();
             $moneySum->save();
             $courtClaim->moneySum()->associate($moneySum);
-            $courtClaim->fee = $countService->getFee($courtClaim->type);
+            $courtClaim->moneySum->fee = $countService->getFee($courtClaim->type);
             $courtClaim->user_id = Auth::id();
             $courtClaim->save();
         }

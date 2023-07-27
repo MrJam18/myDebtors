@@ -115,7 +115,15 @@ class DatabaseSeeder extends Seeder
         $model = $this->setNameAndSave($model, 'Иск отправлен');
         $model = $this->setNameAndSave($model, "Вынесено решение");
         $model = $this->setNameAndSave($model, 'Решение получено');
-        $this->setNameAndSave($model, 'Исполнительный лист получен');
+        $model = $this->setNameAndSave($model, 'В решении отказано');
+        $model = $this->setNameAndSave($model, 'Подана жалоба');
+        $model = $this->setNameAndSave($model, 'Жалоба отклонена');
+        $model = $this->setNameAndSave($model, 'Жалоба удовлетворена');
+        $model = $this->setNameAndSave($model, 'Исп. лист получен');
+        $model = $this->setNameAndSave($model, 'Исп. документ отправлен СПИ');
+        $model = $this->setNameAndSave($model, 'Исп. производство возбуждено');
+        $model = $this->setNameAndSave($model, 'Исп. производство окончено без исполнения');
+        $this->setNameAndSave($model, 'Исп. производство окончено с исполнением');
         $model = new ContractType();
         $model = $this->setNameAndSave($model, 'Договор займа');
         $this->setNameAndSave($model, "Кредитный договор");

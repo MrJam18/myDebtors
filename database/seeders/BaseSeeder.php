@@ -16,4 +16,11 @@ abstract class BaseSeeder extends Seeder
         $this->model->save();
         $this->model = new (get_class($this->model));
     }
+    function renameAndSave(int $id, string $name)
+    {
+        $this->model = get_class($this->model)::find($id);
+        $this->model->name = $name;
+        $this->model->save();
+        $this->model = new (get_class($this->model));
+    }
 }

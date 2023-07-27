@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Providers\Database;
 
+use App\Enums\Database\ContractStatusEnum;
 use App\Http\Requests\Base\ListRequestData;
 use App\Models\Base\CustomPaginator;
 use App\Models\Contract\Contract;
@@ -22,7 +23,10 @@ class ContractsProvider extends AbstractProvider
     function getLimitations(ListRequestData $data): CustomPaginator
     {
         $deadline = Carbon::now()->subYears(2);
-        return $this->byGroupId(getGroupId(), new OrderBy('due_date', OrderDirection::ASC))->where('due_date', '<=', $deadline)->with(['creditor:id,name,short', 'debtor:id,name_id' => ['name']])->paginate($data->perPage, ['due_date', 'issued_date', 'id', 'creditor_id', 'debtor_id'], page: $data->page);
+        return $this->byGroupId(getGroupId(), new OrderBy('due_date', OrderDirection::ASC))
+            ->where('due_date', '<=', $deadline)
+            ->whereIn('status_id', [ContractStatusEnum::DontReady->value, ContractStatusEnum::FilesWaiting->value, ContractStatusEnum::CourtOrderCanceled->value])
+            ->with(['creditor:id,name,short', 'debtor:id,name_id' => ['name']])->paginate($data->perPage, ['due_date', 'issued_date', 'id', 'creditor_id', 'debtor_id'], page: $data->page);
     }
 
     function getList(ListRequestData $data): CustomPaginator

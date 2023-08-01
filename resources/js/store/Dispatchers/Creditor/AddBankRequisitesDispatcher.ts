@@ -10,6 +10,7 @@ export class AddBankRequisitesDispatcher extends Dispatcher
                 BIK: dispatcherData.formData.BIK
             });
             Alert.set('Успешно', "Реквизиты успешно добавлены.");
+            this.noReqData.setRequisites(response.data);
             return response.data;
         } catch (e) {
             if(e.response?.status === 551) {

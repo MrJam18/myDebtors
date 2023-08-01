@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Header} from "../../classes/Header";
 import styles from '../../css/noBorderTable.module.css'
 import SortButton from './SortButton';
@@ -10,12 +10,13 @@ type Props = {
     rows?: Array<Record<string, string> & {id: number}>,
     headers?: Array<Header>,
     sortHandler?: (order: Order)=> void,
-    focus?: string,
+    focus?: Order,
     loading?: boolean,
     onClickRow?: (index: number) => void,
 }
 const NoBorderTable = ({rows = [], headers = [], sortHandler = null, focus = null, loading, onClickRow = null}: Props) => {
     const table = useRef();
+    const defReverse = useMemo(()=> focus && focus[1] === 'DESC', []);
     const [empty, setEmpty] = useState(false);
     const clickRowHandler = (ev) => {
         const index = ev.currentTarget.getAttribute('data-index');
@@ -35,7 +36,7 @@ const NoBorderTable = ({rows = [], headers = [], sortHandler = null, focus = nul
                 {headers.map((header, index) => (
                     <th style={header.styles ? header.styles : null} key={header.key} className={styles.header}>
                         {header.name}
-                        <SortButton  sortHandler={sortHandler} header={header} focus={focus}/>
+                        <SortButton defReverse={defReverse} sortHandler={sortHandler} header={header} focus={focus ? focus[0] : null}/>
                     </th>))}
             </tr>
         </thead>

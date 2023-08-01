@@ -1,5 +1,5 @@
 import { MenuItem, TextField } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import styles from '../../../css/customSearch.module.css'
 import useDebounce from '../../../hooks/useDebounce';
 import { makeStyles } from '@mui/styles';
@@ -79,6 +79,7 @@ const EasySearch = ({label = null,
  const input = useRef<HTMLInputElement>(null);
  const debouncedSearch = useDebounce(onSearch, delay);
  const [shrink, setShrink] = useState(false);
+ const resultsRefs = useRef([]);
  const changeInputHandler = async (ev) => {
   const val = ev.target.value;
   if(val !== '') {
@@ -88,7 +89,10 @@ const EasySearch = ({label = null,
  }
  const chooseHandler = (ev)=> {
   const id = +ev.currentTarget.getAttribute('data-id');
-  const find = results.find((el) => el.id === id);
+  const find = results.find((el) => {
+      if(el.id === null && !id) return true;
+      return el.id === id;
+  } );
   setValue(find);
  }
  useEffect(()=> {
@@ -112,18 +116,45 @@ const EasySearch = ({label = null,
          if(!document.activeElement.isSameNode(input.current)) setShrink(false);
      }
  }, [value]);
-    const Results = results.map((result,)=>{
-        return(
-            <MenuItem key={result.id} className={classes.result} tabIndex={0} focusVisibleClassName={styles.selected} data-id={result.id} onClick={chooseHandler}  > {result.name} </MenuItem>
-        )
-    })
     const onFocus = ()=> {
         if(!shrink) setShrink(true);
     }
+    const onBlurAll = () => {
+        if(results.length !== 0) {
+                setTimeout(()=> {
+                    let isFocused = false;
+                    const active = document.activeElement;
+                    if(active.isSameNode(input.current)) isFocused = true;
+                    if(!isFocused) {
+                        resultsRefs.current.find(function (resultRef) {
+                            if (active.isSameNode(resultRef)) {
+                                isFocused = true;
+                                return true;
+                            }
+                        });
+                    }
+                    if(!isFocused) setResults([]);
+                }, 0);
+        }
+    }
     const onBlur = (ev) => {
         if(!ev.target.value) setShrink(false);
+        onBlurAll();
     }
-
+    const onResultKeyDown = (ev: KeyboardEvent) => {
+        if(ev.key === 'Escape') {
+            ev.preventDefault();
+            setResults([]);
+        }
+    }
+    const Results = useMemo(()=> {
+        return results.map((result, index) => {
+            return(
+                /*@ts-ignore*/
+                <MenuItem ref={(ref)=> resultsRefs.current[index] = ref} onBlur={onBlurAll} onKeyDownCapture={onResultKeyDown} key={result.id} className={classes.result} tabIndex={0} focusVisibleClassName={styles.selected} data-id={result.id} onClick={chooseHandler}  > {result.name} </MenuItem>
+            );
+        });
+    }, [results]);
 
  return (
      <div style={customStyles} className={styles.main + (className ? ' ' + className : '')} >

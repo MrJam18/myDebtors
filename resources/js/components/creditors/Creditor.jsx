@@ -85,7 +85,7 @@ const Creditor = ({defaultValues = {}, defaultRequisites = {}, setAddress, isOrg
             <div className="margin-bottom_10">
                 <SearchAndAddButton label='Банк получателя' serverAddress='creditors/search-bank-requisites' onClickAddButton={()=> setShowAddBanksRequisites(true)} required value={bankRequisites} setValue={setBankRequisites} />
             </div>
-         {showAddBanksRequisites && <AddBanksRequisites setShow={setShowAddBanksRequisites} />}
+         {showAddBanksRequisites && <AddBanksRequisites setBankRequisites={setBankRequisites} setShow={setShowAddBanksRequisites} />}
          </>
  );
 };

@@ -33,11 +33,11 @@ class CessionsProvider extends AbstractProvider
         return $builder->paginate($data->perPage,
             page: $data->page);
     }
-    function getSearchList(string $search, ?int $creditorId = null): Collection
+    function getSearchList(string $search, ?int $creditorId = null, bool $withNull = false): Collection
     {
         $builder = $this->byGroupId(getGroupId())
             ->search(['name' => $search])
-            ->limit(5);
+            ->limit($withNull ? 4 : 5);
         if($creditorId) {
             $filteredCessionsGroups = $this->getLastCessionQuery()->where('ranked_table.assignor_id', '=', $creditorId)
                 ->get('ranked_table.cession_group_id');

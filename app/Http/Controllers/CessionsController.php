@@ -131,6 +131,17 @@ class CessionsController extends AbstractController
     }
     function getSearchList(SearchRequest $request, CessionsProvider $provider): Collection
     {
-        return $provider->getSearchList($request->validated(), (int)$request->input('creditorId'));
+        $searchString = strtolower($request->validated());
+        $withNull = false;
+        if($searchString && str_contains('принадлежит выдавшей организации', $searchString)) {
+           $null = [
+               'id' => null,
+               'name' => 'Принадлежит выдавшей организации'
+           ];
+           $withNull = true;
+        }
+        $list = $provider->getSearchList($request->validated(), (int)$request->input('creditorId'), $withNull);
+        if(isset($null)) $list->push($null);
+        return $list;
     }
 }

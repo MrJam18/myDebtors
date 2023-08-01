@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import ArrowDirection from './ArrowDirection';
-const SortButton = ({sortHandler, header, focus}) => {
-    const [arrow, setArrow] = useState(false);
-    const [reverse, setReverse] = useState(false);
-    const changeFocusHandler = () => {
-        if (focus !== header.key) {
-            setArrow(false);
-            setReverse(false);
-        }
-    }
-    useEffect(changeFocusHandler, [focus]);
+const SortButton = ({sortHandler, header, focus, defReverse=false}) => {
+    const initReverse  = useMemo(()=> {
+        if(focus === header.key) return defReverse;
+        else return false
+    }, []);
+    const [arrow, setArrow] = useState(initReverse);
     const clickHandler = (ev) => {
-        if (focus === header.key) setArrow(!arrow);
-        const colKey = ev.currentTarget.getAttribute('datakey');
-        let type;
-        if(!reverse) type = 'ASC';
-        else type = 'DESC';
-        // sortHandler(colKey, type);
-        sortHandler([colKey, type]);
-        setReverse(!reverse);
+        setArrow((currentArrow)=> {
+            if (focus === header.key) currentArrow = !currentArrow;
+            const colKey = ev.currentTarget.getAttribute('datakey');
+            let type;
+            if(currentArrow) type = 'DESC';
+            else type = 'ASC';
+            sortHandler([colKey, type]);
+            return currentArrow;
+        });
     }
     return (
            // @ts-expect-error TS(2322): Type '{ children: Element; className: string; styl... Remove this comment to see the full error message

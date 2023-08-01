@@ -34,7 +34,7 @@ const ContractList = () => {
                         {listHeaders.map((header, index) => {
             return (<div className={header.className}>
                                 <h5 className={styles.header}>{header.name}</h5>
-                                <SortButton sortHandler={list.setOrder} header={header} focus={list.order[0]}/>
+                                <SortButton defReverse={list.order[1] === 'DESC'} sortHandler={list.setOrder} header={header} focus={list.order[0]}/>
                             </div>);
         })}
                     </div>

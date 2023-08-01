@@ -263,6 +263,11 @@ class ContractsController extends AbstractController
         $service = CreateContractsExcelService::createFromPath($file->getRealPath());
         $service->handle();
     }
+    function changeDebtor(Contract $contract, Debtor $debtor): void
+    {
+        $contract->debtor()->associate($debtor);
+        $contract->save();
+    }
 
     function deleteOne(Contract $contract): void
     {

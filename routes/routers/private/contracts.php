@@ -11,6 +11,8 @@ $router = new RoutersHandler('private');
 
 Route::prefix('{contract}')->group(function () use ($router) {
     $router->addFolder('contracts');
+    Route::get('change-debtor/{debtor}', [ContractsController::class, 'changeDebtor',
+    ]);
 });
 Route::get('limitationsList', [ContractsController::class, 'getLimitations']);
 Route::get('status-list', [ContractsController::class, 'getStatusList']);

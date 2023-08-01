@@ -7,13 +7,14 @@ import ButtonInForm from "./dummyComponents/ButtonInForm";
 import {AddBankRequisitesDispatcher} from "../store/Dispatchers/Creditor/AddBankRequisitesDispatcher";
 // import {AddBanksRequisitesController} from "../../controllers/AddBanksRequisitesController";
 
-const AddBanksRequisites = ({setShow}) => {
+const AddBanksRequisites = ({setShow, setBankRequisites}) => {
     const formRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const {Comp, setError} = useError();
     const onSubmit = async ()=> {
         if(formRef.current.reportValidity()) {
             const dispatcher = new AddBankRequisitesDispatcher(setError, setLoading, formRef, setShow);
+            dispatcher.addNoReqData('setRequisites', setBankRequisites);
             await dispatcher.handle();
         }
     }

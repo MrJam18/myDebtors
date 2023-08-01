@@ -10,7 +10,7 @@ import {changeContract} from "../../../store/contracts/actions";
 import {useShow} from "../../../hooks/useShow";
 import CreditorChanger from "./CreditorChanger";
 import CourtClaimChanger from "./CourtClaimChanger";
-import ChangeDebtor from "../../debtor/ChangeDebtor";
+import ChangeDebtorInContract from "./ChangeDebtorInContract";
 
 
 const ContractData = ({contractId, update}) => {
@@ -26,14 +26,14 @@ const ContractData = ({contractId, update}) => {
     }
     const showCreditorChanger = useShow(CreditorChanger, {update});
     const showCourtClaimChanger = useShow(CourtClaimChanger, {update, courtClaimId: contract.courtClaimId});
-    const showDebtorChanger = useShow(ChangeDebtor, {update, debtorId: contract.debtorId});
+    const showDebtorChanger = useShow(ChangeDebtorInContract, {update, debtorId: contract.debtorId});
     const requestFunction = async (column, value) => {
        await dispatch(changeContract(column, value, contractId));
     }
     const setters = [
         {
-        colName: 'executiveDocName',
-        func: onClickExecutiveDoc
+            colName: 'executiveDocName',
+            func: onClickExecutiveDoc
         },
         {
             colName: 'creditor',

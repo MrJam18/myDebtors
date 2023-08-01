@@ -17,6 +17,12 @@ abstract class DocumentService
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'Content-Transfer-Encoding' => 'binary',
         ];
+        if(str_contains($name, '/')) {
+            $name = str_replace('/', '-', $name);
+        }
+        if(str_contains($name, '\\')) {
+            $name = str_replace('\\', '-', $name);
+        }
         $objWriter = IOFactory::createWriter($this->view->getDocument());
         return response()->streamDownload(function () use ($objWriter) {
             $objWriter->save('php://output');

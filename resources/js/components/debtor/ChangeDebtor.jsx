@@ -9,7 +9,7 @@ import DeleteButton from "../dummyComponents/DeleteButton";
 import Loading from "../dummyComponents/Loading";
 import Warning from "../dummyComponents/Warning";
 import Debtor from "./Debtor";
-const ChangeDebtor = ({ debtorId, setShow, update }) => {
+const ChangeDebtor = ({ debtorId, setShow, update, withModal = true }) => {
     const form = useForm({ buttonText: "Сохранить", setShow, update, alertText: "Должник успешно изменен" });
     const [addressForDB, setAddressForDB] = useState(null);
     const [debtor, setDebtor] = useState({});
@@ -40,20 +40,26 @@ const ChangeDebtor = ({ debtorId, setShow, update }) => {
         })
             .finally(() => setLoading(false));
     }, []);
-    return (<CustomModal customStyles={{ width: '40%', minWidth: '465px', maxWidth: '500px' }} setShow={setShow}>
-            {loading ? <Loading /> :
-            <>
+    const Inner = () => (loading ? <Loading /> :
+        <>
                     {showDeleteWarning.Comp()}
-                    <div className='header_small'>Изменение должника</div>
-                    <div className="toolbar margin-bottom_10">
-                        <DeleteButton onClick={showDeleteWarning.setTrue}/>
-                    </div>
-
+                    {withModal && <>
+                        <div className='header_small'>Изменение должника</div>
+                        <div className="toolbar margin-bottom_10">
+                            <DeleteButton onClick={showDeleteWarning.setTrue}/>
+                        </div>
+                    </>}
                     <form onSubmit={onSubmit} ref={form.ref}>
                         <Debtor formRef={form.ref} setAddressForDB={setAddressForDB} defaultValues={debtor}/>
                         {form.Button()}
                     </form>
-                </>}
-        </CustomModal>);
+                </>);
+    return (<>
+            {withModal ?
+            <CustomModal customStyles={{ width: '40%', minWidth: '465px', maxWidth: '500px' }} setShow={setShow}>
+                    <Inner />
+                </CustomModal>
+            : <Inner />}
+        </>);
 };
 export default ChangeDebtor;
